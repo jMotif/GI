@@ -25,9 +25,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
-import edu.hawaii.jmotif.gi.GrammarRuleRecord;
-import edu.hawaii.jmotif.gi.GrammarRules;
-import edu.hawaii.jmotif.sax.SAXFactory;
+import net.seninp.gi.GrammarRuleRecord;
+import net.seninp.gi.GrammarRules;
 
 /**
  * The Rule. Adaption of Eibe Frank code for JMotif API, see {@link sequitur.info} for original

@@ -2,11 +2,11 @@ package net.seninp.gi.repair;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 import org.junit.Test;
-import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.sax.parallel.ParallelSAXImplementation;
-import edu.hawaii.jmotif.timeseries.TSUtils;
 
 public class TestRePairImplementation {
 
@@ -26,7 +26,7 @@ public class TestRePairImplementation {
   @Test
   public void testRePairImplementation() throws Exception {
 
-    ts1 = TSUtils.readFileColumn(TEST_DATASET_NAME, 0, 0);
+    ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
 
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
     SAXRecords saxData = ps.process(ts1, 3, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,

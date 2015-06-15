@@ -2,7 +2,6 @@ package net.seninp.gi;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import edu.hawaii.jmotif.logic.RuleInterval;
 
 /**
  * Data container for SAX rules. Provides an abstraction which is used for transferring grammars
@@ -201,11 +200,11 @@ public class GrammarRuleRecord {
     this.ruleYield = ruleYield;
   }
 
-  public ArrayList<T> getRuleIntervals() {
+  public ArrayList<RuleInterval> getRuleIntervals() {
     return this.ruleIntervals;
   }
 
-  public void setRuleIntervals(ArrayList<T> resultIntervals) {
+  public void setRuleIntervals(ArrayList<RuleInterval> resultIntervals) {
     this.ruleIntervals = resultIntervals;
   }
 

@@ -22,7 +22,6 @@ public class GrammarRules implements Iterable<GrammarRuleRecord> {
     return this.rules.get(ruleIdx);
   }
 
-  @Override
   public Iterator<GrammarRuleRecord> iterator() {
     return rules.values().iterator();
   }

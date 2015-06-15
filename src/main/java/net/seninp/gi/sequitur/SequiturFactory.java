@@ -9,18 +9,18 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.seninp.gi.GrammarRuleRecord;
+import net.seninp.gi.GrammarRules;
+import net.seninp.gi.RuleInterval;
+import net.seninp.gi.util.GIHelper;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.gi.GrammarRuleRecord;
-import edu.hawaii.jmotif.gi.GrammarRules;
-import edu.hawaii.jmotif.logic.RuleInterval;
-import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.SAXFactory;
-import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
-import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSException;
-import edu.hawaii.jmotif.timeseries.TSUtils;
 
 /**
  * Sort of a stand-alone factory to digesting strings with Sequitur.
@@ -36,6 +36,10 @@ public final class SequiturFactory {
   private static final double NORMALIZATION_THRESHOLD = 0.5D;
 
   private static final NormalAlphabet normalA = new NormalAlphabet();
+
+  private static TSProcessor tp = new TSProcessor();
+  private static SAXProcessor sp = new SAXProcessor();
+  private static GIHelper hp = new GIHelper();
 
   // logging stuff
   //
@@ -59,9 +63,9 @@ public final class SequiturFactory {
    * @param inputString The string to digest. Symbols expected to be separated by space.
    * 
    * @return The top rule handler.
-   * @throws TSException
+   * @throws Exception
    */
-  public static SAXRule runSequitur(String inputString) throws TSException {
+  public static SAXRule runSequitur(String inputString) throws Exception {
 
     consoleLogger.trace("digesting the string " + inputString);
 
@@ -117,10 +121,10 @@ public final class SequiturFactory {
    * @param string The string to digest. Symbols expected to be separated by space.
    * 
    * @return The top rule handler.
-   * @throws TSException
+   * @throws Exception
    */
   public static SAXRule runSequiturWithEditDistanceThreshold(String string, Integer alphabetSize,
-      Integer threshold) throws TSException {
+      Integer threshold) throws Exception {
 
     consoleLogger.trace("digesting the string " + string);
 
@@ -150,7 +154,7 @@ public final class SequiturFactory {
         //
         boolean merged = false;
         for (String str : SAXSymbol.theSubstituteTable.keySet()) {
-          double dist = SAXFactory.saxMinDist(str.toCharArray(), token.toCharArray(),
+          double dist = sp.saxMinDist(str.toCharArray(), token.toCharArray(),
               normalA.getDistanceMatrix(alphabetSize));
           if (dist < threshold) {
             merged = true;
@@ -246,7 +250,7 @@ public final class SequiturFactory {
   }
 
   public static int[] series2RulesDensity(double[] originalTimeSeries, int saxWindowSize,
-      int saxPaaSize, int saxAlphabetSize) throws TSException, IOException {
+      int saxPaaSize, int saxAlphabetSize) throws Exception, IOException {
 
     SAXRecords saxFrequencyData = new SAXRecords();
 
@@ -269,13 +273,13 @@ public final class SequiturFactory {
       double[] subSection = Arrays.copyOfRange(originalTimeSeries, i, i + saxWindowSize);
 
       // Z normalize it
-      subSection = TSUtils.optimizedZNorm(subSection, NORMALIZATION_THRESHOLD);
+      subSection = tp.znorm(subSection, NORMALIZATION_THRESHOLD);
 
       // perform PAA conversion if needed
-      double[] paa = TSUtils.optimizedPaa(subSection, saxPaaSize);
+      double[] paa = tp.paa(subSection, saxPaaSize);
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2String(paa, normalA.getCuts(saxAlphabetSize));
+      char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
 
       // NumerosityReduction
       if (!previousString.isEmpty()
@@ -330,12 +334,12 @@ public final class SequiturFactory {
    * @param numerosityReductionStrategy
    * @param normalizationThreshold
    * @return
-   * @throws TSException
+   * @throws Exception
    * @throws IOException
    */
   public static GrammarRules series2SequiturRules(double[] timeseries, int saxWindowSize,
       int saxPAASize, int saxAlphabetSize, NumerosityReductionStrategy numerosityReductionStrategy,
-      double normalizationThreshold) throws TSException, IOException {
+      double normalizationThreshold) throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
     SAXRecords saxFrequencyData = discretize(timeseries, numerosityReductionStrategy,
@@ -383,7 +387,7 @@ public final class SequiturFactory {
 
   public static GrammarRules series2RulesWithLog(double[] timeseries, int saxWindowSize,
       int saxPAASize, int saxAlphabetSize, double normalizationThreshold, String prefix)
-      throws TSException, IOException {
+      throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
     SAXRecords saxFrequencyData = discretize(timeseries, NumerosityReductionStrategy.EXACT,
@@ -438,11 +442,11 @@ public final class SequiturFactory {
    * @param saxAlphabetSize
    * @param normalizationThreshold
    * @return
-   * @throws TSException
+   * @throws Exception
    */
   public static SAXRecords discretize(double[] timeseries,
       NumerosityReductionStrategy numerosityReductionStrategy, int saxWindowSize, int saxPAASize,
-      int saxAlphabetSize, double normalizationThreshold) throws TSException {
+      int saxAlphabetSize, double normalizationThreshold) throws Exception {
 
     SAXRecords saxFrequencyData = new SAXRecords();
 
@@ -455,13 +459,13 @@ public final class SequiturFactory {
       double[] subSection = Arrays.copyOfRange(timeseries, i, i + saxWindowSize);
 
       // Z normalize it
-      subSection = TSUtils.optimizedZNorm(subSection, normalizationThreshold);
+      subSection = tp.znorm(subSection, normalizationThreshold);
 
       // perform PAA conversion if needed
-      double[] paa = TSUtils.optimizedPaa(subSection, saxPAASize);
+      double[] paa = tp.paa(subSection, saxPAASize);
 
       // Convert the PAA to a string.
-      char[] currentString = TSUtils.ts2String(paa, normalA.getCuts(saxAlphabetSize));
+      char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
 
       if (NumerosityReductionStrategy.EXACT.equals(numerosityReductionStrategy)
           && Arrays.equals(previousString, currentString)) {
@@ -470,7 +474,7 @@ public final class SequiturFactory {
       }
       else if ((null != previousString)
           && NumerosityReductionStrategy.MINDIST.equals(numerosityReductionStrategy)) {
-        double dist = SAXFactory.saxMinDist(previousString, currentString,
+        double dist = sp.saxMinDist(previousString, currentString,
             normalA.getDistanceMatrix(saxAlphabetSize));
         if (0.0D == dist) {
           continue;
@@ -493,21 +497,21 @@ public final class SequiturFactory {
    * @param saxAlphabetSize
    * @param normalizationThreshold
    * @return
-   * @throws TSException
+   * @throws Exception
    */
   public static SAXRecords discretizeNoSlidingWindow(double[] timeseries, int saxPAASize,
-      int saxAlphabetSize, double normalizationThreshold) throws TSException {
+      int saxAlphabetSize, double normalizationThreshold) throws Exception {
 
     SAXRecords saxFrequencyData = new SAXRecords();
 
     // Z normalize it
-    double[] normalizedTS = TSUtils.optimizedZNorm(timeseries, normalizationThreshold);
+    double[] normalizedTS = tp.znorm(timeseries, normalizationThreshold);
 
     // perform PAA conversion if needed
-    double[] paa = TSUtils.optimizedPaa(normalizedTS, saxPAASize);
+    double[] paa = tp.paa(normalizedTS, saxPAASize);
 
     // Convert the PAA to a string.
-    char[] currentString = TSUtils.ts2String(paa, normalA.getCuts(saxAlphabetSize));
+    char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
 
     // create the datastructure
     for (int i = 0; i < currentString.length; i++) {
@@ -581,7 +585,7 @@ public final class SequiturFactory {
         lengths[0] = originalTimeSeries.length;
       }
       ruleContainer.setRuleIntervals(resultIntervals);
-      ruleContainer.setMeanLength(TSUtils.mean(lengths));
+      ruleContainer.setMeanLength((int) hp.mean(lengths));
       ruleContainer.setMinMaxLength(lengths);
     }
 

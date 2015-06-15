@@ -1,6 +1,6 @@
 package net.seninp.gi.sequitur;
 
-import edu.hawaii.jmotif.logic.RuleInterval;
+import net.seninp.gi.RuleInterval;
 
 /**
  * This is a helper data-structure which represents a single occurrence of a rule at the series.
@@ -77,7 +77,6 @@ public class SAXMotif implements Comparable<SAXMotif> {
         + similarWith.getRuleIndex() + "\tpos: " + similarWith.getPos() + "\n\n";
   }
 
-  @Override
   public int compareTo(SAXMotif o) {
     int thisLength = this.getPos().getEndPos() - this.getPos().getStartPos() + 1;
     int otherLength = o.getPos().getEndPos() - o.getPos().getStartPos() + 1;

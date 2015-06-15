@@ -6,12 +6,11 @@ import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructures.SaxRecord;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.gi.sequitur.SAXRule;
-import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.sax.datastructures.SaxRecord;
 
 public final class RePairFactory {
 

@@ -15,31 +15,35 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.seninp.gi.GrammarRuleRecord;
+import net.seninp.gi.GrammarRules;
+import net.seninp.gi.RuleInterval;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.alphabet.Alphabet;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.util.StackTrace;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import edu.hawaii.jmotif.gi.GrammarRuleRecord;
-import edu.hawaii.jmotif.gi.GrammarRules;
-import edu.hawaii.jmotif.grammarviz.model.SequiturModel;
-import edu.hawaii.jmotif.logic.RuleInterval;
-import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.sax.SAXFactory;
-import edu.hawaii.jmotif.sax.alphabet.Alphabet;
-import edu.hawaii.jmotif.sax.alphabet.NormalAlphabet;
-import edu.hawaii.jmotif.sax.datastructures.SAXRecords;
-import edu.hawaii.jmotif.timeseries.TSUtils;
-import edu.hawaii.jmotif.util.StackTrace;
 
 public class TS2SequiturGrammar {
 
   private final static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
-  private static final double NORMALIZATION_THRESHOLD = 0.5;
+  private static final double NORMALIZATION_THRESHOLD = 0.01;
 
   private static final NumerosityReductionStrategy numerosityReductionStrategy = NumerosityReductionStrategy.EXACT;
 
-  private static final Object CR = "\n";
+  private static final String CR = "\n";
 
+
+  private static TSProcessor tp = new TSProcessor();
+  private static SAXProcessor sp = new SAXProcessor();
+
+  
   /** The data filename. */
   private static String dataFileName;
 
@@ -63,7 +67,7 @@ public class TS2SequiturGrammar {
   private static String outputPrefix;
 
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SequiturModel.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(TS2SequiturGrammar.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
@@ -122,21 +126,21 @@ public class TS2SequiturGrammar {
         double[] subSection = Arrays.copyOfRange(originalTimeSeries, i, i + saxWindowSize);
 
         // Z normalize it
-        if (TSUtils.optimizedStDev(subSection) > NORMALIZATION_THRESHOLD) {
-          subSection = TSUtils.optimizedZNorm(subSection, NORMALIZATION_THRESHOLD);
+        if (tp.stDev(subSection) > NORMALIZATION_THRESHOLD) {
+          subSection = tp.znorm(subSection, NORMALIZATION_THRESHOLD);
         }
 
         // perform PAA conversion if needed
-        double[] paa = TSUtils.optimizedPaa(subSection, saxPaaSize);
+        double[] paa = tp.paa(subSection, saxPaaSize);
 
         // Convert the PAA to a string.
-        char[] currentString = TSUtils.ts2String(paa, normalA.getCuts(saxAlphabetSize));
+        char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
 
         // NumerosityReduction
         if (!previousString.isEmpty()) {
 
           if ((NumerosityReductionStrategy.MINDIST == numerosityReductionStrategy)
-              && (0.0 == SAXFactory.saxMinDist(previousString.toCharArray(), currentString,
+              && (0.0 == sp.saxMinDist(previousString.toCharArray(), currentString,
                   normalA.getDistanceMatrix(saxAlphabetSize)))) {
             continue;
           }
@@ -163,7 +167,7 @@ public class TS2SequiturGrammar {
       Date end = new Date();
 
       System.out.println("Discretized and inferred grammar with Sequitur in  "
-          + SAXFactory.timeToString(fullStart.getTime(), end.getTime()));
+          + SAXProcessor.timeToString(fullStart.getTime(), end.getTime()));
 
       Date start = new Date();
       GrammarRules rules = grammar.toGrammarRulesData();
@@ -174,7 +178,7 @@ public class TS2SequiturGrammar {
 
       System.out.println("Expanded rules and computed intervals  in  "
           + String.valueOf(end.getTime() - start.getTime()) + " ms, "
-          + SAXFactory.timeToString(start.getTime(), end.getTime()));
+          + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
       start = new Date();
 
@@ -196,10 +200,10 @@ public class TS2SequiturGrammar {
       end = new Date();
       System.out.println("Computed rule coverage in  "
           + String.valueOf(end.getTime() - start.getTime()) + " ms, "
-          + SAXFactory.timeToString(start.getTime(), end.getTime()));
+          + SAXProcessor.timeToString(start.getTime(), end.getTime()));
 
       System.out.println("Total runtime  " + String.valueOf(end.getTime() - fullStart.getTime())
-          + " ms, " + SAXFactory.timeToString(fullStart.getTime(), end.getTime()));
+          + " ms, " + SAXProcessor.timeToString(fullStart.getTime(), end.getTime()));
 
       // write down the coverage array
       //

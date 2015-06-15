@@ -1,7 +1,7 @@
 package net.seninp.gi.repair;
 
 import java.util.Arrays;
-import edu.hawaii.jmotif.sax.datastructures.SaxRecord;
+import net.seninp.jmotif.sax.datastructures.SaxRecord;
 
 /**
  * The symbol class.

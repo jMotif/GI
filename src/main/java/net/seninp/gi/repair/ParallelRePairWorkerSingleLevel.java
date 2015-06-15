@@ -47,7 +47,6 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
     this.endIdx = lastWord;
   }
 
-  @Override
   public ParallelGrammarKeeper call() throws Exception {
 
     // get the result instantiated

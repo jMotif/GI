@@ -1,9 +1,8 @@
 package net.seninp.gi;
 
-import edu.hawaii.jmotif.gi.sequitur.SAXSymbol;
-import edu.hawaii.jmotif.gi.sequitur.SequiturFactory;
-import edu.hawaii.jmotif.sax.NumerosityReductionStrategy;
-import edu.hawaii.jmotif.timeseries.TSUtils;
+import net.seninp.gi.sequitur.SequiturFactory;
+import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.TSProcessor;
 
 public class MemoryLeakTester {
 
@@ -24,7 +23,7 @@ public class MemoryLeakTester {
       Thread.currentThread().interrupt();
     }
 
-    double[] ts = TSUtils.readFileColumn(INPUT_FNAME, 0, 0);
+    double[] ts = TSProcessor.readFileColumn(INPUT_FNAME, 0, 0);
     System.out.println("Read " + ts.length + " points from " + INPUT_FNAME);
 
     try {
