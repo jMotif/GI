@@ -39,11 +39,9 @@ public class TS2SequiturGrammar {
 
   private static final String CR = "\n";
 
-
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();
 
-  
   /** The data filename. */
   private static String dataFileName;
 
