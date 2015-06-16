@@ -50,7 +50,7 @@ public class TS2SequiturGrammar {
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.DEBUG;
 
-  private static SAXRecords saxFrequencyData;
+  // private static SAXRecords saxFrequencyData;
 
   private static double[] originalTimeSeries;
 
@@ -159,8 +159,8 @@ public class TS2SequiturGrammar {
 
       }
 
-      String res = saxFrequencyData.getSAXString(" ");
-      res = null;
+      // String res = saxFrequencyData.getSAXString(" ");
+      // res = null;
 
       Date end = new Date();
 
@@ -220,6 +220,7 @@ public class TS2SequiturGrammar {
 
   }
 
+  @SuppressWarnings("unused")
   private static String collectMotifStats(SAXRule grammar) throws IOException {
 
     // start collecting stats

@@ -1,17 +1,24 @@
 package net.seninp.gi;
 
+/**
+ * Implements an interval. Start inclusive, end exclusive.
+ * 
+ * @author psenin
+ * 
+ */
 public class Interval {
 
   private int start;
   private int end;
   private double coverage;
 
-  public Interval(Integer start, Integer end, Double coverage) {
-    this.start = start.intValue();
-    this.end = end.intValue();
-    this.coverage = coverage.doubleValue();
-  }
-
+  /**
+   * Constructor; start inclusive, end exclusive.
+   * 
+   * @param start the interval's start.
+   * @param end the interval's end.
+   * @param coverage the interval's coverage.
+   */
   public Interval(int start, int end, double coverage) {
     this.start = start;
     this.end = end;
@@ -30,22 +37,12 @@ public class Interval {
     this.start = start;
   }
 
-  public void setEnd(int end) {
-    this.end = end;
-  }
-
-  public boolean overlaps(Interval intervalB) {
-    if (null == intervalB) {
-      return false;
-    }
-    if ((this.start <= intervalB.getEnd()) && (this.end >= intervalB.getStart())) {
-      return true;
-    }
-    return false;
-  }
-
   public int getStart() {
     return this.start;
+  }
+
+  public void setEnd(int end) {
+    this.end = end;
   }
 
   public int getEnd() {
@@ -56,45 +53,20 @@ public class Interval {
     return Math.abs(this.end - this.start);
   }
 
-  public Double overlapInPercent(Interval otherInterval) {
-    if (this.overlaps(otherInterval)) {
-      int overlapStart = Math.max(this.start, otherInterval.start);
-      int overlapEnd = Math.min(this.end, otherInterval.end);
-      return Double.valueOf((Integer.valueOf(overlapEnd).doubleValue() - Integer.valueOf(
-          overlapStart).doubleValue())
-          / Integer.valueOf(Math.abs(this.end - this.start)).doubleValue());
+  /**
+   * True if two intervals overlap.
+   * 
+   * @param other interval to compare with.
+   * @return true if there is an overlap.
+   */
+  public boolean overlaps(Interval other) {
+    if (null == other) {
+      return false;
     }
-    return 0D;
-  }
-
-  public int basesInsideOverlap(Interval otherInterval) {
-    int res = 0;
-    if (this.overlaps(otherInterval)) {
-      int overlapStart = Math.max(this.start, otherInterval.start);
-      int overlapEnd = Math.min(this.end, otherInterval.end);
-      res = Math.abs(overlapEnd - overlapStart);
+    if ((this.start < other.getEnd()) && (this.end > other.getStart())) {
+      return true;
     }
-    return res;
+    return false;
   }
 
-  public int basesOutsideOverlap(Interval otherInterval) {
-    int res = 0;
-    if (this.overlaps(otherInterval)) {
-      int overlapStart = Math.max(this.start, otherInterval.start);
-      int overlapEnd = Math.min(this.end, otherInterval.end);
-      res = res + Math.abs(overlapStart - this.start)
-          + Math.abs(overlapStart - otherInterval.start);
-
-      res = res + Math.abs(overlapEnd - this.end) + Math.abs(overlapEnd - otherInterval.end);
-    }
-    return res;
-  }
-
-  public int extendsLeft(Interval other) {
-    return other.start - this.start;
-  }
-
-  public int extendsRight(Interval other) {
-    return this.end - other.end;
-  }
 }
