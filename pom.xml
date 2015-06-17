@@ -6,7 +6,7 @@
   </properties>
 
   <groupId>net.seninp</groupId>
-  <artifactId>GI</artifactId>
+  <artifactId>jmotif-gi</artifactId>
   <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -246,7 +246,7 @@
     <dependency>
       <groupId>net.seninp</groupId>
       <artifactId>jmotif-sax</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

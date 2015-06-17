@@ -21,7 +21,7 @@ public class GIHelper {
    * @param values array of values.
    * @return the mean value.
    */
-  public double mean(int[] values) {
+  public static double mean(int[] values) {
     double sum = 0.0;
     for (int i : values) {
       sum = sum + (double) i;
