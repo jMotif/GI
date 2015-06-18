@@ -585,7 +585,7 @@ public final class SequiturFactory {
         lengths[0] = originalTimeSeries.length;
       }
       ruleContainer.setRuleIntervals(resultIntervals);
-      ruleContainer.setMeanLength((int) hp.mean(lengths));
+      ruleContainer.setMeanLength((int) GIHelper.mean(lengths));
       ruleContainer.setMinMaxLength(lengths);
     }
 
