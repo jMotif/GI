@@ -2,9 +2,9 @@ package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SaxRecord;
