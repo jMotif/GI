@@ -4,7 +4,7 @@ Implements Sequtur (online) and Re-Pair (off-line) grammar induction algorithms 
 
 The library is **[available through Maven Central](http://search.maven.org/#search%7Cga%7C1%7Cjmotif-gi)** and built by TravisCI: [![Build Status](https://travis-ci.org/jMotif/GI.svg?branch=master)](https://travis-ci.org/jMotif/GI).
 
-More information about these algorithms can be found in following papers:
+##### More about implemented algorithms:
 
 [1] Nevill-Manning, C.G. and Witten, I.H., [*"Identifying Hierarchical Structure in Sequences: A linear-time algorithm"*](http://www.jair.org/media/374/live-374-1630-jair.pdf), Journal of Artificial Intelligence Research, 7, 67-82, (1997).
 
