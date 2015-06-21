@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
+import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 import org.junit.Test;
 
@@ -30,6 +30,8 @@ public class TestParallelRePairImplementation {
   @Test
   public void testParallelRePairFullRun() throws Exception {
 
+    // read the data
+    //
     ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
 
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
@@ -55,7 +57,7 @@ public class TestParallelRePairImplementation {
     assertNotNull(res);
     res.expandR0();
     assertTrue(inputString.trim().equalsIgnoreCase(res.r0ExpandedString.trim()));
-
+    
   }
 
   private ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {

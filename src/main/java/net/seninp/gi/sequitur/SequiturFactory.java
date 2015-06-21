@@ -39,7 +39,6 @@ public final class SequiturFactory {
 
   private static TSProcessor tp = new TSProcessor();
   private static SAXProcessor sp = new SAXProcessor();
-  private static GIHelper hp = new GIHelper();
 
   // logging stuff
   //
