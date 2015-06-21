@@ -46,16 +46,15 @@ public class TestRePairDigramUtilization {
     // System.out.println("Input string:\n" + inputString);
     RePairRule grammar = RePairFactory.buildGrammar(saxData);
     RePairRule.expandRules();
+    
+    assertNotNull(grammar);
 
     // rebuild the input string using the grammar
     //
     String recoveredString = RePairRule.recoverString();
 
     // System.out.println("RePair grammar:\n" + RePairRule.toGrammarRules());
-
     // System.out.println("Recovered string:\n" + recoveredString);
-
-    assertNotNull(grammar);
     assertTrue(inputString.trim().equalsIgnoreCase(recoveredString.trim()));
 
     // assert the digram use
@@ -81,7 +80,7 @@ public class TestRePairDigramUtilization {
       else {
         digrams.add(digram);
       }
-      
+
       oldToken = cToken;
     }
 
