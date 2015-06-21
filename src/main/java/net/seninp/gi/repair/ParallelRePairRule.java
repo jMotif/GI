@@ -9,9 +9,9 @@ public class ParallelRePairRule {
 
   protected int ruleNumber;
 
-  protected Symbol first;
+  protected RePairSymbol first;
 
-  protected Symbol second;
+  protected RePairSymbol second;
 
   protected ArrayList<Integer> positions;
 
@@ -33,11 +33,11 @@ public class ParallelRePairRule {
     this.positions = new ArrayList<Integer>();
   }
 
-  public void setFirst(Symbol symbol) {
+  public void setFirst(RePairSymbol symbol) {
     this.first = symbol;
   }
 
-  public void setSecond(Symbol symbol) {
+  public void setSecond(RePairSymbol symbol) {
     this.second = symbol;
   }
 

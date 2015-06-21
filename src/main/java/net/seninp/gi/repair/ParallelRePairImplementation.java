@@ -70,7 +70,7 @@ public class ParallelRePairImplementation {
       }
       // the data structure which keeps R0 strings that have been returned from workers
       final HashMap<Integer, String> chunkStrings = new HashMap<Integer, String>();
-      final HashMap<Integer, ArrayList<Symbol>> chunkWorkStrings = new HashMap<Integer, ArrayList<Symbol>>();
+      final HashMap<Integer, ArrayList<RePairSymbol>> chunkWorkStrings = new HashMap<Integer, ArrayList<RePairSymbol>>();
 
       final ExecutorService executorService = Executors.newFixedThreadPool(threadsNum);
       final CompletionService<ParallelGrammarKeeper> completionService = new ExecutorCompletionService<ParallelGrammarKeeper>(
@@ -294,7 +294,7 @@ public class ParallelRePairImplementation {
         // HashMap<Integer, String> chunkStrings
 
         String mergedString = "";
-        ArrayList<Symbol> mergedWorkString = new ArrayList<Symbol>();
+        ArrayList<RePairSymbol> mergedWorkString = new ArrayList<RePairSymbol>();
         for (int i = 0; i < chunkStrings.size(); i++) {
           mergedString = mergedString.concat(chunkStrings.get(i));
           mergedWorkString.addAll(chunkWorkStrings.get(i));
@@ -360,7 +360,7 @@ public class ParallelRePairImplementation {
         // two data structures
         //
         // 1.0. - the string
-        ArrayList<Symbol> string = new ArrayList<Symbol>();
+        ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
         //
         // 2.0. - the digram frequency table, digram, frequency, and the first occurrence index
         DigramFrequencies digramFrequencies = new DigramFrequencies();
@@ -371,7 +371,7 @@ public class ParallelRePairImplementation {
         // i is the index of a symbol in the input discretized string
         for (int i = 0; i < grammar.workString.size(); i++) {
 
-          Symbol r = grammar.workString.get(i);
+          RePairSymbol r = grammar.workString.get(i);
 
           string.add(r);
 
@@ -486,7 +486,7 @@ public class ParallelRePairImplementation {
     return null;
   }
 
-  private static String stringToDisplay(ArrayList<Symbol> string) {
+  private static String stringToDisplay(ArrayList<RePairSymbol> string) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < string.size(); i++) {
       sb.append(string.get(i).toString()).append(SPACE);
@@ -495,7 +495,7 @@ public class ParallelRePairImplementation {
   }
 
   private static void substituteDigramAt(Integer currentIndex, ParallelRePairGuard guard,
-      ArrayList<Symbol> string, DigramFrequencies digramFrequencies) {
+      ArrayList<RePairSymbol> string, DigramFrequencies digramFrequencies) {
 
     // create entry for two new digram
     //
@@ -609,7 +609,7 @@ public class ParallelRePairImplementation {
 
   }
 
-  private static void removeDigramFrequencyEntry(int index, ArrayList<Symbol> string,
+  private static void removeDigramFrequencyEntry(int index, ArrayList<RePairSymbol> string,
       DigramFrequencies digramFrequencies) {
 
     StringBuffer digramToRemove = new StringBuffer();

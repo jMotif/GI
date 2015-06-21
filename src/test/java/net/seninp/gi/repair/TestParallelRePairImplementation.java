@@ -61,10 +61,10 @@ public class TestParallelRePairImplementation {
   }
 
   private ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {
-    ArrayList<Symbol> string = new ArrayList<Symbol>();
+    ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
     for (int i = 0; i < saxData.size(); i++) {
       SAXRecord r = saxData.getByIndex(saxData.mapStringIndexToTSPosition(i));
-      Symbol symbol = new Symbol(r, i);
+      RePairSymbol symbol = new RePairSymbol(r, i);
       string.add(symbol);
     }
     // System.out.println("Converted str: " + stringToDisplay(string));
@@ -75,7 +75,7 @@ public class TestParallelRePairImplementation {
   }
 
   @SuppressWarnings("unused")
-  private static String stringToDisplay(ArrayList<Symbol> string) {
+  private static String stringToDisplay(ArrayList<RePairSymbol> string) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < string.size(); i++) {
       sb.append(string.get(i).toString()).append(" ");

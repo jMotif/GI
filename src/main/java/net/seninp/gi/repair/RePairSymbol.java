@@ -4,12 +4,12 @@ import java.util.Arrays;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
 
 /**
- * The symbol class.
+ * The symbol -- which essentially is a token.
  * 
  * @author psenin
  * 
  */
-public class Symbol {
+public class RePairSymbol {
 
   /**
    * Payload.
@@ -24,7 +24,7 @@ public class Symbol {
   /**
    * Constructor.
    */
-  public Symbol() {
+  public RePairSymbol() {
     super();
     this.stringPosition = null;
   }
@@ -35,7 +35,7 @@ public class Symbol {
    * @param r the SAX record to use for the symbol construction.
    * @param stringPosition the position of the symbol in the string.
    */
-  public Symbol(SAXRecord r, Integer stringPosition) {
+  public RePairSymbol(SAXRecord r, Integer stringPosition) {
     super();
     this.string = Arrays.copyOf(r.getPayload(), r.getPayload().length);
     this.stringPosition = stringPosition;
@@ -47,7 +47,7 @@ public class Symbol {
    * @param token the payload.
    * @param stringPosition the position of the symbol in the string.
    */
-  public Symbol(String token, int stringPosition) {
+  public RePairSymbol(String token, int stringPosition) {
     super();
     this.string = token.toCharArray();
     this.stringPosition = stringPosition;
@@ -91,6 +91,35 @@ public class Symbol {
 
   public String toString() {
     return String.valueOf(this.string);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + Arrays.hashCode(string);
+    result = prime * result + ((stringPosition == null) ? 0 : stringPosition.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    RePairSymbol other = (RePairSymbol) obj;
+    if (!Arrays.equals(string, other.string))
+      return false;
+    if (stringPosition == null) {
+      if (other.stringPosition != null)
+        return false;
+    }
+    else if (!stringPosition.equals(other.stringPosition))
+      return false;
+    return true;
   }
 
 }

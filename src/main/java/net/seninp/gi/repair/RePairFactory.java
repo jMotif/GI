@@ -51,7 +51,7 @@ public final class RePairFactory {
     // two data structures
     //
     // 1.0. - the string
-    ArrayList<Symbol> string = new ArrayList<Symbol>();
+    ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
     // LinkedList<Symbol> string = new LinkedList<Symbol>();
 
     //
@@ -64,7 +64,7 @@ public final class RePairFactory {
       // i is the index of a symbol in the input discretized string
       // counter is the index in the grammar rule R0 string
       SAXRecord r = saxRecords.getByIndex(saxWordPosition);
-      Symbol symbol = new Symbol(r, stringPositionCounter);
+      RePairSymbol symbol = new RePairSymbol(r, stringPositionCounter);
       // put it into the string
       string.add(symbol);
       // and into the index
@@ -140,7 +140,7 @@ public final class RePairFactory {
           // create the new guard to insert
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
-          r.addPosition(string.get(currentIndex).getStringPosition());
+          r.addOccurrence(string.get(currentIndex).getStringPosition());
           substituteDigramAt(currentIndex, g, string, digramFrequencies);
 
         }
@@ -178,7 +178,7 @@ public final class RePairFactory {
     // two data structures
     //
     // 1.0. - the string
-    ArrayList<Symbol> string = new ArrayList<Symbol>();
+    ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
     // LinkedList<Symbol> string = new LinkedList<Symbol>();
 
     //
@@ -197,7 +197,7 @@ public final class RePairFactory {
 
       String token = st.nextToken();
 
-      Symbol symbol = new Symbol(token, stringPositionCounter);
+      RePairSymbol symbol = new RePairSymbol(token, stringPositionCounter);
       // put it into the string
       string.add(symbol);
       // and into the index
@@ -273,7 +273,7 @@ public final class RePairFactory {
           // create the new guard to insert
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
-          r.addPosition(string.get(currentIndex).getStringPosition());
+          r.addOccurrence(string.get(currentIndex).getStringPosition());
           substituteDigramAt(currentIndex, g, string, digramFrequencies);
 
         }
@@ -303,7 +303,7 @@ public final class RePairFactory {
   }
 
   private static void substituteDigramAt(Integer currentIndex, RePairGuard g,
-      ArrayList<Symbol> string, DigramFrequencies digramFrequencies) {
+      ArrayList<RePairSymbol> string, DigramFrequencies digramFrequencies) {
 
     // create entry for two new digram
     //
@@ -409,7 +409,7 @@ public final class RePairFactory {
 
   }
 
-  private static void removeDigramFrequencyEntry(int index, ArrayList<Symbol> string,
+  private static void removeDigramFrequencyEntry(int index, ArrayList<RePairSymbol> string,
       DigramFrequencies digramFrequencies) {
 
     StringBuffer digramToRemove = new StringBuffer();
@@ -445,7 +445,7 @@ public final class RePairFactory {
 
   }
 
-  private static String stringToDisplay(ArrayList<Symbol> string) {
+  private static String stringToDisplay(ArrayList<RePairSymbol> string) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < string.size(); i++) {
       sb.append(string.get(i).toString()).append(SPACE);

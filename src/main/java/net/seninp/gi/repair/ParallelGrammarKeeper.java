@@ -34,7 +34,7 @@ public class ParallelGrammarKeeper {
 
   // keeps a working string of this grammar
   //
-  protected ArrayList<Symbol> workString;
+  protected ArrayList<RePairSymbol> workString;
 
   /**
    * Constructor.
@@ -144,7 +144,7 @@ public class ParallelGrammarKeeper {
     this.r0ExpandedString = finalString;
   }
 
-  public void setWorkString(ArrayList<Symbol> string) {
+  public void setWorkString(ArrayList<RePairSymbol> string) {
     this.workString = string;
   }
 

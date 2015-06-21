@@ -1,7 +1,7 @@
 package net.seninp.gi.repair;
 
 
-public class ParallelRePairGuard extends Symbol {
+public class ParallelRePairGuard extends RePairSymbol {
 
   protected ParallelRePairRule rule;
 

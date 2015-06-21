@@ -57,7 +57,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
     // two data structures
     //
     // 1.0. - the string
-    ArrayList<Symbol> string = new ArrayList<Symbol>();
+    ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
     //
     // 2.0. - the digram frequency table, digram, frequency, and the first occurrence index
     DigramFrequencies digramFrequencies = new DigramFrequencies();
@@ -68,7 +68,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
     // i is the index of a symbol in the input discretized string
     for (int i = this.startIdx; i < this.endIdx; i++) {
 
-      Symbol r = this.grammar.workString.get(i);
+      RePairSymbol r = this.grammar.workString.get(i);
 
       string.add(r);
 
@@ -168,7 +168,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
   }
 
   private static void substituteDigramAt(Integer currentIndex, ParallelRePairGuard guard,
-      ArrayList<Symbol> string, DigramFrequencies digramFrequencies) {
+      ArrayList<RePairSymbol> string, DigramFrequencies digramFrequencies) {
 
     // create entry for two new digram
     // TRACE
@@ -282,7 +282,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
 
   }
 
-  private static void removeDigramFrequencyEntry(int index, ArrayList<Symbol> string,
+  private static void removeDigramFrequencyEntry(int index, ArrayList<RePairSymbol> string,
       DigramFrequencies digramFrequencies) {
 
     StringBuffer digramToRemove = new StringBuffer();
@@ -326,7 +326,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
 
   }
 
-  private static String stringToDisplay(ArrayList<Symbol> string) {
+  private static String stringToDisplay(ArrayList<RePairSymbol> string) {
     StringBuffer sb = new StringBuffer();
     for (int i = 0; i < string.size(); i++) {
       sb.append(string.get(i).toString()).append(SPACE);
