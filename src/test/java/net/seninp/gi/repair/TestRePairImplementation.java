@@ -10,11 +10,11 @@ import org.junit.Test;
 
 public class TestRePairImplementation {
 
-  private static final String TEST_DATASET_NAME = "test/data/ecg0606_1.csv";
+  private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606_1.csv";
 
-  private static final Integer WINDOW_SIZE = 220;
-  private static final Integer PAA_SIZE = 8;
-  private static final Integer ALPHABET_SIZE = 6;
+  private static final Integer WINDOW_SIZE = 100;
+  private static final Integer PAA_SIZE = 4;
+  private static final Integer ALPHABET_SIZE = 3;
 
   private double[] ts1;
 
@@ -26,37 +26,34 @@ public class TestRePairImplementation {
   @Test
   public void testRePairImplementation() throws Exception {
 
+    // read data
+    //
     ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
 
+    // convert to SAX
+    //
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
-    SAXRecords saxData = ps.process(ts1, 3, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-        NumerosityReductionStrategy.EXACT, 0.05);
-
-    String inputString = saxData.getSAXString(" ");
-    // System.out.println("Input string:\n" + inputString);
+    SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+        NumerosityReductionStrategy.EXACT, 0.01);
     saxData.buildIndex();
 
-    // Date start = new Date();
-
+    // build a grammar
+    //
+    String inputString = saxData.getSAXString(" ");
+    // System.out.println("Input string:\n" + inputString);
     RePairRule grammar = RePairFactory.buildGrammar(saxData);
-    // Date grammarEnd = new Date();
-
     RePairRule.expandRules();
-    // Date expandEnd = new Date();
 
+    // rebuild the input string using the grammar
+    //
     String recoveredString = RePairRule.recoverString();
 
     // System.out.println("RePair grammar:\n" + RePairRule.toGrammarRules());
 
     // System.out.println("Recovered string:\n" + recoveredString);
 
-    // System.out.println("Grammar built in  "
-    // + SAXFactory.timeToString(start.getTime(), grammarEnd.getTime()));
-
-    // System.out.println("Rules exanded in "
-    // + SAXFactory.timeToString(grammarEnd.getTime(), expandEnd.getTime()));
-
     assertNotNull(grammar);
+
     assertTrue(inputString.trim().equalsIgnoreCase(recoveredString.trim()));
 
   }

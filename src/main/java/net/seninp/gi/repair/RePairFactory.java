@@ -1,13 +1,14 @@
 package net.seninp.gi.repair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
+import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.datastructures.SaxRecord;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -44,7 +45,8 @@ public final class RePairFactory {
 
     // get all indexes and sort them
     Set<Integer> index = saxRecords.getIndexes();
-    Integer[] sortedSAXWords = index.toArray(new Integer[index.size()]);
+    Integer[] sortedIndexes = index.toArray(new Integer[index.size()]);
+    Arrays.sort(sortedIndexes);
 
     // two data structures
     //
@@ -58,10 +60,10 @@ public final class RePairFactory {
 
     // build data structures
     int stringPositionCounter = 0;
-    for (Integer saxWordPosition : sortedSAXWords) {
+    for (Integer saxWordPosition : sortedIndexes) {
       // i is the index of a symbol in the input discretized string
       // counter is the index in the grammar rule R0 string
-      SaxRecord r = saxRecords.getByIndex(saxWordPosition);
+      SAXRecord r = saxRecords.getByIndex(saxWordPosition);
       Symbol symbol = new Symbol(r, stringPositionCounter);
       // put it into the string
       string.add(symbol);

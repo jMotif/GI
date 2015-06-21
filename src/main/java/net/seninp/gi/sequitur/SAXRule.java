@@ -245,8 +245,11 @@ public class SAXRule {
       ruleRecord.setRuleYield(countSpaces(rr));
     }
 
+    StringBuilder resultString = new StringBuilder(8192);
+    
     GrammarRuleRecord ruleRecord = arrRuleRecords.get(0);
-    StringBuilder resultString = new StringBuilder(ruleRecord.getRuleString() + 8192);
+    resultString.append(ruleRecord.getRuleString());
+    
     int currentSearchStart = resultString.indexOf("R");
     while (currentSearchStart >= 0) {
       int spaceIdx = resultString.indexOf(" ", currentSearchStart);

@@ -44,6 +44,9 @@ public abstract class SAXSymbol {
   protected static final Hashtable<SAXSymbol, SAXSymbol> theDigrams = new Hashtable<SAXSymbol, SAXSymbol>(
       SAXSymbol.prime);
 
+  public static Hashtable<String, Hashtable<String, Integer>> theSubstituteTable = new Hashtable<String, Hashtable<String, Integer>>(
+      SAXSymbol.prime);
+
   /** The symbol value. */
   protected String value;
 
@@ -62,6 +65,9 @@ public abstract class SAXSymbol {
    * @param right the right symbol.
    */
   public static void join(SAXSymbol left, SAXSymbol right) {
+
+    // System.out.println("      performing the join of " + getPayload(left) + " and "
+    // + getPayload(right));
 
     // check for an OLD digram existence - i.e. left must have a next symbol
     // if .n exists then we are joining TERMINAL symbols within the string, and must clean-up the
@@ -88,6 +94,19 @@ public abstract class SAXSymbol {
    * @param toInsert the new symbol to be inserted.
    */
   public void insertAfter(SAXSymbol toInsert) {
+
+    // if (this.isGuard()) {
+    // System.out.println("    this is Guard of the rule " + ((SAXGuard) this).r.ruleIndex
+    // + " inserting " + toInsert.value + " after ");
+    // }
+    // else if (this.isNonTerminal()) {
+    // System.out.println("    this is non-terminal representing the rule "
+    // + ((SAXNonTerminal) this).r.ruleIndex + " inserting " + toInsert.value + " after ");
+    // }
+    // else {
+    // System.out.println("    this is symbol " + this.value + " inserting " + toInsert.value
+    // + " after ");
+    // }
 
     // call join on this symbol' NEXT - placing it AFTER the new one
     join(toInsert, n);

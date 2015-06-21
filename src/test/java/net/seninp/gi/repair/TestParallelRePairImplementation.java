@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
-import net.seninp.jmotif.sax.datastructures.SaxRecord;
+import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 import org.junit.Test;
 
 public class TestParallelRePairImplementation {
 
-  private static final String TEST_DATASET_NAME = "test/data/ecg0606_1.csv";
+  private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606_1.csv";
 
   private static final Integer WINDOW_SIZE = 120;
-  private static final Integer PAA_SIZE = 8;
-  private static final Integer ALPHABET_SIZE = 6;
+  private static final Integer PAA_SIZE = 4;
+  private static final Integer ALPHABET_SIZE = 3;
 
   private static final int THREADS_NUM = 3;
 
@@ -61,7 +61,7 @@ public class TestParallelRePairImplementation {
   private ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {
     ArrayList<Symbol> string = new ArrayList<Symbol>();
     for (int i = 0; i < saxData.size(); i++) {
-      SaxRecord r = saxData.getByIndex(saxData.mapStringIndexToTSPosition(i));
+      SAXRecord r = saxData.getByIndex(saxData.mapStringIndexToTSPosition(i));
       Symbol symbol = new Symbol(r, i);
       string.add(symbol);
     }
