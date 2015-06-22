@@ -14,10 +14,10 @@ public class TestRepairGrammarInPaper {
   @Test
   public void test() {
 
-    RePairRule r = RePairFactory.buildGrammar(TEST_STRING);
-    assertNotNull("grammar exists", r);
+    RePairGrammar rg = RePairFactory.buildGrammar(TEST_STRING);
+    assertNotNull("grammar exists", rg);
 
-    GrammarRuleRecord r0 = RePairRule.toGrammarRulesData().get(0);
+    GrammarRuleRecord r0 = rg.toGrammarRulesData().get(0);
 
     assertTrue("assert proper grammar", TEST_R0.equals(r0.getRuleString().trim()));
 

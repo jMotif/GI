@@ -2,11 +2,9 @@ package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import org.slf4j.LoggerFactory;
@@ -46,17 +44,12 @@ public final class RePairFactory {
    * 
    * @return the grammar.
    */
-  public static RePairRule buildGrammar(SAXRecords saxRecords) {
+  public static RePairGrammar buildGrammar(SAXRecords saxRecords) {
 
     consoleLogger.debug("Starting RePair with an input string of " + saxRecords.getIndexes().size()
         + " words.");
 
-    // grammar is built using global static variables
-    //
-    RePairRule.numRules = new AtomicInteger(0);
-    RePairRule.theRules = new Hashtable<Integer, RePairRule>();
-
-    RePairRule theRule = new RePairRule();
+    RePairGrammar rg = new RePairGrammar();
 
     // get all indexes and sort them
     Set<Integer> index = saxRecords.getIndexes();
@@ -124,7 +117,7 @@ public final class RePairFactory {
 
       // create new rule
       //
-      RePairRule r = new RePairRule();
+      RePairRule r = new RePairRule(rg);
       r.setFirst(string.get(entry.getFirstOccurrence()));
       r.setSecond(string.get(entry.getFirstOccurrence() + 1));
       r.assignLevel();
@@ -156,7 +149,7 @@ public final class RePairFactory {
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
           r.addOccurrence(string.get(currentIndex).getStringPosition());
-          substituteDigramAt(currentIndex, g, string, digramFrequencies);
+          substituteDigramAt(rg, currentIndex, g, string, digramFrequencies);
 
         }
         currentIndex++;
@@ -175,20 +168,25 @@ public final class RePairFactory {
       consoleLogger.debug("*** iteration finished, top count "
           + digramFrequencies.getTop().getFrequency());
     }
-    RePairRule.setRuleString(stringToDisplay(string));
-    return theRule;
+
+    rg.setR0String(stringToDisplay(string));
+
+    return rg;
   }
 
-  public static RePairRule buildGrammar(String inputString) {
+  /**
+   * Builds a grammar given a string of terminals delimeted by space.
+   * 
+   * @param inputString the input string.
+   * @return the RePair grammar.
+   */
+  public static RePairGrammar buildGrammar(String inputString) {
 
     // consoleLogger.debug("Starting RePair with an input string of " +
     // saxRecords.getIndexes().size()
     // + " words.");
 
-    RePairRule.numRules = new AtomicInteger(0);
-    RePairRule.theRules = new Hashtable<Integer, RePairRule>();
-
-    RePairRule theRule = new RePairRule();
+    RePairGrammar rg = new RePairGrammar();
 
     // two data structures
     //
@@ -257,7 +255,7 @@ public final class RePairFactory {
 
       // create new rule
       //
-      RePairRule r = new RePairRule();
+      RePairRule r = new RePairRule(rg);
       r.setFirst(string.get(entry.getFirstOccurrence()));
       r.setSecond(string.get(entry.getFirstOccurrence() + 1));
       r.assignLevel();
@@ -289,7 +287,7 @@ public final class RePairFactory {
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
           r.addOccurrence(string.get(currentIndex).getStringPosition());
-          substituteDigramAt(currentIndex, g, string, digramFrequencies);
+          substituteDigramAt(rg, currentIndex, g, string, digramFrequencies);
 
         }
         currentIndex++;
@@ -309,15 +307,23 @@ public final class RePairFactory {
           + digramFrequencies.getTop().getFrequency());
     }
 
-    RePairRule.setRuleString(stringToDisplay(string));
+    rg.setR0String(stringToDisplay(string));
 
-    RePairRule.expandRules();
+    rg.expandRules();
 
-    return theRule;
+    return rg;
 
   }
 
-  private static void substituteDigramAt(Integer currentIndex, RePairGuard g,
+  /**
+   * Substitute the digram by a rule.
+   * 
+   * @param currentIndex
+   * @param g
+   * @param string
+   * @param digramFrequencies
+   */
+  private static void substituteDigramAt(RePairGrammar rg, Integer currentIndex, RePairGuard g,
       ArrayList<RePairSymbol> string, DigramFrequencies digramFrequencies) {
 
     // create entry for two new digram
