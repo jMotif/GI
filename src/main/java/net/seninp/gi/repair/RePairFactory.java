@@ -179,16 +179,19 @@ public final class RePairFactory {
     return theRule;
   }
 
-  public static RePairRule buildGrammar(String inputString) {
+  /**
+   * Builds a grammar given a string of terminals delimeted by space.
+   * 
+   * @param inputString the input string.
+   * @return the RePair grammar.
+   */
+  public static RePairGrammar buildGrammar(String inputString) {
 
     // consoleLogger.debug("Starting RePair with an input string of " +
     // saxRecords.getIndexes().size()
     // + " words.");
 
-    RePairRule.numRules = new AtomicInteger(0);
-    RePairRule.theRules = new Hashtable<Integer, RePairRule>();
-
-    RePairRule theRule = new RePairRule();
+    RePairGrammar rg = new RePairGrammar();
 
     // two data structures
     //
@@ -309,15 +312,23 @@ public final class RePairFactory {
           + digramFrequencies.getTop().getFrequency());
     }
 
-    RePairRule.setRuleString(stringToDisplay(string));
+    rg.setRuleString(stringToDisplay(string));
 
-    RePairRule.expandRules();
+    rg.expandRules();
 
-    return theRule;
+    return rg;
 
   }
 
-  private static void substituteDigramAt(Integer currentIndex, RePairGuard g,
+  /**
+   * Substitute the digram by a rule.
+   * 
+   * @param currentIndex
+   * @param g
+   * @param string
+   * @param digramFrequencies
+   */
+  private static void substituteDigramAt(RePairGrammar rg, Integer currentIndex, RePairGuard g,
       ArrayList<RePairSymbol> string, DigramFrequencies digramFrequencies) {
 
     // create entry for two new digram
