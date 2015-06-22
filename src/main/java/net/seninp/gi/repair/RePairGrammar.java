@@ -29,11 +29,18 @@ public class RePairGrammar {
   protected String r0String;
   protected String r0ExpandedString;
 
+  /**
+   * Constructor.
+   */
   public RePairGrammar() {
     super();
-    this.numRules = new AtomicInteger(0);
+    // R0 is reserved
+    this.numRules = new AtomicInteger(1);
     this.theRules = new Hashtable<Integer, RePairRule>();
+  }
 
+  public void setR0String(String str) {
+    this.r0String = str;
   }
 
   /**
@@ -51,9 +58,9 @@ public class RePairGrammar {
   public void expandRules() {
 
     // iterate over all SAX containers
-    for (int currentPositionIndex = 1; currentPositionIndex < this.grammar.theRules.size(); currentPositionIndex++) {
+    for (int currentPositionIndex = 1; currentPositionIndex <= this.theRules.size(); currentPositionIndex++) {
 
-      RePairRule rr = this.grammar.theRules.get(currentPositionIndex);
+      RePairRule rr = this.theRules.get(currentPositionIndex);
       String resultString = rr.toRuleString();
 
       int currentSearchStart = resultString.indexOf(THE_R);
@@ -64,7 +71,7 @@ public class RePairGrammar {
         String ruleName = resultString.substring(currentSearchStart, spaceIdx + 1);
         Integer ruleId = Integer.valueOf(ruleName.substring(1, ruleName.length() - 1));
 
-        RePairRule rule = this.grammar.theRules.get(ruleId);
+        RePairRule rule = this.theRules.get(ruleId);
         if (rule != null) {
           if (rule.expandedRuleString.charAt(rule.expandedRuleString.length() - 1) == ' ') {
             resultString = resultString.replaceAll(ruleName, rule.expandedRuleString);
@@ -83,14 +90,14 @@ public class RePairGrammar {
 
     // and the r0, String is immutable in Java
     //
-    String resultString = this.grammar.r0String;
+    String resultString = this.r0String;
 
     int currentSearchStart = resultString.indexOf(THE_R);
     while (currentSearchStart >= 0) {
       int spaceIdx = resultString.indexOf(SPACE, currentSearchStart);
       String ruleName = resultString.substring(currentSearchStart, spaceIdx + 1);
       Integer ruleId = Integer.valueOf(ruleName.substring(1, ruleName.length() - 1));
-      RePairRule rule = this.grammar.theRules.get(ruleId);
+      RePairRule rule = this.theRules.get(ruleId);
       if (rule != null) {
         if (rule.expandedRuleString.charAt(rule.expandedRuleString.length() - 1) == ' ') {
           resultString = resultString.replaceAll(ruleName, rule.expandedRuleString);
@@ -101,67 +108,39 @@ public class RePairGrammar {
       }
       currentSearchStart = resultString.indexOf("R", spaceIdx);
     }
-    this.grammar.r0ExpandedString = resultString;
+    this.r0ExpandedString = resultString;
 
   }
 
-  public static String toGrammarRules() {
+  /**
+   * Prints out the grammar as text.
+   * 
+   * @return textual representation of the grammar.
+   */
+  public String toGrammarRules() {
     StringBuffer sb = new StringBuffer();
-    System.out.println("R0 -> " + r0String);
-    for (int i = 1; i < theRules.size(); i++) {
-      RePairRule r = theRules.get(i);
+    System.out.println("R0 -> " + this.r0String);
+    for (int i = 1; i < this.theRules.size(); i++) {
+      RePairRule r = this.theRules.get(i);
       sb.append(THE_R).append(r.ruleNumber).append(" -> ").append(r.toRuleString()).append(" : ")
           .append(r.expandedRuleString).append(", ").append(r.occurrences).append("\n");
     }
     return sb.toString();
   }
 
+  /**
+   * Build a grammarviz-"portable" grammar object.
+   * 
+   * @return a grammarviz-"portable" grammar object.
+   */
   public GrammarRules toGrammarRulesData() {
-    private static int mean(ArrayList<RuleInterval> arrayList) {
-      if (null == arrayList || arrayList.isEmpty()) {
-        return 0;
-      }
-      int res = 0;
-      int count = 0;
-      for (RuleInterval ri : arrayList) {
-        res = res + (ri.getEndPos() - ri.getStartPos());
-        count++;
-      }
-      return res / count;
-    }
-
-    private int[] getLengths() {
-      if (this.ruleIntervals.isEmpty()) {
-        return new int[1];
-      }
-      int[] res = new int[this.ruleIntervals.size()];
-      int count = 0;
-      for (RuleInterval ri : this.ruleIntervals) {
-        res[count] = ri.getEndPos() - ri.getStartPos();
-        count++;
-      }
-      return res;
-    }
-
-    private static int countSpaces(String str) {
-      if (null == str) {
-        return -1;
-      }
-      int counter = 0;
-      for (int i = 0; i < str.length(); i++) {
-        if (str.charAt(i) == ' ') {
-          counter++;
-        }
-      }
-      return counter;
-    }
 
     GrammarRules res = new GrammarRules();
 
     GrammarRuleRecord r0 = new GrammarRuleRecord();
     r0.setRuleNumber(0);
-    r0.setRuleString(theRules.get(0).toRuleString());
-    r0.setExpandedRuleString(theRules.get(0).expandedRuleString);
+    r0.setRuleString(this.r0String);
+    r0.setExpandedRuleString(this.r0ExpandedString);
     r0.setOccurrences(new int[1]);
     res.addRule(r0);
 
@@ -173,7 +152,7 @@ public class RePairGrammar {
       rec.setRuleString(rule.toRuleString());
       rec.setExpandedRuleString(rule.expandedRuleString);
       rec.setRuleYield(countSpaces(rule.expandedRuleString));
-      rec.setOccurrences(rule.getPositions());
+      rec.setOccurrences(rule.getOccurrences());
       rec.setRuleIntervals(rule.getRuleIntervals());
       rec.setRuleLevel(rule.getLevel());
       rec.setMinMaxLength(rule.getLengths());
@@ -184,7 +163,7 @@ public class RePairGrammar {
 
     return res;
   }
-  
+
   /**
    * Builds a table of intervals corresponding to the grammar rules.
    * 
@@ -194,8 +173,8 @@ public class RePairGrammar {
    */
   public void buildIntervals(SAXRecords records, double[] originalTimeSeries, int slidingWindowSize) {
     records.buildIndex();
-    for (int currentPositionIndex = 1; currentPositionIndex < this.grammar.theRules.size(); currentPositionIndex++) {
-      RePairRule rr = this.grammar.theRules.get(currentPositionIndex);
+    for (int currentPositionIndex = 1; currentPositionIndex < this.theRules.size(); currentPositionIndex++) {
+      RePairRule rr = this.theRules.get(currentPositionIndex);
       // System.out.println("R" + rr.ruleNumber + ", " + rr.toRuleString() + ", "
       // + rr.expandedRuleString);
       String[] split = rr.expandedRuleString.split(" ");
@@ -213,10 +192,6 @@ public class RePairGrammar {
     }
   }
 
-  public ArrayList<RuleInterval> getRuleIntervals() {
-    return this.ruleIntervals;
-  }
-
   private static int mean(ArrayList<RuleInterval> arrayList) {
     if (null == arrayList || arrayList.isEmpty()) {
       return 0;
@@ -230,19 +205,12 @@ public class RePairGrammar {
     return res / count;
   }
 
-  private int[] getLengths() {
-    if (this.ruleIntervals.isEmpty()) {
-      return new int[1];
-    }
-    int[] res = new int[this.ruleIntervals.size()];
-    int count = 0;
-    for (RuleInterval ri : this.ruleIntervals) {
-      res[count] = ri.getEndPos() - ri.getStartPos();
-      count++;
-    }
-    return res;
-  }
-
+  /**
+   * Count spaces in the string.
+   * 
+   * @param str the string
+   * @return the num of encountered spaces.
+   */
   private static int countSpaces(String str) {
     if (null == str) {
       return -1;
@@ -255,5 +223,4 @@ public class RePairGrammar {
     }
     return counter;
   }
-
 }

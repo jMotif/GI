@@ -2,11 +2,9 @@ package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,7 @@ public final class RePairFactory {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.WARN;
+  private static Level LOGGING_LEVEL = Level.INFO;
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(RePairFactory.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -46,17 +44,12 @@ public final class RePairFactory {
    * 
    * @return the grammar.
    */
-  public static RePairRule buildGrammar(SAXRecords saxRecords) {
+  public static RePairGrammar buildGrammar(SAXRecords saxRecords) {
 
     consoleLogger.debug("Starting RePair with an input string of " + saxRecords.getIndexes().size()
         + " words.");
 
-    // grammar is built using global static variables
-    //
-    RePairRule.numRules = new AtomicInteger(0);
-    RePairRule.theRules = new Hashtable<Integer, RePairRule>();
-
-    RePairRule theRule = new RePairRule();
+    RePairGrammar rg = new RePairGrammar();
 
     // get all indexes and sort them
     Set<Integer> index = saxRecords.getIndexes();
@@ -124,7 +117,7 @@ public final class RePairFactory {
 
       // create new rule
       //
-      RePairRule r = new RePairRule();
+      RePairRule r = new RePairRule(rg);
       r.setFirst(string.get(entry.getFirstOccurrence()));
       r.setSecond(string.get(entry.getFirstOccurrence() + 1));
       r.assignLevel();
@@ -156,7 +149,7 @@ public final class RePairFactory {
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
           r.addOccurrence(string.get(currentIndex).getStringPosition());
-          substituteDigramAt(currentIndex, g, string, digramFrequencies);
+          substituteDigramAt(rg, currentIndex, g, string, digramFrequencies);
 
         }
         currentIndex++;
@@ -175,8 +168,9 @@ public final class RePairFactory {
       consoleLogger.debug("*** iteration finished, top count "
           + digramFrequencies.getTop().getFrequency());
     }
-    RePairRule.setRuleString(stringToDisplay(string));
-    return theRule;
+
+    rg.setR0String(stringToDisplay(string));
+    return rg;
   }
 
   /**
@@ -260,7 +254,7 @@ public final class RePairFactory {
 
       // create new rule
       //
-      RePairRule r = new RePairRule();
+      RePairRule r = new RePairRule(rg);
       r.setFirst(string.get(entry.getFirstOccurrence()));
       r.setSecond(string.get(entry.getFirstOccurrence() + 1));
       r.assignLevel();
@@ -292,7 +286,7 @@ public final class RePairFactory {
           RePairGuard g = new RePairGuard(r);
           g.setStringPosition(string.get(currentIndex).getStringPosition());
           r.addOccurrence(string.get(currentIndex).getStringPosition());
-          substituteDigramAt(currentIndex, g, string, digramFrequencies);
+          substituteDigramAt(rg, currentIndex, g, string, digramFrequencies);
 
         }
         currentIndex++;
@@ -312,7 +306,7 @@ public final class RePairFactory {
           + digramFrequencies.getTop().getFrequency());
     }
 
-    rg.setRuleString(stringToDisplay(string));
+    rg.setR0String(stringToDisplay(string));
 
     rg.expandRules();
 

@@ -101,6 +101,16 @@ public class RePairRule {
   }
 
   /**
+   * Set the expanded rule string.
+   * 
+   * @param str the expanded rule value.
+   * 
+   */
+  protected void setExpandedRule(String str) {
+    this.expandedRuleString = str;
+  }
+
+  /**
    * Return the prefixed with R rule.
    * 
    * @return rule string.
@@ -137,19 +147,6 @@ public class RePairRule {
     return "R" + this.ruleNumber;
   }
 
-  // /**
-  // * Recovers the input string using the grammar.
-  // *
-  // * @return the rebuilt input string.
-  // */
-  // public String recoverString() {
-  // return this.grammar.r0ExpandedString;
-  // }
-
-  // public static void setRuleString(String stringToDisplay) {
-  // r0String = stringToDisplay;
-  // }
-
   public void assignLevel() {
     int lvl = Integer.MAX_VALUE;
     lvl = Math.min(first.getLevel() + 1, lvl);
@@ -161,14 +158,21 @@ public class RePairRule {
     return this.level;
   }
 
-  /**
-   * Set the expanded rule string.
-   * 
-   * @param str the expanded rule value.
-   * 
-   */
-  protected void setExpandedRule(String str) {
-    this.expandedRuleString = str;
+  public ArrayList<RuleInterval> getRuleIntervals() {
+    return this.ruleIntervals;
+  }
+
+  public int[] getLengths() {
+    if (this.ruleIntervals.isEmpty()) {
+      return new int[1];
+    }
+    int[] res = new int[this.ruleIntervals.size()];
+    int count = 0;
+    for (RuleInterval ri : this.ruleIntervals) {
+      res[count] = ri.getEndPos() - ri.getStartPos();
+      count++;
+    }
+    return res;
   }
 
 }
