@@ -24,7 +24,7 @@ public final class RePairFactory {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
+  private static Level LOGGING_LEVEL = Level.WARN;
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(RePairFactory.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -170,6 +170,7 @@ public final class RePairFactory {
     }
 
     rg.setR0String(stringToDisplay(string));
+
     return rg;
   }
 

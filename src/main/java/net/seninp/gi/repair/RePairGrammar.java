@@ -223,4 +223,5 @@ public class RePairGrammar {
     }
     return counter;
   }
+
 }

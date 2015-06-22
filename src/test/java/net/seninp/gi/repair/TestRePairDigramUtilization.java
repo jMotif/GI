@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.HashSet;
 import java.util.StringTokenizer;
+import net.seninp.gi.GrammarRules;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
@@ -44,23 +45,23 @@ public class TestRePairDigramUtilization {
     //
     String inputString = saxData.getSAXString(" ");
     // System.out.println("Input string:\n" + inputString);
-    RePairRule grammar = RePairFactory.buildGrammar(saxData);
-    RePairRule.expandRules();
-    
-    assertNotNull(grammar);
+    RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
+    grammar.expandRules();
 
-    // rebuild the input string using the grammar
-    //
-    String recoveredString = RePairRule.recoverString();
+    GrammarRules rulesData = grammar.toGrammarRulesData();
+
+    assertNotNull(grammar);
+    assertNotNull(rulesData);
+
+    String recoveredInputString = rulesData.get(0).getExpandedRuleString();
 
     // System.out.println("RePair grammar:\n" + RePairRule.toGrammarRules());
     // System.out.println("Recovered string:\n" + recoveredString);
-    assertTrue(inputString.trim().equalsIgnoreCase(recoveredString.trim()));
+    assertTrue(inputString.trim().equalsIgnoreCase(recoveredInputString.trim()));
 
     // assert the digram use
     //
-    RePairRule R0 = grammar.getRules().get(0);
-    String r0String = R0.toRuleString();
+    String r0String = rulesData.get(0).getRuleString();
 
     HashSet<String> digrams = new HashSet<String>();
     String oldToken = "";
