@@ -13,6 +13,12 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
+/**
+ * Implements RePair.
+ * 
+ * @author psenin
+ * 
+ */
 public final class RePairFactory {
 
   private static final char SPACE = ' ';
@@ -33,11 +39,20 @@ public final class RePairFactory {
     assert true;
   }
 
+  /**
+   * Builds a repair grammar given a set of SAX records.
+   * 
+   * @param saxRecords the records to process.
+   * 
+   * @return the grammar.
+   */
   public static RePairRule buildGrammar(SAXRecords saxRecords) {
 
     consoleLogger.debug("Starting RePair with an input string of " + saxRecords.getIndexes().size()
         + " words.");
 
+    // grammar is built using global static variables
+    //
     RePairRule.numRules = new AtomicInteger(0);
     RePairRule.theRules = new Hashtable<Integer, RePairRule>();
 
