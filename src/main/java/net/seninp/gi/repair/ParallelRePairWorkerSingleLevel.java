@@ -98,7 +98,7 @@ public class ParallelRePairWorkerSingleLevel implements Callable<ParallelGrammar
     // consoleLogger.debug("String length " + string.size() + " unique digrams "
     // + digramFrequencies.size());
 
-    res.setR0ExpandedString(stringToDisplay(string));
+//    res.setR0ExpandedString(stringToDisplay(string));
 
     DigramFrequencyEntry entry;
     while ((entry = digramFrequencies.getTop()) != null && entry.getFrequency() >= 2) {

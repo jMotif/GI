@@ -47,6 +47,42 @@ public class ParallelGrammarKeeper {
   }
 
   /**
+   * The id is used to keep track of parallel chunks.
+   * 
+   * @return the current ID.
+   */
+  public long getId() {
+    return this.id;
+  }
+
+  /**
+   * This is used in parallel.
+   * 
+   * @param string the string we work with in parallel.
+   */
+  public void setWorkString(ArrayList<RePairSymbol> string) {
+    this.workString = string;
+  }
+
+  /**
+   * Set the R0 string.
+   * 
+   * @param string the R0 string value.
+   */
+  public void setR0String(String string) {
+    this.r0String = string;
+  }
+
+  /**
+   * Get the expanded R0 out.
+   * 
+   * @return the expanded R0.
+   */
+  public String getR0ExpandedString() {
+    return this.r0ExpandedString;
+  }
+
+  /**
    * This adds an existing rule to this grammar. Useful in merging.
    * 
    * @param r The rule. It is not yet clear how to treat rules, be careful. This will not set the
@@ -66,7 +102,7 @@ public class ParallelGrammarKeeper {
   }
 
   /**
-   * Expands rules.
+   * Expands all rules EXCEPT R0.
    */
   public void expandRules() {
     // iterate over all SAX containers
@@ -103,26 +139,9 @@ public class ParallelGrammarKeeper {
     }
   }
 
-  public void setId(long id) {
-    this.id = id;
-  }
-
-  public long getId() {
-    return this.id;
-  }
-
-  public void setR0String(String string) {
-    this.r0String = string;
-  }
-
-  public void setR0ExpandedString(String string) {
-    this.r0ExpandedString = string;
-  }
-
-  public String getR0ExpandedString() {
-    return this.r0ExpandedString;
-  }
-
+  /**
+   * Expands R0 specifically.
+   */
   public void expandR0() {
     // string is immutable it will get copied
     String finalString = this.r0String;
@@ -148,11 +167,7 @@ public class ParallelGrammarKeeper {
     this.r0ExpandedString = finalString;
   }
 
-  public void setWorkString(ArrayList<RePairSymbol> string) {
-    this.workString = string;
-  }
-
-  public String toGrammarRules() {
+  public String toGrammarString() {
     StringBuffer sb = new StringBuffer();
     System.out.println("R0 -> " + r0String);
     for (int i = 1; i < theRules.size(); i++) {
@@ -161,14 +176,6 @@ public class ParallelGrammarKeeper {
           .append(r.expandedRuleString).append(", ").append(r.positions).append("\n");
     }
     return sb.toString();
-  }
-
-  public Hashtable<Integer, ParallelRePairRule> getRules() {
-    return theRules;
-  }
-
-  public String getR0() {
-    return this.r0ExpandedString;
   }
 
 }

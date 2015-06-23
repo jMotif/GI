@@ -80,13 +80,13 @@ public class EvaluateParallelRePair {
     ParallelRePairImplementation pr = new ParallelRePairImplementation();
     ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
     pg.expandRules();
+    pg.expandR0();
     finish = new Date();
     System.out.println("inferred " + g.getRules().size() + " RePair rules using 2 threads in "
         + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
-    String parallelString = pg.getR0ExpandedString();
-    // Rules().get(0).getExpandedRuleString().trim
+    String parallelString = pg.getR0ExpandedString().trim();
     System.out.println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
-    
+
   }
 
   private static ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {
