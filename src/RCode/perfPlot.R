@@ -17,7 +17,7 @@ scientific_10 <- function(x) {
   parse(text=gsub("e", " %*% 10^", scientific_format()(x)))
 }
 
-p=ggplot(df,aes(x=threads,y=ms)) + 
+p=ggplot(df[df$threads<8,],aes(x=threads,y=ms)) + 
   geom_line(size=2) +  ggtitle("Multi-threaded RePair GI performance") +
   scale_y_continuous(label=scientific_10)
 p = p + theme(axis.text=element_text(size=14),
