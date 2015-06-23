@@ -96,6 +96,7 @@ public class EvaluateParallelRePair {
         String parallelString = pg.getR0ExpandedString().trim();
         System.out
             .println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+        System.gc();
       }
     }
 
