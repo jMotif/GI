@@ -1,14 +1,24 @@
 package net.seninp.gi.repair;
 
-
+/**
+ * The guard used for non-terminals.
+ * 
+ * @author psenin
+ * 
+ */
 public class ParallelRePairGuard extends RePairSymbol {
 
+  /** The payload. */
   protected ParallelRePairRule rule;
 
-  public ParallelRePairGuard(ParallelRePairRule r) {
+  /**
+   * Constructor.
+   * 
+   * @param rule the rule to guard.
+   */
+  public ParallelRePairGuard(ParallelRePairRule rule) {
     super();
-    this.rule = r;
-    r.setGuard(this);
+    this.rule = rule;
   }
 
   public String toString() {

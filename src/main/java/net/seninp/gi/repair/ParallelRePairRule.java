@@ -2,6 +2,11 @@ package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 
+/**
+ * 
+ * @author psenin
+ *
+ */
 public class ParallelRePairRule {
 
   /** This is static - the global rule enumerator counter. */
@@ -72,23 +77,8 @@ public class ParallelRePairRule {
     this.expandedRuleString = trim;
   }
 
-  // public void assignLevel() {
-  // int lvl = Integer.MAX_VALUE;
-  // lvl = Math.min(first.getLevel() + 1, lvl);
-  // lvl = Math.min(second.getLevel() + 1, lvl);
-  // this.level = lvl;
-  // }
-  //
-  // public int getLevel() {
-  // return this.level;
-  // }
-
   public String getRuleName() {
     return "R" + this.ruleNumber;
-  }
-
-  public void setGuard(ParallelRePairGuard parallelRePairGuard) {
-    this.guard = parallelRePairGuard;
   }
 
   public String getExpandedRuleString() {

@@ -57,7 +57,7 @@ public class TestParallelRePairImplementation {
     assertNotNull(res);
     res.expandR0();
     assertTrue(inputString.trim().equalsIgnoreCase(res.r0ExpandedString.trim()));
-    
+
   }
 
   private ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {

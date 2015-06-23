@@ -119,6 +119,10 @@ public class ParallelGrammarKeeper {
     this.r0ExpandedString = string;
   }
 
+  public String getR0ExpandedString() {
+    return this.r0ExpandedString;
+  }
+
   public void expandR0() {
     // string is immutable it will get copied
     String finalString = this.r0String;

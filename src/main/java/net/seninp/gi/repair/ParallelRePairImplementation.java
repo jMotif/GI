@@ -474,7 +474,7 @@ public class ParallelRePairImplementation {
         // + r.expandedRuleString + ", " + r.positions);
         // }
 
-        grammar.expandR0();
+        // grammar.expandR0();
         // System.out.println("Recovered FINAL String:\n" + grammar.r0ExpandedString);
 
         return grammar;
