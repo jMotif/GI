@@ -159,4 +159,12 @@ public class ParallelGrammarKeeper {
     return sb.toString();
   }
 
+  public Hashtable<Integer, ParallelRePairRule> getRules() {
+    return theRules;
+  }
+
+  public String getR0() {
+    return this.r0ExpandedString;
+  }
+
 }

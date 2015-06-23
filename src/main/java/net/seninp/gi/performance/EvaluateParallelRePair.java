@@ -9,13 +9,17 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.GZIPInputStream;
+import net.seninp.gi.repair.ParallelGrammarKeeper;
+import net.seninp.gi.repair.ParallelRePairImplementation;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
+import net.seninp.gi.repair.RePairSymbol;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.alphabet.Alphabet;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructures.SAXRecord;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 
 public class EvaluateParallelRePair {
@@ -69,7 +73,34 @@ public class EvaluateParallelRePair {
     finish = new Date();
     System.out.println("inferred " + g.getRules().size() + " RePair rules in "
         + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
+    String sequentialStr = g.toGrammarRulesData().get(0).getExpandedRuleString().trim();
 
+    start = new Date();
+    ParallelGrammarKeeper grammar = toGrammarKeeper(tokens);
+    ParallelRePairImplementation pr = new ParallelRePairImplementation();
+    ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
+    pg.expandR0();
+    finish = new Date();
+    System.out.println("inferred " + g.getRules().size() + " RePair rules using 2 threads in "
+        + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
+    String parallelString = pg.getR0();
+    // Rules().get(0).getExpandedRuleString().trim
+    System.out.println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+    
+  }
+
+  private static ParallelGrammarKeeper toGrammarKeeper(SAXRecords saxData) {
+    ArrayList<RePairSymbol> string = new ArrayList<RePairSymbol>();
+    for (int i = 0; i < saxData.size(); i++) {
+      SAXRecord r = saxData.getByIndex(saxData.mapStringIndexToTSPosition(i));
+      RePairSymbol symbol = new RePairSymbol(r, i);
+      string.add(symbol);
+    }
+    // System.out.println("Converted str: " + stringToDisplay(string));
+
+    ParallelGrammarKeeper gk = new ParallelGrammarKeeper(0);
+    gk.setWorkString(string);
+    return gk;
   }
 
 }

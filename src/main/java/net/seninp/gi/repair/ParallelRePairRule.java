@@ -91,4 +91,8 @@ public class ParallelRePairRule {
     this.guard = parallelRePairGuard;
   }
 
+  public String getExpandedRuleString() {
+    return this.expandedRuleString;
+  }
+
 }
