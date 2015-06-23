@@ -59,6 +59,7 @@ public class EvaluateParallelRePair {
     start = new Date();
     SAXRecords tokens = sp.ts2saxViaWindow(res, 120, 6, a.getCuts(3),
         NumerosityReductionStrategy.EXACT, 0.01);
+    tokens.buildIndex();
     String str = tokens.getSAXString(" ");
     finish = new Date();
 
@@ -75,17 +76,21 @@ public class EvaluateParallelRePair {
         + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
     String sequentialStr = g.toGrammarRulesData().get(0).getExpandedRuleString().trim();
 
-    start = new Date();
-    ParallelGrammarKeeper grammar = toGrammarKeeper(tokens);
-    ParallelRePairImplementation pr = new ParallelRePairImplementation();
-    ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
-    pg.expandRules();
-    pg.expandR0();
-    finish = new Date();
-    System.out.println("inferred " + g.getRules().size() + " RePair rules using 2 threads in "
-        + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
-    String parallelString = pg.getR0ExpandedString().trim();
-    System.out.println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+    // the parallel repair
+    //
+    for (int threadsNum = 2; threadsNum < 16; threadsNum++) {
+      start = new Date();
+      ParallelGrammarKeeper grammar = toGrammarKeeper(tokens);
+      ParallelRePairImplementation pr = new ParallelRePairImplementation();
+      ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
+      pg.expandRules();
+      pg.expandR0();
+      finish = new Date();
+      System.out.println("inferred " + g.getRules().size() + " RePair rules using 2 threads in "
+          + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
+      String parallelString = pg.getR0ExpandedString().trim();
+      System.out.println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+    }
 
   }
 
