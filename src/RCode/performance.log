@@ -1,0 +1,56 @@
+/home/psenin/save/packages/jdk1.8.0_45/bin/java
+
+java version "1.8.0_45"
+Java(TM) SE Runtime Environment (build 1.8.0_45-b14)
+Java HotSpot(TM) 64-Bit Server VM (build 25.45-b02, mixed mode)
+
+read 536976 points in 297ms
+extracted 129614 tokens in 3s34ms
+# 3034
+inferred 5617 RePair rules in 2m91ms
+# 120091
+inferred 5617 RePair rules using 2 threads in 1m15s639ms
+# 75639
+String equals test:  true
+inferred 5617 RePair rules using 3 threads in 1m3s977ms
+# 63977
+String equals test:  true
+inferred 5617 RePair rules using 4 threads in 57s939ms
+# 57939
+String equals test:  true
+inferred 5617 RePair rules using 5 threads in 1m2s299ms
+# 62299
+String equals test:  true
+inferred 5617 RePair rules using 6 threads in 1m1s361ms
+# 61361
+String equals test:  true
+inferred 5617 RePair rules using 7 threads in 1m5s232ms
+# 65232
+String equals test:  true
+inferred 5617 RePair rules using 8 threads in 1m6s251ms
+# 66251
+String equals test:  true
+inferred 5617 RePair rules using 9 threads in 1m5s602ms
+# 65602
+String equals test:  true
+inferred 5617 RePair rules using 10 threads in 1m12s7ms
+# 72007
+String equals test:  true
+inferred 5617 RePair rules using 11 threads in 59s396ms
+# 59396
+String equals test:  true
+inferred 5617 RePair rules using 12 threads in 1m538ms
+# 60538
+String equals test:  true
+inferred 5617 RePair rules using 13 threads in 1m4s476ms
+# 64476
+String equals test:  true
+inferred 5617 RePair rules using 14 threads in 1m1s670ms
+# 61670
+String equals test:  true
+inferred 5617 RePair rules using 15 threads in 1m4s728ms
+# 64728
+String equals test:  true
+
+Epilog : job finished at mar. juin 23 14:04:57 CEST 2015
+runeval.sh.o6076458 (END) 

@@ -76,23 +76,27 @@ public class EvaluateParallelRePair {
     System.out.println("inferred " + g.getRules().size() + " RePair rules in "
         + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
     String sequentialStr = g.toGrammarRulesData().get(0).getExpandedRuleString().trim();
-    System.out.println("# " + Long.valueOf(finish.getTime() - start.getTime()));
+    System.out.println("# 1 " + Long.valueOf(finish.getTime() - start.getTime()));
 
     // the parallel repair
     //
     for (int threadsNum = 2; threadsNum < 16; threadsNum++) {
-      start = new Date();
-      ParallelGrammarKeeper grammar = toGrammarKeeper(tokens);
-      ParallelRePairImplementation pr = new ParallelRePairImplementation();
-      ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
-      pg.expandRules();
-      pg.expandR0();
-      finish = new Date();
-      System.out.println("inferred " + g.getRules().size() + " RePair rules using " + threadsNum
-          + " threads in " + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
-      System.out.println("# " + Long.valueOf(finish.getTime() - start.getTime()));
-      String parallelString = pg.getR0ExpandedString().trim();
-      System.out.println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+      for (int i = 0; i < 10; i++) {
+        start = new Date();
+        ParallelGrammarKeeper grammar = toGrammarKeeper(tokens);
+        ParallelRePairImplementation pr = new ParallelRePairImplementation();
+        ParallelGrammarKeeper pg = pr.buildGrammar(grammar, 2);
+        pg.expandRules();
+        pg.expandR0();
+        finish = new Date();
+        System.out.println("inferred " + g.getRules().size() + " RePair rules using " + threadsNum
+            + " threads in " + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
+        System.out.println("# " + threadsNum + " "
+            + Long.valueOf(finish.getTime() - start.getTime()));
+        String parallelString = pg.getR0ExpandedString().trim();
+        System.out
+            .println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));
+      }
     }
 
   }
