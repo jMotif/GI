@@ -57,7 +57,7 @@ My own addition allows to retrieve the Sequitur rules as an iterable collection 
 
 3.0 RePair API use
 ------------
-I've implemented RePair from scratch and it uses the same `GrammaRuleRecords / GrammaRuleRecord` data structures to communicate the results. 
+I've implemented RePair from scratch and it uses the same `[GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java)` data structures to communicate the results. 
 
 	String TEST_STRING = "abc abc cba XXX abc abc cba";
 	
