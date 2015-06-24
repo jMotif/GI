@@ -72,7 +72,7 @@ which yields:
 	R2 -> R1 cba   : abc abc cba, [0, 4]
 
 
-Due to the algorithm's design RePair can be parallelized -- which was done too. However, the cost of inter-tread communications is high and my implementation doen't scale well as shown at the plot below.
+Thanks to the algorithm's design RePair can be parallelized -- which was done too. However, the cost of inter-tread communications is high and my implementation doen't scale well as shown at the plot below.
 
 	
 ![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling.png)
