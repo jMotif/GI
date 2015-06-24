@@ -55,8 +55,24 @@ My own addition allows to retrieve the Sequitur rules as an iterable collection 
 	...
   
 
-2.0 Sequitur API use
+3.0 RePair API use
 ------------
+I've implemented RePair from scratch and it uses the same `GrammaRuleRecords / GrammaRuleRecord` data structures to communicate the results. 
+
+	String TEST_STRING = "abc abc cba XXX abc abc cba";
+	
+	RePairGrammar rg = RePairFactory.buildGrammar(TEST_STRING);
+	
+	System.out.println(rg.toGrammarRules());
+	
+which yields: 	
+
+	R0 -> R2 XXX R2 
+	R1 -> abc abc  : abc abc, [0, 4]
+	R2 -> R1 cba  : abc abc cba, [0, 4]
+
+
+Due to the algorithm's design RePair can be parallelized -- which was done too. However, the cost of inter-tread communications is high and my implementation doen't scale well as shown at the plot below.
 
 	
 ![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling.png)
