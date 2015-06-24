@@ -183,7 +183,7 @@ public final class SequiturFactory {
       resRule.last().p.check();
       currentPosition++;
 
-      consoleLogger.trace("Current grammar:\n" + SAXRule.getRules());
+      consoleLogger.trace("Current grammar:\n" + SAXRule.printRules());
     }
 
     return resRule;

@@ -410,7 +410,7 @@ public class SAXRule {
    * 
    * @return the formatted rules string.
    */
-  public static String getRules() {
+  public static String printRules() {
 
     theRules.get(0).getSAXRules();
     expandRules();

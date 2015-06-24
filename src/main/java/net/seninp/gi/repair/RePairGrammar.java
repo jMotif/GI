@@ -120,7 +120,7 @@ public class RePairGrammar {
   public String toGrammarRules() {
     StringBuffer sb = new StringBuffer();
     System.out.println("R0 -> " + this.r0String);
-    for (int i = 1; i < this.theRules.size(); i++) {
+    for (int i = 1; i <= this.theRules.size(); i++) {
       RePairRule r = this.theRules.get(i);
       sb.append(THE_R).append(r.ruleNumber).append(" -> ").append(r.toRuleString()).append(" : ")
           .append(r.expandedRuleString).append(", ").append(r.occurrences).append("\n");
