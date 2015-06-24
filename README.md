@@ -18,41 +18,41 @@ If you are using this implementation for you academic work, please cite our [Gra
 The code is written in Java and I use maven to build it:
 	
 	$ mvn package
-  [INFO] Scanning for projects...
-  [INFO] ------------------------------------------------------------------------
-  [INFO] Building GI
-  [INFO]    task-segment: [package]
-  ...
+	[INFO] Scanning for projects...
+	[INFO] ------------------------------------------------------------------------
+  	[INFO] Building GI
+	[INFO]    task-segment: [package]
+  	...
 	[INFO] Building jar: /media/Stock/git/jmotif-GI.git/target/jmotif-gi-0.3.1-SNAPSHOT.jar
-  [INFO] ------------------------------------------------------------------------
-  [INFO] BUILD SUCCESSFUL
-  [INFO] ------------------------------------------------------------------------
+	[INFO] ------------------------------------------------------------------------
+	[INFO] BUILD SUCCESSFUL
+	[INFO] ------------------------------------------------------------------------
   
 2.0 Sequitur API use
 ------------
 Following the [original Eibe Frank's java implementation](https://github.com/craignm/sequitur) the code is built using global (static) variables:
 
-  String TEST3_STRING = "a b a b c a b c d a b c d e a b c d e f";
+	String TEST3_STRING = "a b a b c a b c d a b c d e a b c d e f";
   
-  SAXRule r = SequiturFactory.runSequitur(TEST3_STRING);
+	SAXRule r = SequiturFactory.runSequitur(TEST3_STRING);
 
-  System.out.println(SAXRule.printRules());
+	System.out.println(SAXRule.printRules());
 
 which prints the following output:
 
-  Number	Name	Level	Occurr.	Usage	Yield	Rule str	Expaneded	Indexes
-  0	R0	0	0	0	0	R1 R2 R3 R4 R4 f 	a b a b c a b c d a b c d e a b c d e f	[]
-  1	R1	1	5	2	2	a b 	a b 	[0, 2, 5, 9, 14]
-  2	R2	1	4	2	3	R1 c 	a b c 	[2, 5, 9, 14]
-  3	R3	1	3	2	4	R2 d 	a b c d 	[5, 9, 14]
-  4	R4	1	2	2	5	R3 e 	a b c d e 	[9, 14]
+	Number	Name	Level	Occurr.	Usage	Yield	Rule str	Expaneded	Indexes
+	0	R0	0	0	0	0	R1 R2 R3 R4 R4 f 	a b a b c a b c d a b c d e a b c d e f	[]
+	1	R1	1	5	2	2	a b 	a b 	[0, 2, 5, 9, 14]
+	2	R2	1	4	2	3	R1 c 	a b c 	[2, 5, 9, 14]
+	3	R3	1	3	2	4	R2 d 	a b c d 	[5, 9, 14]
+	4	R4	1	2	2	5	R3 e 	a b c d e 	[9, 14]
  
 My own addition allows to retrieve the Sequitur rules as an iterable collection of [GrammaRuleRecords](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java) and to map them back to the discretized time series:
 
-  GrammarRules rules = r.toGrammarRulesData();
-  GrammarRuleRecord rec = rules.get(4);
-  ArrayList<RuleInterval> intervals = rec.getRuleIntervals();
-  ...
+	GrammarRules rules = r.toGrammarRulesData();
+	GrammarRuleRecord rec = rules.get(4);
+	ArrayList<RuleInterval> intervals = rec.getRuleIntervals();
+	...
   
 
 2.0 Sequitur API use
