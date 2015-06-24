@@ -76,3 +76,6 @@ Thanks to the algorithm's design RePair can be parallelized -- which was done to
 
 	
 ![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling.png)
+
+## Made with Aloha!
+![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
