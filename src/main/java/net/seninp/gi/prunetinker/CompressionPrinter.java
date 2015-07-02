@@ -61,7 +61,7 @@ public class CompressionPrinter {
         if (PAA_SIZE > WINDOW_SIZE) {
           continue;
         }
-        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 10; ALPHABET_SIZE++) {
+        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 13; ALPHABET_SIZE++) {
 
           StringBuffer logStr = new StringBuffer();
           logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
