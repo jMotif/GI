@@ -1,5 +1,8 @@
 package net.seninp.gi.prunetinker;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -12,16 +15,32 @@ import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
+import org.slf4j.LoggerFactory;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 
 public class CompressionPrinter {
 
   private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606_1.csv";
 
-  private static final Integer WINDOW_SIZE = 100;
-  private static final Integer PAA_SIZE = 3;
-  private static final Integer ALPHABET_SIZE = 3;
+  private static final String COMMA = ",";
+
+  private static final String CR = "\n";
+
+  private static Integer WINDOW_SIZE = 83;
+  private static Integer PAA_SIZE = 29;
+  private static Integer ALPHABET_SIZE = 8;
 
   private static double[] ts1;
+
+  // logging stuff
+  //
+  private static Logger consoleLogger;
+  private static Level LOGGING_LEVEL = Level.INFO;
+  static {
+    consoleLogger = (Logger) LoggerFactory.getLogger(CompressionPrinter.class);
+    consoleLogger.setLevel(LOGGING_LEVEL);
+  }
 
   public static void main(String[] args) throws Exception {
 
@@ -29,34 +48,78 @@ public class CompressionPrinter {
     //
     ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
 
-    // convert to SAX
-    //
-    ParallelSAXImplementation ps = new ParallelSAXImplementation();
-    SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-        NumerosityReductionStrategy.EXACT, 0.01);
-    saxData.buildIndex();
+    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
+    bw.write("window,paa,alphabet,rules_num\n");
 
-    // build a grammar
-    //
-    String inputString = saxData.getSAXString(" ");
-    // System.out.println("Input string:\n" + inputString);
+    for (WINDOW_SIZE = 30; WINDOW_SIZE < 300; WINDOW_SIZE += 10) {
+      for (PAA_SIZE = 10; PAA_SIZE < 30; PAA_SIZE += 2) {
+        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 10; ALPHABET_SIZE++) {
 
-    SAXRule r = SequiturFactory.runSequitur(inputString);
-    GrammarRules rules = r.toGrammarRulesData();
-    SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
+          StringBuffer logStr = new StringBuffer();
+          logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
+              .append(ALPHABET_SIZE).append(COMMA);
+          // convert to SAX
+          //
+          ParallelSAXImplementation ps = new ParallelSAXImplementation();
+          SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+              NumerosityReductionStrategy.EXACT, 0.01);
+          saxData.buildIndex();
 
-    GrammarRules prunedRules = performPruning(rules);
+          // build a grammar
+          //
+          String inputString = saxData.getSAXString(" ");
+          // System.out.println("Input string:\n" + inputString);
+
+          SAXRule r = SequiturFactory.runSequitur(inputString);
+          GrammarRules rules = r.toGrammarRulesData();
+          SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
+
+          Integer size = performCompression(rules);
+
+          logStr.append(size).append(CR);
+
+          bw.write(logStr.toString());
+          consoleLogger.info(logStr.toString().replace(CR, ""));
+
+          // GrammarRules prunedRules = performPruning(rules);
+          //
+          // consoleLogger.info(logStr.toString());
+          //
+          // if (null == prunedRules) {
+          // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
+          // }
+          // else {
+          // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
+          // for (GrammarRuleRecord rule : prunedRules) {
+          // prunedRuleNums.add(rule.getRuleNumber());
+          // }
+          // // logStr
+          // // .append(Arrays.toString(prunedRuleNums.toArray(new
+          // Integer[prunedRuleNums.size()])));
+          // logStr.append(prunedRuleNums.size());
+          // consoleLogger.info(logStr.toString());
+          // }
+          // bw.write(logStr.toString() + CR);
+        }
+      }
+    }
+    bw.close();
 
   }
 
-  private static GrammarRules performPruning(GrammarRules grammarRules) {
+  private static Integer performCompression(GrammarRules grammarRules) {
+
     // this is where we keep range coverage
     boolean[] range = new boolean[ts1.length];
+
+    // goes false when some ranges not covered
+    boolean isCovered = true;
+
     // these are rules used in current cover
     HashSet<Integer> usedRules = new HashSet<Integer>();
     usedRules.add(0);
     // do until all ranges are covered
-    while (hasEmptyRanges(range)) {
+    while (hasEmptyRanges(range, false)) {
 
       // iterate over rules set finding new optimal cover
       //
@@ -75,6 +138,10 @@ public class CompressionPrinter {
           }
         }
       }
+      if (bestDelta < 0) {
+        isCovered = false;
+        break;
+      }
 
       if (0.0 == bestDelta) {
         break;
@@ -86,17 +153,94 @@ public class CompressionPrinter {
       range = updateRanges(range, bestRule.getRuleIntervals());
     }
 
-    System.out.println("Best cover "
-        + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
+    int res = 0;
 
-    GrammarRules prunedRules = new GrammarRules();
-    prunedRules.addRule(grammarRules.get(0));
+    if (isCovered) {
 
-    for (Integer rId : usedRules) {
-      prunedRules.addRule(grammarRules.get(rId));
+      for (Integer rId : usedRules) {
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+    }
+    else {
+      for (Integer rId : usedRules) {
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+      res = res + countUncoveredPoints(range) * 3;
     }
 
-    return prunedRules;
+    return res;
+
+  }
+
+  private static GrammarRules performPruning(GrammarRules grammarRules) {
+
+    // this is where we keep range coverage
+    boolean[] range = new boolean[ts1.length];
+
+    // goes false when some ranges not covered
+    boolean isCovered = true;
+
+    // these are rules used in current cover
+    HashSet<Integer> usedRules = new HashSet<Integer>();
+    usedRules.add(0);
+    // do until all ranges are covered
+    while (hasEmptyRanges(range, false)) {
+
+      // iterate over rules set finding new optimal cover
+      //
+      GrammarRuleRecord bestRule = null;
+      double bestDelta = Integer.MIN_VALUE;
+      for (GrammarRuleRecord rule : grammarRules) {
+        int id = rule.getRuleNumber();
+        if (usedRules.contains(id)) {
+          continue;
+        }
+        else {
+          double delta = getCoverDelta(range, rule);
+          if (delta > bestDelta) {
+            bestDelta = delta;
+            bestRule = rule;
+          }
+        }
+      }
+      if (bestDelta < 0) {
+        // can't be compressed anymore
+        //
+        isCovered = false;
+        break;
+      }
+
+      if (0.0 == bestDelta) {
+        break;
+      }
+
+      // keep track of cover
+      //
+      usedRules.add(bestRule.getRuleNumber());
+      range = updateRanges(range, bestRule.getRuleIntervals());
+    }
+
+    if (isCovered) {
+      consoleLogger.debug("# Best cover "
+          + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
+
+      GrammarRules prunedRules = new GrammarRules();
+      prunedRules.addRule(grammarRules.get(0));
+
+      for (Integer rId : usedRules) {
+        prunedRules.addRule(grammarRules.get(rId));
+      }
+
+      return prunedRules;
+    }
+    else {
+      return null;
+    }
 
   }
 
@@ -146,7 +290,7 @@ public class CompressionPrinter {
         / (double) (rule.getExpandedRuleString().length() + rule.getRuleIntervals().size());
   }
 
-  private static boolean hasEmptyRanges(boolean[] range) {
+  private static boolean hasEmptyRanges(boolean[] range, boolean verbose) {
     StringBuffer sb = new StringBuffer();
     boolean inUncovered = false;
     int start = 0;
@@ -163,7 +307,10 @@ public class CompressionPrinter {
     if (inUncovered) {
       sb.append("[" + start + ", " + range.length + "], ");
     }
-    System.out.println(sb);
+    consoleLogger.debug(sb.toString());
+    if (verbose) {
+      System.out.println(sb.toString());
+    }
     for (boolean p : range) {
       if (false == p) {
         return true;
@@ -172,4 +319,13 @@ public class CompressionPrinter {
     return false;
   }
 
+  private static int countUncoveredPoints(boolean[] range) {
+    int res = range.length;
+    for (boolean p : range) {
+      if (p) {
+        res--;
+      }
+    }
+    return res;
+  }
 }
