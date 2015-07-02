@@ -82,7 +82,7 @@ public class CompressionPrinter {
           GrammarRules rules = r.toGrammarRulesData();
           SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
 
-          Integer size = performCompression(rules);
+          Integer size = performCompression(rules, saxData, WINDOW_SIZE);
 
           double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
               ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
@@ -118,7 +118,8 @@ public class CompressionPrinter {
 
   }
 
-  private static Integer performCompression(GrammarRules grammarRules) {
+  private static Integer performCompression(GrammarRules grammarRules, SAXRecords saxData,
+      Integer winSize) {
 
     // this is where we keep range coverage
     boolean[] range = new boolean[ts1.length];
@@ -176,12 +177,19 @@ public class CompressionPrinter {
 
     }
     else {
+
       for (Integer rId : usedRules) {
         GrammarRuleRecord r = grammarRules.get(rId);
         res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
             + r.getOccurrences().size() * 2;
       }
-      res = res + countUncoveredPoints(range) * 3;
+
+      for (int i = 0; i < range.length; i++) {
+        if (false == range[i] && (null != saxData.getByIndex(i))) {
+          res = res + winSize + 2;
+        }
+      }
+
     }
 
     return res;
