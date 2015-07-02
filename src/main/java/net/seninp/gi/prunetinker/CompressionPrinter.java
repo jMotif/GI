@@ -12,6 +12,7 @@ import net.seninp.gi.RuleInterval;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
@@ -30,8 +31,12 @@ public class CompressionPrinter {
   private static Integer WINDOW_SIZE = 83;
   private static Integer PAA_SIZE = 29;
   private static Integer ALPHABET_SIZE = 8;
+  private static final double NORMALIZATION_THRESHOLD = 0.01;
+  private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.EXACT;
 
   private static double[] ts1;
+
+  private static SAXProcessor sp = new SAXProcessor();
 
   // logging stuff
   //
@@ -49,10 +54,13 @@ public class CompressionPrinter {
     ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
 
     BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
-    bw.write("window,paa,alphabet,rules_num\n");
+    bw.write("window,paa,alphabet,rules_num,approx_dist\n");
 
-    for (WINDOW_SIZE = 30; WINDOW_SIZE < 300; WINDOW_SIZE += 10) {
-      for (PAA_SIZE = 10; PAA_SIZE < 30; PAA_SIZE += 2) {
+    for (WINDOW_SIZE = 30; WINDOW_SIZE < 600; WINDOW_SIZE += 10) {
+      for (PAA_SIZE = 2; PAA_SIZE < 50; PAA_SIZE += 2) {
+        if (PAA_SIZE > WINDOW_SIZE) {
+          continue;
+        }
         for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 10; ALPHABET_SIZE++) {
 
           StringBuffer logStr = new StringBuffer();
@@ -61,8 +69,8 @@ public class CompressionPrinter {
           // convert to SAX
           //
           ParallelSAXImplementation ps = new ParallelSAXImplementation();
-          SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-              NumerosityReductionStrategy.EXACT, 0.01);
+          SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE, STRATEGY,
+              NORMALIZATION_THRESHOLD);
           saxData.buildIndex();
 
           // build a grammar
@@ -76,7 +84,10 @@ public class CompressionPrinter {
 
           Integer size = performCompression(rules);
 
-          logStr.append(size).append(CR);
+          double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
+              ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
+
+          logStr.append(size).append(COMMA).append(approximationDistance).append(CR);
 
           bw.write(logStr.toString());
           consoleLogger.info(logStr.toString().replace(CR, ""));
