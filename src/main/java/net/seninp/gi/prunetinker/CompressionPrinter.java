@@ -43,7 +43,8 @@ public class CompressionPrinter {
 
     SAXRule r = SequiturFactory.runSequitur(inputString);
     GrammarRules rules = r.toGrammarRulesData();
-    
+    SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
+
     GrammarRules prunedRules = performPruning(rules);
 
   }
