@@ -92,28 +92,10 @@ public class CompressionPrinter {
           bw.write(logStr.toString());
           consoleLogger.info(logStr.toString().replace(CR, ""));
 
-          // GrammarRules prunedRules = performPruning(rules);
-          //
-          // consoleLogger.info(logStr.toString());
-          //
-          // if (null == prunedRules) {
-          // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
-          // }
-          // else {
-          // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
-          // for (GrammarRuleRecord rule : prunedRules) {
-          // prunedRuleNums.add(rule.getRuleNumber());
-          // }
-          // // logStr
-          // // .append(Arrays.toString(prunedRuleNums.toArray(new
-          // Integer[prunedRuleNums.size()])));
-          // logStr.append(prunedRuleNums.size());
-          // consoleLogger.info(logStr.toString());
-          // }
-          // bw.write(logStr.toString() + CR);
         }
       }
     }
+
     bw.close();
 
   }
@@ -165,73 +147,13 @@ public class CompressionPrinter {
       range = updateRanges(range, bestRule.getRuleIntervals());
     }
 
-    return SequiturFactory.computeGrammarSize(usedRules);
-  }
-
-  private static GrammarRules performPruning(GrammarRules grammarRules) {
-
-    // this is where we keep range coverage
-    boolean[] range = new boolean[ts1.length];
-
-    // goes false when some ranges not covered
-    boolean isCovered = true;
-
-    // these are rules used in current cover
-    HashSet<Integer> usedRules = new HashSet<Integer>();
-    usedRules.add(0);
-    // do until all ranges are covered
-    while (hasEmptyRanges(range, false)) {
-
-      // iterate over rules set finding new optimal cover
-      //
-      GrammarRuleRecord bestRule = null;
-      double bestDelta = Integer.MIN_VALUE;
-      for (GrammarRuleRecord rule : grammarRules) {
-        int id = rule.getRuleNumber();
-        if (usedRules.contains(id)) {
-          continue;
-        }
-        else {
-          double delta = getCoverDelta(range, rule);
-          if (delta > bestDelta) {
-            bestDelta = delta;
-            bestRule = rule;
-          }
-        }
-      }
-      if (bestDelta < 0) {
-        // can't be compressed anymore
-        //
-        isCovered = false;
-        break;
-      }
-
-      if (0.0 == bestDelta) {
-        break;
-      }
-
-      // keep track of cover
-      //
-      usedRules.add(bestRule.getRuleNumber());
-      range = updateRanges(range, bestRule.getRuleIntervals());
-    }
+    int res = 0;
 
     if (isCovered) {
-      consoleLogger.debug("# Best cover "
-          + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
-
-      GrammarRules prunedRules = new GrammarRules();
-      prunedRules.addRule(grammarRules.get(0));
-
-      for (Integer rId : usedRules) {
-        prunedRules.addRule(grammarRules.get(rId));
-      }
-
-      return prunedRules;
+      res = SequiturFactory.computeGrammarSize(usedRules);
     }
-    else {
-      return null;
-    }
+
+    return res;
 
   }
 
@@ -310,13 +232,4 @@ public class CompressionPrinter {
     return false;
   }
 
-  private static int countUncoveredPoints(boolean[] range) {
-    int res = range.length;
-    for (boolean p : range) {
-      if (p) {
-        res--;
-      }
-    }
-    return res;
-  }
 }

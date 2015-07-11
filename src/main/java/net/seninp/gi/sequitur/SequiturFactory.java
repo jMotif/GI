@@ -614,9 +614,37 @@ public final class SequiturFactory {
    * 
    * @return the grammar size.
    */
-  public static Integer computeGrammarSize(HashSet<Integer> rulesSet) {
-    // TODO Auto-generated method stub
-    return null;
+  public static int computeGrammarSize(HashSet<Integer> rulesSet) {
+
+    int res = 0;
+
+    if (isCovered) {
+
+      for (Integer rId : usedRules) {
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+    }
+    else {
+
+      for (Integer rId : usedRules) {
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+      for (int i = 0; i < range.length; i++) {
+        if (false == range[i] && (null != saxData.getByIndex(i))) {
+          res = res + winSize + 2;
+        }
+      }
+
+    }
+
+    return res;
+
   }
 
 }
