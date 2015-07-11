@@ -1,7 +1,9 @@
 package net.seninp.gi.repair;
 
-import java.util.ArrayList;
+import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import net.seninp.gi.RuleInterval;
+
+import java.util.ArrayList;
 
 /**
  * The grammar rule.
@@ -35,7 +37,7 @@ public class RePairRule {
   protected int level;
 
   /** Occurrences. */
-  protected ArrayList<Integer> occurrences;
+  protected IntHashSet occurrences;
 
   /** Which TS interval covered. */
   protected ArrayList<RuleInterval> ruleIntervals;
@@ -46,7 +48,7 @@ public class RePairRule {
   /**
    * Constructor, assigns a rule ID using the global counter.
    */
-  public RePairRule(RePairGrammar rg) {
+  public RePairRule(RePairGrammar rg, RePairSymbol first, RePairSymbol second) {
 
     this.grammar = rg;
 
@@ -56,8 +58,10 @@ public class RePairRule {
 
     rg.theRules.put(this.ruleNumber, this);
 
-    this.occurrences = new ArrayList<Integer>();
+    this.occurrences = new IntHashSet();
     this.ruleIntervals = new ArrayList<RuleInterval>();
+
+    this.first = first; this.second = second;
 
   }
 
@@ -125,9 +129,9 @@ public class RePairRule {
    * @param value the new value.
    */
   public void addOccurrence(int value) {
-    if (!this.occurrences.contains(value)) {
-      this.occurrences.add(value);
-    }
+
+    this.occurrences.add(value);
+
   }
 
   /**
@@ -135,12 +139,13 @@ public class RePairRule {
    * 
    * @return all rule's occurrences.
    */
-  public int[] getOccurrences() {
-    int[] res = new int[this.occurrences.size()];
-    for (int i = 0; i < this.occurrences.size(); i++) {
-      res[i] = this.occurrences.get(i);
-    }
-    return res;
+  public IntHashSet getOccurrences() {
+    return occurrences;
+//    int[] res = new int[this.occurrences.size()];
+//    for (int i = 0; i < this.occurrences.size(); i++) {
+//      res[i] = this.occurrences.get(i);
+//    }
+//    return res;
   }
 
   public String toString() {

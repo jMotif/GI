@@ -1,14 +1,8 @@
 package net.seninp.gi.sequitur;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import com.gs.collections.api.iterator.MutableIntIterator;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
@@ -19,8 +13,16 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Sort of a stand-alone factory to digesting strings with Sequitur.
@@ -157,7 +159,7 @@ public final class SequiturFactory {
               normalA.getDistanceMatrix(alphabetSize));
           if (dist < threshold) {
             merged = true;
-            SAXSymbol.theSubstituteTable.get(str).put(token.substring(0), currentPosition);
+            SAXSymbol.theSubstituteTable.get(str).put(token, currentPosition);
             token = str;
           }
         }
@@ -214,13 +216,16 @@ public final class SequiturFactory {
     // array of all words of this expanded rule
     String[] expandedRuleSplit = ruleContainer.getExpandedRuleString().trim().split(" ");
 
-    for (Integer currentIndex : ruleContainer.getOccurrences()) {
+    MutableIntIterator ii = ruleContainer.getOccurrences().intIterator();
+    while (ii.hasNext()) {
+
+      int currentIndex = ii.next();
 
       // System.out.println("Index: " + currentIndex);
       String extractedStr = "";
       int[] extractedPositions = new int[expandedRuleSplit.length];
       for (int i = 0; i < expandedRuleSplit.length; i++) {
-        consoleLogger.trace("currentIndex " + currentIndex + ", i: " + i);
+        //consoleLogger.trace("currentIndex " + currentIndex + ", i: " + i);
         extractedStr = extractedStr.concat(" ").concat(
             String.valueOf(saxFrequencyData.getByIndex(saxWordsIndexes.get(currentIndex + i))
                 .getPayload()));
@@ -543,7 +548,10 @@ public final class SequiturFactory {
       // iterate over all occurrences of this rule
       // the currentIndex here is the position of the rule in the input string
       //
-      for (Integer currentIndex : ruleContainer.getOccurrences()) {
+      MutableIntIterator ii = ruleContainer.getOccurrences().intIterator();
+      while (ii.hasNext()) {
+
+        int currentIndex = ii.next();
 
         // System.out.println("Index: " + currentIndex);
         // String extractedStr = "";

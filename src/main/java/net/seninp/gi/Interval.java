@@ -8,9 +8,9 @@ package net.seninp.gi;
  */
 public class Interval {
 
-  private int start;
-  private int end;
-  private double coverage;
+  final private int start;
+  final private int end;
+  final private double coverage;
 
   /**
    * Constructor; start inclusive, end exclusive.
@@ -29,21 +29,22 @@ public class Interval {
     return coverage;
   }
 
-  public void setCoverage(double coverage) {
+  /*public void setCoverage(double coverage) {
     this.coverage = coverage;
   }
 
   public void setStart(int start) {
     this.start = start;
   }
+  public void setEnd(int end) {
+    this.end = end;
+  }
 
+*/
   public int getStart() {
     return this.start;
   }
 
-  public void setEnd(int end) {
-    this.end = end;
-  }
 
   public int getEnd() {
     return this.end;

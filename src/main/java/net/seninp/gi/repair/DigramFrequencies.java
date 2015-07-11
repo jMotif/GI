@@ -1,10 +1,11 @@
 package net.seninp.gi.repair;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import com.gs.collections.impl.list.mutable.FastList;
+import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
+
 import java.util.HashMap;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Implements the digram frequency queue.
@@ -15,18 +16,18 @@ import java.util.TreeMap;
 public class DigramFrequencies {
 
   /** A map of strings to digram frequencies. */
-  private HashMap<String, DigramFrequencyEntry> digramsToEntries;
+  private final LinkedHashMap<String, DigramFrequencyEntry> digramsToEntries;
 
   /** A map of buckets, each bucket is the frequency number pointing on the collection of entries. */
-  private SortedMap<Integer, ArrayList<DigramFrequencyEntry>> bucketsToEntries;
+  private final IntObjectHashMap<List<DigramFrequencyEntry>> bucketsToEntries;
 
   /**
    * Constructor. Inits data structures.
    */
   public DigramFrequencies() {
     super();
-    digramsToEntries = new HashMap<String, DigramFrequencyEntry>();
-    bucketsToEntries = new TreeMap<Integer, ArrayList<DigramFrequencyEntry>>();
+    digramsToEntries = new LinkedHashMap();
+    bucketsToEntries = new IntObjectHashMap();
   }
 
   /**
@@ -37,9 +38,9 @@ public class DigramFrequencies {
   public void put(DigramFrequencyEntry digramFrequencyEntry) {
     this.digramsToEntries.put(digramFrequencyEntry.getDigram(), digramFrequencyEntry);
     Integer freq = digramFrequencyEntry.getFrequency();
-    ArrayList<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(freq);
+    List<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(freq);
     if (null == bucket) {
-      bucket = new ArrayList<DigramFrequencyEntry>();
+      bucket = new FastList<DigramFrequencyEntry>();
       this.bucketsToEntries.put(freq, bucket);
     }
     bucket.add(digramFrequencyEntry);
@@ -64,20 +65,20 @@ public class DigramFrequencies {
   public void incrementFrequency(DigramFrequencyEntry entry, int increment) {
 
     // findout the old bucket and remove this entry
-    ArrayList<DigramFrequencyEntry> oldBucket = this.bucketsToEntries.get(entry.getFrequency());
+    List<DigramFrequencyEntry> oldBucket = this.bucketsToEntries.get(entry.getFrequency());
     oldBucket.remove(entry);
     if (oldBucket.isEmpty()) {
       this.bucketsToEntries.remove(entry.getFrequency());
     }
 
     // get the increment added
-    int newFreq = entry.getFrequency() + increment;
-    entry.setFrequency(newFreq);
+
+    int newFreq = entry.add(increment);
 
     // put into the new bucket
-    ArrayList<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(newFreq);
+    List<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(newFreq);
     if (null == bucket) {
-      bucket = new ArrayList<DigramFrequencyEntry>();
+      bucket = new FastList(1);
       this.bucketsToEntries.put(newFreq, bucket);
     }
     bucket.add(entry);
@@ -97,7 +98,8 @@ public class DigramFrequencies {
     }
     else {
       // by the default there are no empty buckets
-      Integer maxBucket = Collections.max(bucketsToEntries.keySet());
+      int maxBucket = bucketsToEntries.keysView().max();
+      //Integer maxBucket = Collections.max(bucketsToEntries.keySet());
       return bucketsToEntries.get(maxBucket).get(0);
     }
   }
@@ -116,7 +118,7 @@ public class DigramFrequencies {
     else {
       // get its frequency and the corresponding bucket
       int freq = entry.getFrequency();
-      ArrayList<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(freq);
+      List<DigramFrequencyEntry> bucket = this.bucketsToEntries.get(freq);
       if (!bucket.remove(entry)) {
         throw (new RuntimeException("There was an error!"));
       }

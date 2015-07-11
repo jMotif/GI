@@ -19,14 +19,12 @@ package net.seninp.gi.sequitur;
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.Vector;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The Rule. Adaption of Eibe Frank code for JMotif API, see {@link sequitur.info} for original
@@ -77,7 +75,7 @@ public class SAXRule {
    * This keeps rule indexes - once rule created or used, its placement position is extracted from
    * the TerminalSymbol position and stored here.
    */
-  protected Set<Integer> indexes = new TreeSet<Integer>();
+  protected IntHashSet indexes = new IntHashSet();
 
   /**
    * Constructor.
@@ -218,15 +216,19 @@ public class SAXRule {
     // }
     // });
 
+    StringBuilder resultString = new StringBuilder(64);
+
     // for (SAXMapEntry<Integer, Integer> entry : recs) {
     for (GrammarRuleRecord ruleRecord : arrRuleRecords) {
+
 
       if (ruleRecord.getRuleNumber() == 0) {
         continue;
       }
 
+      resultString.setLength(0);
+
       String curString = ruleRecord.getRuleString();
-      StringBuilder resultString = new StringBuilder(8192);
 
       String[] split = curString.split(" ");
 
@@ -240,12 +242,13 @@ public class SAXRule {
       }
 
       // need to trim space at the very end
-      String rr = resultString.delete(0, 1).append(" ").toString();
+      String rr = resultString.delete(0, 1).append(' ').toString();
       ruleRecord.setExpandedRuleString(rr);
       ruleRecord.setRuleYield(countSpaces(rr));
     }
 
-    StringBuilder resultString = new StringBuilder(8192);
+    //StringBuilder resultString = new StringBuilder(8192);
+    resultString.setLength(0);
     
     GrammarRuleRecord ruleRecord = arrRuleRecords.get(0);
     resultString.append(ruleRecord.getRuleString());
@@ -324,14 +327,8 @@ public class SAXRule {
    * 
    * @return all the rule occurrences.
    */
-  private int[] getIndexes() {
-    int[] res = new int[this.indexes.size()];
-    int i = 0;
-    for (Integer idx : this.indexes) {
-      res[i] = idx;
-      i++;
-    }
-    return res;
+  private IntHashSet getIndexes() {
+    return indexes;
   }
 
   /**
@@ -481,7 +478,7 @@ public class SAXRule {
       }
       text.append(TAB).append(arrRuleRecords.get(processedRules).getExpandedRuleString())
           .append(TAB);
-      text.append(Arrays.toString(currentRule.getIndexes())).append(CR);
+      text.append(currentRule.getIndexes()).append(CR);
 
       processedRules++;
 
