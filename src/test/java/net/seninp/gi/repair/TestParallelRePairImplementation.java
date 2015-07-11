@@ -3,6 +3,9 @@ package net.seninp.gi.repair;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
+
+import net.seninp.gi.repair.parallel.ParallelGrammarKeeper;
+import net.seninp.gi.repair.parallel.ParallelRePairImplementation;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.datastructures.SAXRecord;

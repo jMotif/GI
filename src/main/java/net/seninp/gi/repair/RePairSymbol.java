@@ -14,19 +14,22 @@ public class RePairSymbol {
   /**
    * Payload.
    */
-  private char[] string;
+  final private char[] string;
 
   /**
    * Position of the symbol in the string.
    */
-  private Integer stringPosition;
+  private int stringPosition;
+
+  final static char[] blank = new char[0];
 
   /**
    * Constructor.
    */
   public RePairSymbol() {
     super();
-    this.stringPosition = null;
+    this.stringPosition = -1;
+    this.string = blank;
   }
 
   /**
@@ -89,6 +92,9 @@ public class RePairSymbol {
     return 0;
   }
 
+
+  public char[] key() { return string; }
+
   public String toString() {
     return String.valueOf(this.string);
   }
@@ -98,7 +104,7 @@ public class RePairSymbol {
     final int prime = 31;
     int result = 1;
     result = prime * result + Arrays.hashCode(string);
-    result = prime * result + ((stringPosition == null) ? 0 : stringPosition.hashCode());
+    result = prime * result + ((stringPosition == -1) ? -1 : stringPosition);
     return result;
   }
 
@@ -106,19 +112,22 @@ public class RePairSymbol {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
+    if (!(obj instanceof RePairSymbol))
       return false;
-    if (getClass() != obj.getClass())
-      return false;
+
     RePairSymbol other = (RePairSymbol) obj;
-    if (!Arrays.equals(string, other.string))
-      return false;
-    if (stringPosition == null) {
-      if (other.stringPosition != null)
+
+    if (stringPosition == -1) {
+      if (other.stringPosition != -1)
         return false;
     }
-    else if (!stringPosition.equals(other.stringPosition))
+    else if (stringPosition!=other.stringPosition)
       return false;
+
+    if (!Arrays.equals(string, other.string))
+      return false;
+
+
     return true;
   }
 

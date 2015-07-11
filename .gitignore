@@ -1,3 +1,6 @@
 /bin
 /target
 .Rproj.user
+.idea/
+*.iml
+

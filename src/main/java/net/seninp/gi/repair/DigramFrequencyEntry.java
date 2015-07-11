@@ -9,7 +9,7 @@ package net.seninp.gi.repair;
 public class DigramFrequencyEntry {
 
   /** The payload - the digram string itself. */
-  private String digram;
+  private final String digram;
 
   /** The observed frequency. */
   private int frequency;
@@ -45,9 +45,9 @@ public class DigramFrequencyEntry {
    * 
    * @param digram the string.
    */
-  public void setDigram(String digram) {
-    this.digram = digram;
-  }
+//  public void setDigram(String digram) {
+//    this.digram = digram;
+//  }
 
   /**
    * Frequency getter.
@@ -63,9 +63,9 @@ public class DigramFrequencyEntry {
    * 
    * @param frequency the new frequency value.
    */
-  public void setFrequency(int frequency) {
-    this.frequency = frequency;
-  }
+//  public void setFrequency(int frequency) {
+//    this.frequency = frequency;
+//  }
 
   /**
    * Get the first occurrence.
@@ -78,7 +78,7 @@ public class DigramFrequencyEntry {
 
   /**
    * Set the first occurrence.
-   * 
+   *
    * @param firstOccurrence the new value.
    */
   public void setFirstOccurrence(int firstOccurrence) {
@@ -91,7 +91,7 @@ public class DigramFrequencyEntry {
     int result = 1;
     result = prime * result + ((digram == null) ? 0 : digram.hashCode());
     result = prime * result + firstOccurrence;
-    result = prime * result + frequency;
+    //result = prime * result + frequency;
     return result;
   }
 
@@ -99,25 +99,31 @@ public class DigramFrequencyEntry {
   public boolean equals(Object obj) {
     if (this == obj)
       return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
+
+    if (!(obj instanceof DigramFrequencyEntry))
       return false;
     DigramFrequencyEntry other = (DigramFrequencyEntry) obj;
+
+    if (firstOccurrence != other.firstOccurrence)
+      return false;
     if (digram == null) {
       if (other.digram != null)
         return false;
     }
     else if (!digram.equals(other.digram))
       return false;
-    if (firstOccurrence != other.firstOccurrence)
-      return false;
-    if (frequency != other.frequency)
-      return false;
+
+    /*if (frequency != other.frequency)
+      return false;*/
     return true;
   }
 
   public String toString() {
     return this.digram + " " + this.frequency;
+  }
+
+  public int add(int increment) {
+      frequency += increment;
+      return frequency;
   }
 }

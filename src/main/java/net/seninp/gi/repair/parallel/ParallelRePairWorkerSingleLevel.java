@@ -1,4 +1,8 @@
-package net.seninp.gi.repair;
+package net.seninp.gi.repair.parallel;
+
+import net.seninp.gi.repair.DigramFrequencies;
+import net.seninp.gi.repair.DigramFrequencyEntry;
+import net.seninp.gi.repair.RePairSymbol;
 
 import java.util.ArrayList;
 import java.util.Map.Entry;

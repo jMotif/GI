@@ -1,4 +1,4 @@
-package net.seninp.gi.performance;
+package net.seninp.gi.util;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -9,8 +9,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.GZIPInputStream;
-import net.seninp.gi.repair.ParallelGrammarKeeper;
-import net.seninp.gi.repair.ParallelRePairImplementation;
+import net.seninp.gi.repair.parallel.ParallelGrammarKeeper;
+import net.seninp.gi.repair.parallel.ParallelRePairImplementation;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.repair.RePairSymbol;

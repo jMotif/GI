@@ -1,5 +1,7 @@
 package net.seninp.gi;
 
+import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -22,7 +24,7 @@ public class GrammarRuleRecord {
   private String expandedRuleString;
 
   /* The indexes at which the rule occurs in the discretized time series. */
-  private ArrayList<Integer> timeSeriesOccurrenceIndexes = new ArrayList<Integer>();
+  private IntHashSet timeSeriesOccurrenceIndexes = new IntHashSet();
 
   /* This rule intervals on the original time series. */
   private ArrayList<RuleInterval> ruleIntervals;
@@ -40,7 +42,7 @@ public class GrammarRuleRecord {
   private int maxLength;
 
   /* The rule mean length - i.e. mean value of all subsequences corresponding to the rule. */
-  private Integer meanLength;
+  private int meanLength;
 
   /* The rule mean period - i.e. the mean length of intra-rule intervals. */
   private double period;
@@ -58,7 +60,7 @@ public class GrammarRuleRecord {
     return ruleNumber;
   }
 
-  public Integer getMeanLength() {
+  public int getMeanLength() {
     return meanLength;
   }
 
@@ -123,19 +125,21 @@ public class GrammarRuleRecord {
   }
 
   public String occurrencesToString() {
-    return Arrays.toString(this.timeSeriesOccurrenceIndexes
-        .toArray(new Integer[this.timeSeriesOccurrenceIndexes.size()]));
+//    return Arrays.toString(this.timeSeriesOccurrenceIndexes
+//        .toArray(new Integer[this.timeSeriesOccurrenceIndexes.size()]));
+    return timeSeriesOccurrenceIndexes.toString();
   }
 
-  public ArrayList<Integer> getOccurrences() {
+  public IntHashSet getOccurrences() {
     return this.timeSeriesOccurrenceIndexes;
   }
 
-  public void setOccurrences(int[] indexes) {
-    this.timeSeriesOccurrenceIndexes = new ArrayList<Integer>();
-    for (Integer idx : indexes) {
-      this.timeSeriesOccurrenceIndexes.add(idx);
-    }
+  public void setOccurrences(IntHashSet indexes) {
+    this.timeSeriesOccurrenceIndexes = indexes;
+//    this.timeSeriesOccurrenceIndexes = new ArrayList<Integer>();
+//    for (Integer idx : indexes.) {
+//      this.timeSeriesOccurrenceIndexes.add(idx);
+//    }
   }
 
   public double getPeriod() {

@@ -1,20 +1,19 @@
-package net.seninp.gi.repair;
+package net.seninp.gi.repair.parallel;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map.Entry;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import net.seninp.util.StackTrace;
-import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.gs.collections.api.list.MutableList;
+import com.gs.collections.api.tuple.primitive.IntObjectPair;
+import net.seninp.gi.repair.DigramFrequencies;
+import net.seninp.gi.repair.DigramFrequencyEntry;
+import net.seninp.gi.repair.RePairSymbol;
+import net.seninp.util.StackTrace;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
 
 public class ParallelRePairImplementation {
 
@@ -64,8 +63,8 @@ public class ParallelRePairImplementation {
       // the mapping of rule ID to the rule instance
       final HashMap<Integer, ParallelRePairRule> ruleNumToRecord = new HashMap<Integer, ParallelRePairRule>();
       if (!(grammar.theRules.isEmpty())) {
-        for (Entry<Integer, ParallelRePairRule> e : grammar.theRules.entrySet()) {
-          ruleNumToRecord.put(e.getKey(), e.getValue());
+        for (IntObjectPair<ParallelRePairRule> e : grammar.keys()) {
+          ruleNumToRecord.put(e.getOne(), e.getTwo());
         }
       }
       // the data structure which keeps R0 strings that have been returned from workers
@@ -159,7 +158,7 @@ public class ParallelRePairImplementation {
             consoleLogger.debug("job " + chunkRes.getId() + " of chunk " + chunkJobIndex
                 + " has finished");
 
-            Hashtable<Integer, ParallelRePairRule> chunkGrammarRulesData = chunkRes.theRules;
+            //IntObjectHashMap<ParallelRePairRule> chunkGrammarRulesData = chunkRes.theRules;
             String R0String = chunkRes.r0String;
 
             chunkStrings.put(chunkJobIndex, R0String);
@@ -178,8 +177,7 @@ public class ParallelRePairImplementation {
 
             // these are the rule keys, they'll be used twice
             //
-            ArrayList<Integer> keys = new ArrayList<Integer>(chunkGrammarRulesData.keySet());
-            Collections.sort(keys);
+            MutableList<IntObjectPair<ParallelRePairRule>> keys = chunkRes.keys();
 
             // for (int i = 0; i < keys.size(); i++) {
             // ParallelRePairRule r = chunkGrammarRulesData.get(keys.get(i));
@@ -193,9 +191,9 @@ public class ParallelRePairImplementation {
 
             // these are guaranteed to come out in order
             //
-            for (int i = 0; i < keys.size(); i++) {
+            for (IntObjectPair<ParallelRePairRule> k : keys) {
 
-              ParallelRePairRule r = chunkGrammarRulesData.get(keys.get(i));
+              ParallelRePairRule r = k.getTwo();
 
               consoleLogger.trace("processing rule " + r.getRuleName() + " -> " + r.toRuleString()
                   + " : " + r.expandedRuleString);

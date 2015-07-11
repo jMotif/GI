@@ -1,4 +1,6 @@
-package net.seninp.gi.repair;
+package net.seninp.gi.repair.parallel;
+
+import net.seninp.gi.repair.RePairSymbol;
 
 import java.util.ArrayList;
 

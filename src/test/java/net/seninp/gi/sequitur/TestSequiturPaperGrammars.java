@@ -1,11 +1,10 @@
 package net.seninp.gi.sequitur;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import net.seninp.gi.GrammarRules;
 import net.seninp.util.StackTrace;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class TestSequiturPaperGrammars {
 
@@ -28,6 +27,8 @@ public class TestSequiturPaperGrammars {
       SAXRule r = SequiturFactory.runSequitur(TEST3_STRING);
       GrammarRules rules = r.toGrammarRulesData();
 
+      System.out.println(rules);
+
       assertEquals("test hierarchy", 5, rules.size());
 
       assertTrue("test r0", TEST3_R0.equals(rules.get(0).getRuleString().trim()));
@@ -45,7 +46,7 @@ public class TestSequiturPaperGrammars {
       SAXRule r = SequiturFactory.runSequitur(TEST2_STRING);
       GrammarRules rules = r.toGrammarRulesData();
 
-      assertTrue("test r0", TEST2_R0.equals(rules.get(0).getRuleString().trim()));
+      assertEquals(TEST2_R0, (rules.get(0).getRuleString().trim()));
       assertTrue("test r1", TEST2_R1.equals(rules.get(1).getRuleString().trim()));
       assertTrue("test r1", TEST2_R2.equals(rules.get(2).getRuleString().trim()));
     }

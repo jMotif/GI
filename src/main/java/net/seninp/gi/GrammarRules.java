@@ -1,16 +1,24 @@
 package net.seninp.gi;
 
+import com.gs.collections.impl.map.mutable.primitive.IntObjectHashMap;
+
 import java.util.Iterator;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 public class GrammarRules implements Iterable<GrammarRuleRecord> {
 
-  private SortedMap<Integer, GrammarRuleRecord> rules;
+  //private SortedMap<Integer, GrammarRuleRecord> rules;
+
+  final IntObjectHashMap<GrammarRuleRecord> rules = new IntObjectHashMap();
 
   public GrammarRules() {
     super();
-    this.rules = new TreeMap<Integer, GrammarRuleRecord>();
+    //this.rules = new TreeMap<Integer, GrammarRuleRecord>();
+  }
+
+  @Override
+  public String toString() {
+    return rules.values().stream().map(x -> x.toString()).collect(Collectors.joining(", ")).toString();
   }
 
   public void addRule(GrammarRuleRecord arrRule) {

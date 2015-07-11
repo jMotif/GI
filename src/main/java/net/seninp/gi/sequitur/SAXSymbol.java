@@ -19,7 +19,9 @@ package net.seninp.gi.sequitur;
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Map.Entry;
 
 /**
@@ -41,10 +43,10 @@ public abstract class SAXSymbol {
   private static final int prime = 2265539;
 
   /** Hashtable to keep track of all digrams. This is static - single instance for all. */
-  protected static final Hashtable<SAXSymbol, SAXSymbol> theDigrams = new Hashtable<SAXSymbol, SAXSymbol>(
+  protected static final Map<SAXSymbol, SAXSymbol> theDigrams = new HashMap(
       SAXSymbol.prime);
 
-  public static Hashtable<String, Hashtable<String, Integer>> theSubstituteTable = new Hashtable<String, Hashtable<String, Integer>>(
+  public static Map<String, Hashtable<String, Integer>> theSubstituteTable = new HashMap(
       SAXSymbol.prime);
 
   /** The symbol value. */
@@ -170,11 +172,12 @@ public abstract class SAXSymbol {
       return false;
     }
 
-    if (!theDigrams.containsKey(this)) {
+    SAXSymbol found;
+    if ((found = theDigrams.putIfAbsent(this, this))==null) {
       // System.out.println("[sequitur debug] *check...* digrams contain this (" + this.value + "~"
       // + this.n.value + ")? NO. Checking in.");
       // found = theDigrams.put(this, this);
-      theDigrams.put(this, this);
+      //theDigrams.put(this, this);
       // System.out.println("      *** Digrams now: " + makeDigramsTable());
       // System.out.println("[sequitur debug] *digrams* " + hash2String());
       return false;
@@ -184,7 +187,7 @@ public abstract class SAXSymbol {
     // + this.n.value + ")? Yes. Oh-Oh...");
 
     // well the same hash is in the store, lemme see...
-    SAXSymbol found = theDigrams.get(this);
+    //found = theDigrams.get(this);
 
     // if it's not me, then lets call match magic?
     if (found.n != this) {

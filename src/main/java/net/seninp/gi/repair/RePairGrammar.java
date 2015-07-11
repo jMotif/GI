@@ -1,12 +1,15 @@
 package net.seninp.gi.repair;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.concurrent.atomic.AtomicInteger;
+import com.gs.collections.api.iterator.MutableIntIterator;
+import com.gs.collections.impl.set.mutable.primitive.IntHashSet;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * A repair grammar container.
@@ -141,7 +144,7 @@ public class RePairGrammar {
     r0.setRuleNumber(0);
     r0.setRuleString(this.r0String);
     r0.setExpandedRuleString(this.r0ExpandedString);
-    r0.setOccurrences(new int[1]);
+    r0.setOccurrences(new IntHashSet());
     res.addRule(r0);
 
     for (RePairRule rule : theRules.values()) {
@@ -178,7 +181,11 @@ public class RePairGrammar {
       // System.out.println("R" + rr.ruleNumber + ", " + rr.toRuleString() + ", "
       // + rr.expandedRuleString);
       String[] split = rr.expandedRuleString.split(" ");
-      for (int pos : rr.getOccurrences()) {
+
+      MutableIntIterator ii = rr.getOccurrences().intIterator();
+      while (ii.hasNext()) {
+        int pos =  ii.next();
+
         Integer p2 = records.mapStringIndexToTSPosition(pos + split.length - 1);
         if (null == p2) {
           rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(pos),
