@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -604,6 +605,18 @@ public final class SequiturFactory {
       }
     }
     return counter;
+  }
+
+  /**
+   * Computes the grammar size.
+   * 
+   * @param rulesSet The set of rules which represent the grammar.
+   * 
+   * @return the grammar size.
+   */
+  public static Integer computeGrammarSize(HashSet<Integer> rulesSet) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

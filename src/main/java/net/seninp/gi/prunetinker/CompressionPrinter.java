@@ -61,7 +61,7 @@ public class CompressionPrinter {
         if (PAA_SIZE > WINDOW_SIZE) {
           continue;
         }
-        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 13; ALPHABET_SIZE++) {
+        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 15; ALPHABET_SIZE++) {
 
           StringBuffer logStr = new StringBuffer();
           logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
@@ -165,35 +165,7 @@ public class CompressionPrinter {
       range = updateRanges(range, bestRule.getRuleIntervals());
     }
 
-    int res = 0;
-
-    if (isCovered) {
-
-      for (Integer rId : usedRules) {
-        GrammarRuleRecord r = grammarRules.get(rId);
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
-      }
-
-    }
-    else {
-
-      for (Integer rId : usedRules) {
-        GrammarRuleRecord r = grammarRules.get(rId);
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
-      }
-
-      for (int i = 0; i < range.length; i++) {
-        if (false == range[i] && (null != saxData.getByIndex(i))) {
-          res = res + winSize + 2;
-        }
-      }
-
-    }
-
-    return res;
-
+    return SequiturFactory.computeGrammarSize(usedRules);
   }
 
   private static GrammarRules performPruning(GrammarRules grammarRules) {
