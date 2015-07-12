@@ -89,6 +89,13 @@ public class CompressionPrinter {
           double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
               ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
 
+          if (compressedSize >= 0) {
+            logStr.append("1").append(COMMA);
+          }
+          else {
+            logStr.append("0").append(COMMA);
+            compressedSize = -compressedSize;
+          }
           logStr.append(size).append(COMMA);
           logStr.append(compressedSize).append(COMMA);
           logStr.append(approximationDistance).append(CR);
@@ -141,7 +148,7 @@ public class CompressionPrinter {
       if (0 == r.getRuleNumber()) {
         continue;
       }
-      range = updateRanges(range, r.getRuleIntervals());
+      updateRanges(range, r.getRuleIntervals());
     }
 
     int res = 0;
@@ -242,9 +249,10 @@ public class CompressionPrinter {
       // keep track of cover
       //
       usedRules.add(bestRule.getRuleNumber());
-      range = updateRanges(range, bestRule.getRuleIntervals());
+      updateRanges(range, bestRule.getRuleIntervals());
     }
 
+    isCovered = isCovered(range);
     int res = 0;
 
     if (isCovered) {
@@ -278,7 +286,12 @@ public class CompressionPrinter {
 
     }
 
-    return res;
+    if (isCovered) {
+      return res;
+    }
+    else {
+      return -res;
+    }
 
   }
 
@@ -349,16 +362,14 @@ public class CompressionPrinter {
   //
   // }
 
-  private static boolean[] updateRanges(boolean[] range, ArrayList<RuleInterval> ruleIntervals) {
-    boolean[] res = Arrays.copyOf(range, range.length);
+  private static void updateRanges(boolean[] range, ArrayList<RuleInterval> ruleIntervals) {
     for (RuleInterval i : ruleIntervals) {
       int start = i.getStartPos();
       int end = i.getEndPos();
       for (int j = start; j <= end; j++) {
-        res[j] = true;
+        range[j] = true;
       }
     }
-    return res;
   }
 
   private static double getCoverDelta(boolean[] range, GrammarRuleRecord rule) {
