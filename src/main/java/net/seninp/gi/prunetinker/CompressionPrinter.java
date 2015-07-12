@@ -84,7 +84,7 @@ public class CompressionPrinter {
 
           Integer size = computeSize(rules, saxData, WINDOW_SIZE);
 
-          Integer compressedSize = performCompression(rules, saxData, WINDOW_SIZE);
+          Integer compressedSize = performCompression(rules, saxData, PAA_SIZE);
 
           double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
               ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
@@ -122,8 +122,19 @@ public class CompressionPrinter {
 
   }
 
-  private static Integer computeSize(GrammarRules rules, SAXRecords saxData, Integer winSize) {
+  /**
+   * Computes the grammar size.
+   * 
+   * @param rules the grammar rules.
+   * @param saxData the original SAX data.
+   * @param paaSize the SAX transform word size.
+   * 
+   * @return the grammar size.
+   */
+  private static Integer computeSize(GrammarRules rules, SAXRecords saxData, Integer paaSize) {
 
+    // first we compute the cover by rules
+    //
     boolean[] range = new boolean[ts1.length];
 
     for (GrammarRuleRecord r : rules) {
@@ -137,10 +148,16 @@ public class CompressionPrinter {
 
     if (isCovered(range)) {
 
+      // if all is covered
+      //
       for (GrammarRuleRecord r : rules) {
         if (0 == r.getRuleNumber()) {
+          // skip the rule zero
           continue;
         }
+        // the increment is computed as the size of the expanded rule string (bytes)
+        // plus the number of occurrences * 2 (a word per each occurrence)
+        //
         res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
             + r.getOccurrences().size() * 2;
       }
@@ -150,15 +167,22 @@ public class CompressionPrinter {
 
       for (GrammarRuleRecord r : rules) {
         if (0 == r.getRuleNumber()) {
+          // skip the rule zero
           continue;
         }
+        // the increment is computed as the size of the expanded rule string (bytes)
+        // plus the number of occurrences * 2 (a word per each occurrence)
+        //
         res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
             + r.getOccurrences().size() * 2;
       }
 
       for (int i = 0; i < range.length; i++) {
         if (false == range[i] && (null != saxData.getByIndex(i))) {
-          res = res + winSize + 2;
+          // each uncovered by a rule position is actually an individual PAA word
+          // and a position index
+          //
+          res = res + paaSize + 2;
         }
       }
     }
@@ -175,7 +199,7 @@ public class CompressionPrinter {
   }
 
   private static Integer performCompression(GrammarRules grammarRules, SAXRecords saxData,
-      Integer winSize) {
+      Integer paaSize) {
 
     // this is where we keep range coverage
     boolean[] range = new boolean[ts1.length];
@@ -248,7 +272,7 @@ public class CompressionPrinter {
 
       for (int i = 0; i < range.length; i++) {
         if (false == range[i] && (null != saxData.getByIndex(i))) {
-          res = res + winSize + 2;
+          res = res + paaSize + 2;
         }
       }
 
@@ -258,72 +282,72 @@ public class CompressionPrinter {
 
   }
 
-  private static GrammarRules performPruning(GrammarRules grammarRules) {
-
-    // this is where we keep range coverage
-    boolean[] range = new boolean[ts1.length];
-
-    // goes false when some ranges not covered
-    boolean isCovered = true;
-
-    // these are rules used in current cover
-    HashSet<Integer> usedRules = new HashSet<Integer>();
-    usedRules.add(0);
-    // do until all ranges are covered
-    while (hasEmptyRanges(range, false)) {
-
-      // iterate over rules set finding new optimal cover
-      //
-      GrammarRuleRecord bestRule = null;
-      double bestDelta = Integer.MIN_VALUE;
-      for (GrammarRuleRecord rule : grammarRules) {
-        int id = rule.getRuleNumber();
-        if (usedRules.contains(id)) {
-          continue;
-        }
-        else {
-          double delta = getCoverDelta(range, rule);
-          if (delta > bestDelta) {
-            bestDelta = delta;
-            bestRule = rule;
-          }
-        }
-      }
-      if (bestDelta < 0) {
-        // can't be compressed anymore
-        //
-        isCovered = false;
-        break;
-      }
-
-      if (0.0 == bestDelta) {
-        break;
-      }
-
-      // keep track of cover
-      //
-      usedRules.add(bestRule.getRuleNumber());
-      range = updateRanges(range, bestRule.getRuleIntervals());
-    }
-
-    if (isCovered) {
-      consoleLogger.debug("# Best cover "
-          + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
-
-      GrammarRules prunedRules = new GrammarRules();
-      prunedRules.addRule(grammarRules.get(0));
-
-      for (Integer rId : usedRules) {
-        prunedRules.addRule(grammarRules.get(rId));
-      }
-
-      return prunedRules;
-    }
-    else {
-      return null;
-    }
-
-  }
+  // private static GrammarRules performPruning(GrammarRules grammarRules) {
+  //
+  // // this is where we keep range coverage
+  // boolean[] range = new boolean[ts1.length];
+  //
+  // // goes false when some ranges not covered
+  // boolean isCovered = true;
+  //
+  // // these are rules used in current cover
+  // HashSet<Integer> usedRules = new HashSet<Integer>();
+  // usedRules.add(0);
+  // // do until all ranges are covered
+  // while (hasEmptyRanges(range, false)) {
+  //
+  // // iterate over rules set finding new optimal cover
+  // //
+  // GrammarRuleRecord bestRule = null;
+  // double bestDelta = Integer.MIN_VALUE;
+  // for (GrammarRuleRecord rule : grammarRules) {
+  // int id = rule.getRuleNumber();
+  // if (usedRules.contains(id)) {
+  // continue;
+  // }
+  // else {
+  // double delta = getCoverDelta(range, rule);
+  // if (delta > bestDelta) {
+  // bestDelta = delta;
+  // bestRule = rule;
+  // }
+  // }
+  // }
+  // if (bestDelta < 0) {
+  // // can't be compressed anymore
+  // //
+  // isCovered = false;
+  // break;
+  // }
+  //
+  // if (0.0 == bestDelta) {
+  // break;
+  // }
+  //
+  // // keep track of cover
+  // //
+  // usedRules.add(bestRule.getRuleNumber());
+  // range = updateRanges(range, bestRule.getRuleIntervals());
+  // }
+  //
+  // if (isCovered) {
+  // consoleLogger.debug("# Best cover "
+  // + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
+  //
+  // GrammarRules prunedRules = new GrammarRules();
+  // prunedRules.addRule(grammarRules.get(0));
+  //
+  // for (Integer rId : usedRules) {
+  // prunedRules.addRule(grammarRules.get(rId));
+  // }
+  //
+  // return prunedRules;
+  // }
+  // else {
+  // return null;
+  // }
+  //
+  // }
 
   private static boolean[] updateRanges(boolean[] range, ArrayList<RuleInterval> ruleIntervals) {
     boolean[] res = Arrays.copyOf(range, range.length);
