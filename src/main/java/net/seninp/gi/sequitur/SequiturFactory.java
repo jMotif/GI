@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -605,46 +604,6 @@ public final class SequiturFactory {
       }
     }
     return counter;
-  }
-
-  /**
-   * Computes the grammar size.
-   * 
-   * @param rulesSet The set of rules which represent the grammar.
-   * 
-   * @return the grammar size.
-   */
-  public static int computeGrammarSize(HashSet<Integer> rulesSet) {
-
-    int res = 0;
-
-    if (isCovered) {
-
-      for (Integer rId : usedRules) {
-        GrammarRuleRecord r = grammarRules.get(rId);
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
-      }
-
-    }
-    else {
-
-      for (Integer rId : usedRules) {
-        GrammarRuleRecord r = grammarRules.get(rId);
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
-      }
-
-      for (int i = 0; i < range.length; i++) {
-        if (false == range[i] && (null != saxData.getByIndex(i))) {
-          res = res + winSize + 2;
-        }
-      }
-
-    }
-
-    return res;
-
   }
 
 }

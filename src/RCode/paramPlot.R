@@ -1,10 +1,11 @@
 library(ggplot2)
 library(dplyr)
-data=read.csv("../../rules_num.txt")
+data=read.csv(gzfile("samplerApp/rules_num.txt.gz"))
 names(data) <- c("window","paa","alphabet","size","approx_dist")
 range(data$alphabet)
 range(data$approx_dist)
 range(data$size)
+unique(data$paa)
 
 filter(data, window==170, paa==4, alphabet==4)
 
@@ -30,3 +31,5 @@ min(data$size)
 filter(data, size==min(data$size))
 
 table(filter(data,alphabet==6))
+
+shinyapps::deployApp('/home/psenin/git/jmotif-gi/src/RCode/samplerApp')

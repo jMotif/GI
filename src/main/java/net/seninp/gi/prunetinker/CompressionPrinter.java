@@ -61,7 +61,7 @@ public class CompressionPrinter {
         if (PAA_SIZE > WINDOW_SIZE) {
           continue;
         }
-        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 15; ALPHABET_SIZE++) {
+        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 13; ALPHABET_SIZE++) {
 
           StringBuffer logStr = new StringBuffer();
           logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
@@ -82,22 +82,96 @@ public class CompressionPrinter {
           GrammarRules rules = r.toGrammarRulesData();
           SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
 
-          Integer size = performCompression(rules, saxData, WINDOW_SIZE);
+          Integer size = computeSize(rules, saxData, WINDOW_SIZE);
+
+          Integer compressedSize = performCompression(rules, saxData, WINDOW_SIZE);
 
           double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
               ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
 
-          logStr.append(size).append(COMMA).append(approximationDistance).append(CR);
+          logStr.append(size).append(COMMA);
+          logStr.append(compressedSize).append(COMMA);
+          logStr.append(approximationDistance).append(CR);
 
           bw.write(logStr.toString());
           consoleLogger.info(logStr.toString().replace(CR, ""));
 
+          // GrammarRules prunedRules = performPruning(rules);
+          //
+          // consoleLogger.info(logStr.toString());
+          //
+          // if (null == prunedRules) {
+          // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
+          // }
+          // else {
+          // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
+          // for (GrammarRuleRecord rule : prunedRules) {
+          // prunedRuleNums.add(rule.getRuleNumber());
+          // }
+          // // logStr
+          // // .append(Arrays.toString(prunedRuleNums.toArray(new
+          // Integer[prunedRuleNums.size()])));
+          // logStr.append(prunedRuleNums.size());
+          // consoleLogger.info(logStr.toString());
+          // }
+          // bw.write(logStr.toString() + CR);
         }
       }
     }
-
     bw.close();
 
+  }
+
+  private static Integer computeSize(GrammarRules rules, SAXRecords saxData, Integer winSize) {
+
+    boolean[] range = new boolean[ts1.length];
+
+    for (GrammarRuleRecord r : rules) {
+      if (0 == r.getRuleNumber()) {
+        continue;
+      }
+      range = updateRanges(range, r.getRuleIntervals());
+    }
+
+    int res = 0;
+
+    if (isCovered(range)) {
+
+      for (GrammarRuleRecord r : rules) {
+        if (0 == r.getRuleNumber()) {
+          continue;
+        }
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+    }
+    else {
+
+      for (GrammarRuleRecord r : rules) {
+        if (0 == r.getRuleNumber()) {
+          continue;
+        }
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+      for (int i = 0; i < range.length; i++) {
+        if (false == range[i] && (null != saxData.getByIndex(i))) {
+          res = res + winSize + 2;
+        }
+      }
+    }
+    return res;
+  }
+
+  private static boolean isCovered(boolean[] range) {
+    for (boolean i : range) {
+      if (false == i) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static Integer performCompression(GrammarRules grammarRules, SAXRecords saxData,
@@ -150,10 +224,104 @@ public class CompressionPrinter {
     int res = 0;
 
     if (isCovered) {
-      res = SequiturFactory.computeGrammarSize(usedRules);
+
+      for (Integer rId : usedRules) {
+        if (0 == rId) {
+          continue;
+        }
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+    }
+    else {
+
+      for (Integer rId : usedRules) {
+        if (0 == rId) {
+          continue;
+        }
+        GrammarRuleRecord r = grammarRules.get(rId);
+        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+            + r.getOccurrences().size() * 2;
+      }
+
+      for (int i = 0; i < range.length; i++) {
+        if (false == range[i] && (null != saxData.getByIndex(i))) {
+          res = res + winSize + 2;
+        }
+      }
+
     }
 
     return res;
+
+  }
+
+  private static GrammarRules performPruning(GrammarRules grammarRules) {
+
+    // this is where we keep range coverage
+    boolean[] range = new boolean[ts1.length];
+
+    // goes false when some ranges not covered
+    boolean isCovered = true;
+
+    // these are rules used in current cover
+    HashSet<Integer> usedRules = new HashSet<Integer>();
+    usedRules.add(0);
+    // do until all ranges are covered
+    while (hasEmptyRanges(range, false)) {
+
+      // iterate over rules set finding new optimal cover
+      //
+      GrammarRuleRecord bestRule = null;
+      double bestDelta = Integer.MIN_VALUE;
+      for (GrammarRuleRecord rule : grammarRules) {
+        int id = rule.getRuleNumber();
+        if (usedRules.contains(id)) {
+          continue;
+        }
+        else {
+          double delta = getCoverDelta(range, rule);
+          if (delta > bestDelta) {
+            bestDelta = delta;
+            bestRule = rule;
+          }
+        }
+      }
+      if (bestDelta < 0) {
+        // can't be compressed anymore
+        //
+        isCovered = false;
+        break;
+      }
+
+      if (0.0 == bestDelta) {
+        break;
+      }
+
+      // keep track of cover
+      //
+      usedRules.add(bestRule.getRuleNumber());
+      range = updateRanges(range, bestRule.getRuleIntervals());
+    }
+
+    if (isCovered) {
+      consoleLogger.debug("# Best cover "
+          + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
+
+      GrammarRules prunedRules = new GrammarRules();
+      prunedRules.addRule(grammarRules.get(0));
+
+      for (Integer rId : usedRules) {
+        prunedRules.addRule(grammarRules.get(rId));
+      }
+
+      return prunedRules;
+    }
+    else {
+      return null;
+    }
 
   }
 
