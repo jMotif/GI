@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 
 public class CompressionPrinter {
 
-  private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606_1.csv";
+  private static final String TEST_DATASET_NAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
 
   private static final String COMMA = ",";
 
