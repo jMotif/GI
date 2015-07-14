@@ -90,13 +90,16 @@ public class CompressionPrinter {
           double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
               ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
 
-          if (compressedSize >= 0) {
-            logStr.append("1").append(COMMA);
+          boolean[] compressedCover = new boolean[ts1.length];
+          compressedCover = updateRanges(compressedCover, compressedGrammar);
+
+          if (hasEmptyRanges(compressedCover)) {
+            logStr.append("0").append(COMMA);
           }
           else {
-            logStr.append("0").append(COMMA);
-            compressedSize = -compressedSize;
+            logStr.append("1").append(COMMA);
           }
+
           logStr.append(size).append(COMMA);
           logStr.append(compressedSize).append(COMMA);
           logStr.append(approximationDistance).append(CR);
@@ -352,6 +355,17 @@ public class CompressionPrinter {
       for (int j = start; j <= end; j++) {
         res[j] = true;
       }
+    }
+    return res;
+  }
+
+  private static boolean[] updateRanges(boolean[] range, GrammarRules grammar) {
+    boolean[] res = Arrays.copyOf(range, range.length);
+    for (GrammarRuleRecord r : grammar) {
+      if (0 == r.getRuleNumber()) {
+        continue;
+      }
+      res = updateRanges(res, r.getRuleIntervals());
     }
     return res;
   }
