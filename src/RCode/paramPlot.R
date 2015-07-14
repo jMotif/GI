@@ -1,15 +1,20 @@
 library(ggplot2)
 library(dplyr)
 data=read.csv(gzfile("samplerApp/rules_num.txt.gz"))
-names(data) <- c("window","paa","alphabet","size","approx_dist")
+names(data)
 range(data$alphabet)
 range(data$approx_dist)
+range(data$compressedsize)
 range(data$size)
 unique(data$paa)
 
-filter(data, window==170, paa==4, alphabet==4)
+dd <- filter(data, approx_dist<100, compressedsize<200)
 
-filter(data, window==170, paa==6, alphabet==3)
+unique(dd$window)
+unique(dd$alphabet)
+unique(dd$paa)
+
+
 
 filter(data, approx_dist <10)
 
