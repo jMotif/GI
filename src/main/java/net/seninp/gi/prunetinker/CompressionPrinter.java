@@ -22,7 +22,7 @@ import ch.qos.logback.classic.Logger;
 
 public class CompressionPrinter {
 
-  private static final String TEST_DATASET_NAME = "src/resources/test-data/ann_gun_CentroidA1.csv";
+  private static final String TEST_DATASET_NAME = "src/resources/test-data/dutch_power_demand.txt";
 
   private static final String COMMA = ",";
 
@@ -56,7 +56,7 @@ public class CompressionPrinter {
     BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
     bw.write("window,paa,alphabet,rules_num,approx_dist\n");
 
-    for (WINDOW_SIZE = 30; WINDOW_SIZE < 600; WINDOW_SIZE += 10) {
+    for (WINDOW_SIZE = 100; WINDOW_SIZE < 1400; WINDOW_SIZE += 10) {
       for (PAA_SIZE = 2; PAA_SIZE < 50; PAA_SIZE += 2) {
         if (PAA_SIZE > WINDOW_SIZE) {
           continue;

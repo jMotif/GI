@@ -8,17 +8,37 @@ dd <- filter(dat, isCovered==1)
 
 p=ggplot(dat, aes(x=compressedSize,y=approxDist,
                   color=factor(isCovered))) + 
-  geom_density2d()
+  geom_density2d() + ggtitle("Coverage of ECG0606 by rule intervals")
 p         
+
+p=ggplot(dat, aes(x=compressedSize,y=approxDist,
+                  color=factor(paa))) + 
+  geom_point(alpha=0.5) +
+  guides(color=guide_legend(ncol=4,override.aes=list(size=5,alpha=1)))
+p         
+
          
-p <- ggplot(dd, aes(window, approxDist))
-p + geom_point()
+p1 <- ggplot(dd, aes(x=window, approxDist)) + geom_point() +
+  ggtitle("")
+p1 + geom_point()
 
-p <- ggplot(dd, aes(paa, approxDist))
-p + geom_point()
+p2 <- ggplot(dd, aes(paa, approxDist))
+p2 + geom_point()
 
-p <- ggplot(dd, aes(alphabet, approxDist))
-p + geom_point()
+p3 <- ggplot(dd, aes(alphabet, approxDist))
+p3 + geom_point()
+
+p4 <- ggplot(dd, aes(x=window, grammarsize, color=factor(paa))) + geom_point() +
+  ggtitle("")
+p4 + geom_point()
+
+p2 <- ggplot(dd, aes(paa, approxDist))
+p2 + geom_point()
+
+p3 <- ggplot(dd, aes(alphabet, approxDist))
+p3 + geom_point()
+
+
 
 
 stat_density2d(aes(fill = ..level..), geom="polygon")
