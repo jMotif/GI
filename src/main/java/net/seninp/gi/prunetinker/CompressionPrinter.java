@@ -234,13 +234,17 @@ public class CompressionPrinter {
         }
       }
 
+      if (null == bestRule) {
+        break;
+      }
+
       if (0.0 == bestDelta) {
         break;
       }
 
-//      System.out.println("Adding the best rule: " + bestRule.getRuleNumber());
+      // System.out.println("Adding the best rule: " + bestRule.getRuleNumber());
       usedRules.add(bestRule.getRuleNumber());
-//      System.out.println("Pruning set by overlaps...");
+      // System.out.println("Pruning set by overlaps...");
 
       // check for overlap artifacts
       //
@@ -270,7 +274,7 @@ public class CompressionPrinter {
             break;
           }
           else if (isCompletlyCovered(intervalsB, intervalsA)) {
-//            System.out.println("Going to remove rule: " + grammarRules.get(rid).getRuleName());
+            // System.out.println("Going to remove rule: " + grammarRules.get(rid).getRuleName());
             usedRules.remove(rid);
             continueSearch = true;
             break;
@@ -284,8 +288,8 @@ public class CompressionPrinter {
       range = updateRanges(range, bestRule.getRuleIntervals());
     }
 
-//    System.out.println("Best cover "
-//        + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
+    // System.out.println("Best cover "
+    // + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
 
     GrammarRules prunedRules = new GrammarRules();
     prunedRules.addRule(grammarRules.get(0));
@@ -404,7 +408,7 @@ public class CompressionPrinter {
     if (inUncovered) {
       sb.append("[" + start + ", " + range.length + "], ");
     }
-//    System.out.println(sb);
+    // System.out.println(sb);
     for (boolean p : range) {
       if (false == p) {
         return true;
