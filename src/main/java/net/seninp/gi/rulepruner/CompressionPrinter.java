@@ -1,4 +1,4 @@
-package net.seninp.gi.prunetinker;
+package net.seninp.gi.rulepruner;
 
 import java.io.BufferedWriter;
 import java.io.File;
