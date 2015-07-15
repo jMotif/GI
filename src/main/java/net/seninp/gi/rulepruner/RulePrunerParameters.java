@@ -44,7 +44,7 @@ public class RulePrunerParameters {
 
   // grid boundaries for discretization parameters
   //
-  @Parameter(names = { "--bounds", "-b" }, description = "grid boundaries")
+  @Parameter(names = { "--bounds", "-b" }, description = "grid boundaries (Wmin Wmax Wstep Pmin Pmax Pstep Amin Amax Astep)")
   public static String GRID_BOUNDARIES = "10 100 10 10 50 10 2 12 2";
 
 }

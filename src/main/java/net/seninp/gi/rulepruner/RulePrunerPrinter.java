@@ -16,7 +16,6 @@ import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
-import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 import net.seninp.util.StackTrace;
@@ -70,7 +69,6 @@ public class RulePrunerPrinter {
 
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
-        NormalAlphabet na = new NormalAlphabet();
         SAXProcessor sp = new SAXProcessor();
 
         for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
@@ -165,9 +163,13 @@ public class RulePrunerPrinter {
 
   }
 
-  private static int[] toBoundaries(String gRID_BOUNDARIES) {
-    // TODO Auto-generated method stub
-    return null;
+  private static int[] toBoundaries(String str) {
+    int[] res = new int[9];
+    String[] split = str.split("\\s+");
+    for (int i = 0; i < 9; i++) {
+      res[i] = Integer.valueOf(split[i]);
+    }
+    return res;
   }
 
   /**
