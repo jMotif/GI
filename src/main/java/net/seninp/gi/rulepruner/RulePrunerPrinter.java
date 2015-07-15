@@ -64,13 +64,16 @@ public class RulePrunerPrinter {
 
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
+        
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
         bw.write("window,paa,alphabet,isCovered,grammarsize,compressedGrammarSize,approxDist\n");
 
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
         SAXProcessor sp = new SAXProcessor();
 
+        System.err.println(sb.toString());
+        
         for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
           for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
             if (PAA_SIZE > WINDOW_SIZE) {
@@ -128,26 +131,7 @@ public class RulePrunerPrinter {
 
               bw.write(logStr.toString());
               consoleLogger.info(logStr.toString().replace(CR, ""));
-
-              // GrammarRules prunedRules = performPruning(rules);
-              //
-              // consoleLogger.info(logStr.toString());
-              //
-              // if (null == prunedRules) {
-              // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
-              // }
-              // else {
-              // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
-              // for (GrammarRuleRecord rule : prunedRules) {
-              // prunedRuleNums.add(rule.getRuleNumber());
-              // }
-              // // logStr
-              // // .append(Arrays.toString(prunedRuleNums.toArray(new
-              // Integer[prunedRuleNums.size()])));
-              // logStr.append(prunedRuleNums.size());
-              // consoleLogger.info(logStr.toString());
-              // }
-              // bw.write(logStr.toString() + CR);
+             
             }
           }
         }
@@ -163,6 +147,12 @@ public class RulePrunerPrinter {
 
   }
 
+  /**
+   * Converts a param string to boundaries array.
+   * 
+   * @param str
+   * @return
+   */
   private static int[] toBoundaries(String str) {
     int[] res = new int[9];
     String[] split = str.split("\\s+");
