@@ -6,131 +6,168 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import net.seninp.gi.GIAlgorithm;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
+import net.seninp.gi.repair.RePairFactory;
+import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
-import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
+import net.seninp.util.StackTrace;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.beust.jcommander.JCommander;
 
-public class CompressionPrinter {
-
-  private static final String TEST_DATASET_NAME = "src/resources/test-data/dutch_power_demand.txt";
+public class RulePrunerPrinter {
 
   private static final String COMMA = ",";
-
   private static final String CR = "\n";
-
-  private static Integer WINDOW_SIZE = 83;
-  private static Integer PAA_SIZE = 29;
-  private static Integer ALPHABET_SIZE = 8;
-  private static final double NORMALIZATION_THRESHOLD = 0.01;
-  private static final NumerosityReductionStrategy STRATEGY = NumerosityReductionStrategy.EXACT;
-
-  private static double[] ts1;
-
-  private static SAXProcessor sp = new SAXProcessor();
 
   // logging stuff
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.INFO;
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(CompressionPrinter.class);
+    consoleLogger = (Logger) LoggerFactory.getLogger(RulePrunerPrinter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
   }
 
   public static void main(String[] args) throws Exception {
 
-    // read data
-    //
-    ts1 = TSProcessor.readFileColumn(TEST_DATASET_NAME, 0, 0);
+    try {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
-    bw.write("window,paa,alphabet,rules_num,approx_dist\n");
+      RulePrunerParameters params = new RulePrunerParameters();
+      JCommander jct = new JCommander(params, args);
 
-    for (WINDOW_SIZE = 100; WINDOW_SIZE < 1400; WINDOW_SIZE += 10) {
-      for (PAA_SIZE = 2; PAA_SIZE < 50; PAA_SIZE += 2) {
-        if (PAA_SIZE > WINDOW_SIZE) {
-          continue;
-        }
-        for (ALPHABET_SIZE = 2; ALPHABET_SIZE < 13; ALPHABET_SIZE++) {
+      if (0 == args.length) {
+        jct.usage();
+      }
+      else {
+        // get params printed
+        //
+        StringBuffer sb = new StringBuffer(1024);
+        sb.append("Rule pruner CLI v.1").append(CR);
+        sb.append("parameters:").append(CR);
 
-          StringBuffer logStr = new StringBuffer();
-          logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
-              .append(ALPHABET_SIZE).append(COMMA);
-          // convert to SAX
-          //
-          ParallelSAXImplementation ps = new ParallelSAXImplementation();
-          SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE, STRATEGY,
-              NORMALIZATION_THRESHOLD);
-          saxData.buildIndex();
+        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE).append(CR);
+        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE).append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX normalization threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:                ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
 
-          // build a grammar
-          //
-          String inputString = saxData.getSAXString(" ");
-          // System.out.println("Input string:\n" + inputString);
+        String dataFName = RulePrunerParameters.IN_FILE;
+        double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File("rules_num.txt")));
+        bw.write("window,paa,alphabet,isCovered,grammarsize,compressedGrammarSize,approxDist\n");
 
-          SAXRule r = SequiturFactory.runSequitur(inputString);
-          GrammarRules rules = r.toGrammarRulesData();
-          SequiturFactory.updateRuleIntervals(rules, saxData, true, ts1, WINDOW_SIZE, PAA_SIZE);
+        int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
-          Integer size = computeSize(rules, saxData, PAA_SIZE);
+        NormalAlphabet na = new NormalAlphabet();
+        SAXProcessor sp = new SAXProcessor();
 
-          GrammarRules compressedGrammar = performCompression(rules);
-          Integer compressedSize = computeSize(compressedGrammar, saxData, PAA_SIZE);
+        for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
+          for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
+            if (PAA_SIZE > WINDOW_SIZE) {
+              continue;
+            }
+            for (int ALPHABET_SIZE = boundaries[6]; ALPHABET_SIZE < boundaries[7]; ALPHABET_SIZE += boundaries[8]) {
 
-          double approximationDistance = sp.approximationDistance(ts1, WINDOW_SIZE, PAA_SIZE,
-              ALPHABET_SIZE, STRATEGY, NORMALIZATION_THRESHOLD);
+              StringBuffer logStr = new StringBuffer();
+              logStr.append(WINDOW_SIZE).append(COMMA).append(PAA_SIZE).append(COMMA)
+                  .append(ALPHABET_SIZE).append(COMMA);
 
-          boolean[] compressedCover = new boolean[ts1.length];
-          compressedCover = updateRanges(compressedCover, compressedGrammar);
+              // convert to SAX
+              //
+              ParallelSAXImplementation ps = new ParallelSAXImplementation();
+              SAXRecords saxData = ps.process(ts, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+                  RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
+              saxData.buildIndex();
 
-          if (hasEmptyRanges(compressedCover)) {
-            logStr.append("0").append(COMMA);
+              // build a grammar
+              //
+              GrammarRules rules = null;
+              if (GIAlgorithm.SEQUITUR.equals(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION)) {
+                SAXRule r = SequiturFactory.runSequitur(saxData.getSAXString(" "));
+                rules = r.toGrammarRulesData();
+                SequiturFactory
+                    .updateRuleIntervals(rules, saxData, true, ts, WINDOW_SIZE, PAA_SIZE);
+              }
+              else if (GIAlgorithm.REPAIR.equals(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION)) {
+                RePairGrammar grammar = RePairFactory.buildGrammar(saxData.getSAXString(" "));
+                rules = grammar.toGrammarRulesData();
+              }
+
+              Integer size = computeSize(ts, rules, saxData, PAA_SIZE);
+
+              GrammarRules compressedGrammar = performCompression(ts, rules);
+              Integer compressedSize = computeSize(ts, compressedGrammar, saxData, PAA_SIZE);
+
+              double approximationDistance = sp.approximationDistance(ts, WINDOW_SIZE, PAA_SIZE,
+                  ALPHABET_SIZE, RulePrunerParameters.SAX_NR_STRATEGY,
+                  RulePrunerParameters.SAX_NORM_THRESHOLD);
+
+              boolean[] compressedCover = new boolean[ts.length];
+              compressedCover = updateRanges(compressedCover, compressedGrammar);
+
+              if (hasEmptyRanges(compressedCover)) {
+                logStr.append("0").append(COMMA);
+              }
+              else {
+                logStr.append("1").append(COMMA);
+              }
+
+              logStr.append(size).append(COMMA);
+              logStr.append(compressedSize).append(COMMA);
+              logStr.append(approximationDistance).append(CR);
+
+              bw.write(logStr.toString());
+              consoleLogger.info(logStr.toString().replace(CR, ""));
+
+              // GrammarRules prunedRules = performPruning(rules);
+              //
+              // consoleLogger.info(logStr.toString());
+              //
+              // if (null == prunedRules) {
+              // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
+              // }
+              // else {
+              // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
+              // for (GrammarRuleRecord rule : prunedRules) {
+              // prunedRuleNums.add(rule.getRuleNumber());
+              // }
+              // // logStr
+              // // .append(Arrays.toString(prunedRuleNums.toArray(new
+              // Integer[prunedRuleNums.size()])));
+              // logStr.append(prunedRuleNums.size());
+              // consoleLogger.info(logStr.toString());
+              // }
+              // bw.write(logStr.toString() + CR);
+            }
           }
-          else {
-            logStr.append("1").append(COMMA);
-          }
-
-          logStr.append(size).append(COMMA);
-          logStr.append(compressedSize).append(COMMA);
-          logStr.append(approximationDistance).append(CR);
-
-          bw.write(logStr.toString());
-          consoleLogger.info(logStr.toString().replace(CR, ""));
-
-          // GrammarRules prunedRules = performPruning(rules);
-          //
-          // consoleLogger.info(logStr.toString());
-          //
-          // if (null == prunedRules) {
-          // bw.write(logStr.toString() + Integer.MAX_VALUE + CR);
-          // }
-          // else {
-          // ArrayList<Integer> prunedRuleNums = new ArrayList<Integer>();
-          // for (GrammarRuleRecord rule : prunedRules) {
-          // prunedRuleNums.add(rule.getRuleNumber());
-          // }
-          // // logStr
-          // // .append(Arrays.toString(prunedRuleNums.toArray(new
-          // Integer[prunedRuleNums.size()])));
-          // logStr.append(prunedRuleNums.size());
-          // consoleLogger.info(logStr.toString());
-          // }
-          // bw.write(logStr.toString() + CR);
         }
+        bw.close();
+
       }
     }
-    bw.close();
+    catch (Exception e) {
+      System.err.println("error occured while parsing parameters " + Arrays.toString(args) + CR
+          + StackTrace.toString(e));
+      System.exit(-1);
+    }
 
+  }
+
+  private static int[] toBoundaries(String gRID_BOUNDARIES) {
+    // TODO Auto-generated method stub
+    return null;
   }
 
   /**
@@ -142,7 +179,8 @@ public class CompressionPrinter {
    * 
    * @return the grammar size.
    */
-  private static Integer computeSize(GrammarRules rules, SAXRecords saxData, Integer paaSize) {
+  private static Integer computeSize(double[] ts1, GrammarRules rules, SAXRecords saxData,
+      Integer paaSize) {
 
     // first we compute the cover by rules
     //
@@ -209,7 +247,7 @@ public class CompressionPrinter {
     return true;
   }
 
-  private static GrammarRules performCompression(GrammarRules grammarRules) {
+  private static GrammarRules performCompression(double[] ts1, GrammarRules grammarRules) {
 
     // this is where we keep range coverage
     boolean[] range = new boolean[ts1.length];
