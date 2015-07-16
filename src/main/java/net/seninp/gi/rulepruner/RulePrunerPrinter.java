@@ -61,12 +61,18 @@ public class RulePrunerPrinter {
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE).append(CR);
-        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
-        sb.append("  SAX normalization threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  GI Algorithm:                ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
+        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE)
+            .append(CR);
+        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE)
+            .append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY)
+            .append(CR);
+        sb.append("  SAX normalization threshold: ")
+            .append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:                ")
+            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES)
+            .append(CR);
 
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
@@ -266,6 +272,7 @@ public class RulePrunerPrinter {
     // these are rules used in current cover
     HashSet<Integer> usedRules = new HashSet<Integer>();
     usedRules.add(0);
+    HashSet<Integer> removedRules = new HashSet<Integer>();
     // do until all ranges are covered
     while (hasEmptyRanges(range)) {
 
@@ -275,7 +282,7 @@ public class RulePrunerPrinter {
       double bestDelta = Integer.MIN_VALUE;
       for (GrammarRuleRecord rule : grammarRules) {
         int id = rule.getRuleNumber();
-        if (usedRules.contains(id)) {
+        if (usedRules.contains(id) || removedRules.contains(id)) {
           continue;
         }
         else {
@@ -329,6 +336,7 @@ public class RulePrunerPrinter {
           else if (isCompletlyCovered(intervalsB, intervalsA)) {
             // System.out.println("Going to remove rule: " + grammarRules.get(rid).getRuleName());
             usedRules.remove(rid);
+            removedRules.add(rid);
             continueSearch = true;
             break;
           }
