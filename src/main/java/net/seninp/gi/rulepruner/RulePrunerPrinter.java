@@ -61,18 +61,12 @@ public class RulePrunerPrinter {
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE)
-            .append(CR);
-        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE)
-            .append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY)
-            .append(CR);
-        sb.append("  SAX normalization threshold: ")
-            .append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  GI Algorithm:                ")
-            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES)
-            .append(CR);
+        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE).append(CR);
+        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE).append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX normalization threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:                ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
 
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);

@@ -2,61 +2,164 @@
 library(ggplot2)
 library(grid)
 library(gridExtra)
+library(scales)
 library(Cairo)
 library(dplyr)
 # data
 setwd("/home/psenin/git/jmotif-gi/src/RCode/sampler")
 #
-tek14=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
-
-p=ggplot(filter(tek14, isCovered==1),
-         aes(x=approxDist,y=factor(window))) + 
-  geom_point(alpha=0.5)
-p
-
-p=ggplot(filter(tek14, isCovered==1),
-         aes(y=approxDist,x=alphabet)) + 
-  geom_point(alpha=0.5)
-p
-
-tek14_cover=ggplot(tek14, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-  geom_density2d() + ggtitle("TEK14 time series coverage by grammar") + theme_bw() +
-  scale_color_discrete(guide=guide_legend(title = NULL),
-                       labels=c("not covered", "covered")) +
-  theme(legend.position="bottom")
-tek14_cover
-
 ecg0606=read.table(gzfile("data/ecg0606_1.csv.out.gz"),header=T,sep=",")
-ecg0606_cover=ggplot(ecg0606, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-  geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
-  scale_color_discrete(guide=guide_legend(title = NULL),
-                       labels=c("not covered", "covered")) +
-  theme(legend.position="bottom")
-ecg0606_cover
+p11=ggplot(filter(ecg0606, isCovered==1),aes(x=approxDist,y=window)) + 
+  xlab("Approximation distance") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: approximation distance vs window size")
+p11
 
-video=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
-video_cover=ggplot(video, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-  geom_density2d() + ggtitle("Video dataset time series coverage by grammar") + theme_bw() +
-  scale_color_discrete(guide=guide_legend(title = NULL),
-                       labels=c("not covered", "covered")) +
-  theme(legend.position="bottom")
-video_cover
+p12=ggplot(filter(ecg0606, isCovered==1),aes(x=compressedGrammarSize,y=window)) + 
+  xlab("Compressed grammar size") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: grammar size vs window size")
+p12
 
-respiration=read.table(gzfile("data/nprs43.txt.out.gz"),header=T,sep=",")
-respiration_cover=ggplot(video, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-  geom_density2d() + ggtitle("Respiration dataset time series coverage by grammar") + theme_bw() +
-  scale_color_discrete(guide=guide_legend(title = NULL),
-                       labels=c("not covered", "covered")) +
-  theme(legend.position="bottom")
-respiration_cover
+p13=ggplot(filter(ecg0606, isCovered==1),aes(x=approxDist,y=paa)) + 
+  xlab("Approximation distance") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: approximation distance vs PAA size")
+p13
+
+p14=ggplot(filter(ecg0606, isCovered==1),aes(x=compressedGrammarSize,y=paa)) + 
+  xlab("Compressed grammar size") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: grammar size vs PAA size")
+p14
+
+p15=ggplot(filter(ecg0606, isCovered==1),aes(x=approxDist,y=alphabet)) + 
+  xlab("Approximation distance") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: approximation distance vs Alphabet size")
+p15
+
+p16=ggplot(filter(ecg0606, isCovered==1),aes(x=compressedGrammarSize,y=alphabet)) + 
+  xlab("Compressed grammar size") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: grammar size vs Alphabet size")
+p16
 
 #p = rectGrob()
 #grid.arrange(p, arrangeGrob(p,p,p, heights=c(3/4, 1/4, 1/4), ncol=1), ncol=2)
-grid.arrange(ecg0606_cover, video_cover, tek14_cover, respiration_cover, ncol=2)
+grid.arrange(p11, p12, p13, p14, p15, p16, ncol=1)
 
-CairoPDF(file = "cover_4",
-         width = 12, height = 8, onefile = TRUE, family = "Helvetica",
+
+video=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
+p21=ggplot(filter(video, isCovered==1),aes(x=approxDist,y=window)) + 
+  xlab("Approximation distance") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: approximation distance vs window size")
+p21
+
+p22=ggplot(filter(video, isCovered==1),aes(x=compressedGrammarSize,y=window)) + 
+  xlab("Compressed grammar size") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: grammar size vs window size")
+p22
+
+p23=ggplot(filter(video, isCovered==1),aes(x=approxDist,y=paa)) + 
+  xlab("Approximation distance") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: approximation distance vs PAA size")
+p23
+
+p24=ggplot(filter(video, isCovered==1),aes(x=compressedGrammarSize,y=paa)) + 
+  xlab("Compressed grammar size") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: grammar size vs PAA size")
+p24
+
+p25=ggplot(filter(video, isCovered==1),aes(x=approxDist,y=alphabet)) + 
+  xlab("Approximation distance") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: approximation distance vs Alphabet size")
+p25
+
+p26=ggplot(filter(video, isCovered==1),aes(x=compressedGrammarSize,y=alphabet)) + 
+  xlab("Compressed grammar size") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: grammar size vs Alphabet size")
+p26
+#
+grid.arrange(p11, p21, p12, p22, p13, p23, p14, p24, p15, p25, p16, p26, ncol=2)
+
+
+CairoPDF(file = "ecg_video_corr",
+         width = 12, height = 17, onefile = TRUE, family = "Helvetica",
          title = "R Graphics Output", fonts = NULL, version = "1.1",
          paper = "special")
-print(grid.arrange(ecg0606_cover, video_cover, tek14_cover, respiration_cover, ncol=2))
+grid.arrange(p11, p21, p12, p22, p13, p23, p14, p24, p15, p25, p16, p26, ncol=2)
 dev.off()
+
+#
+tek16=read.table(gzfile("data/TEK16.txt.out.gz"),header=T,sep=",")
+p11=ggplot(filter(tek16, isCovered==1),aes(x=approxDist,y=window)) + 
+  xlab("Approximation distance") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: approximation distance vs window size")
+p11
+
+p12=ggplot(filter(tek16, isCovered==1),aes(x=compressedGrammarSize,y=window)) + 
+  xlab("Compressed grammar size") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: grammar size vs window size")
+p12
+
+p13=ggplot(filter(tek16, isCovered==1),aes(x=approxDist,y=paa)) + 
+  xlab("Approximation distance") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: approximation distance vs PAA size")
+p13
+
+p14=ggplot(filter(tek16, isCovered==1),aes(x=compressedGrammarSize,y=paa)) + 
+  xlab("Compressed grammar size") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: grammar size vs PAA size")
+p14
+
+p15=ggplot(filter(tek16, isCovered==1),aes(x=approxDist,y=alphabet)) + 
+  xlab("Approximation distance") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: approximation distance vs Alphabet size")
+p15
+
+p16=ggplot(filter(tek16, isCovered==1),aes(x=compressedGrammarSize,y=alphabet)) + 
+  xlab("Compressed grammar size") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("TEK16: grammar size vs Alphabet size")
+p16
+
+#p = rectGrob()
+#grid.arrange(p, arrangeGrob(p,p,p, heights=c(3/4, 1/4, 1/4), ncol=1), ncol=2)
+grid.arrange(p11, p12, p13, p14, p15, p16, ncol=1)
+
+
+nprs=read.table(gzfile("data/nprs43.txt.out.gz"),header=T,sep=",")
+p21=ggplot(filter(nprs, isCovered==1),aes(x=approxDist,y=window)) + 
+  xlab("Approximation distance") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: approximation distance vs window size")
+p21
+
+p22=ggplot(filter(nprs, isCovered==1),aes(x=compressedGrammarSize,y=window)) + 
+  xlab("Compressed grammar size") + ylab("Sliding window size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: grammar size vs window size")
+p22
+
+p23=ggplot(filter(nprs, isCovered==1),aes(x=approxDist,y=paa)) + 
+  xlab("Approximation distance") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: approximation distance vs PAA size")
+p23
+
+p24=ggplot(filter(nprs, isCovered==1),aes(x=compressedGrammarSize,y=paa)) + 
+  xlab("Compressed grammar size") + ylab("PAA size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: grammar size vs PAA size")
+p24
+
+p25=ggplot(filter(nprs, isCovered==1),aes(x=approxDist,y=alphabet)) + 
+  xlab("Approximation distance") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: approximation distance vs Alphabet size")
+p25
+
+p26=ggplot(filter(nprs, isCovered==1),aes(x=compressedGrammarSize,y=alphabet)) + 
+  xlab("Compressed grammar size") + ylab("Alphabet size") +
+  geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("NPRS: grammar size vs Alphabet size")
+p26
+#
+grid.arrange(p11, p21, p12, p22, p13, p23, p14, p24, p15, p25, p16, p26, ncol=2)
+
+
+CairoPDF(file = "tek_nprs_corr",
+         width = 12, height = 17, onefile = TRUE, family = "Helvetica",
+         title = "R Graphics Output", fonts = NULL, version = "1.1",
+         paper = "special")
+grid.arrange(p11, p21, p12, p22, p13, p23, p14, p24, p15, p25, p16, p26, ncol=2)
+dev.off()
+
