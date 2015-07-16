@@ -3,9 +3,12 @@ package net.seninp.gi.rulepruner;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Locale;
 import net.seninp.gi.GIAlgorithm;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
@@ -29,6 +32,8 @@ public class RulePrunerPrinter {
   private static final String COMMA = ",";
   private static final String CR = "\n";
 
+  private static final DecimalFormat df = (new DecimalFormat("0.00"));
+
   // logging stuff
   //
   private static Logger consoleLogger;
@@ -36,6 +41,7 @@ public class RulePrunerPrinter {
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(RulePrunerPrinter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
+    df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
   }
 
   public static void main(String[] args) throws Exception {
@@ -55,17 +61,24 @@ public class RulePrunerPrinter {
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE).append(CR);
-        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
-        sb.append("  SAX normalization threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  GI Algorithm:                ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
+        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE)
+            .append(CR);
+        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE)
+            .append(CR);
+        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY)
+            .append(CR);
+        sb.append("  SAX normalization threshold: ")
+            .append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:                ")
+            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES)
+            .append(CR);
 
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
-        
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
+
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(
+            RulePrunerParameters.OUT_FILE)));
         bw.write("window,paa,alphabet,isCovered,grammarsize,compressedGrammarSize,approxDist\n");
 
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
@@ -73,7 +86,7 @@ public class RulePrunerPrinter {
         SAXProcessor sp = new SAXProcessor();
 
         System.err.println(sb.toString());
-        
+
         for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
           for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
             if (PAA_SIZE > WINDOW_SIZE) {
@@ -125,13 +138,16 @@ public class RulePrunerPrinter {
                 logStr.append("1").append(COMMA);
               }
 
+              double coverage = computeCover(compressedCover);
+              logStr.append(df.format(coverage)).append(COMMA);
+
               logStr.append(size).append(COMMA);
               logStr.append(compressedSize).append(COMMA);
               logStr.append(approximationDistance).append(CR);
 
               bw.write(logStr.toString());
               consoleLogger.info(logStr.toString().replace(CR, ""));
-             
+
             }
           }
         }
@@ -145,6 +161,16 @@ public class RulePrunerPrinter {
       System.exit(-1);
     }
 
+  }
+
+  private static double computeCover(boolean[] cover) {
+    int covered = 0;
+    for (boolean i : cover) {
+      if (i) {
+        covered++;
+      }
+    }
+    return (double) covered / (double) cover.length;
   }
 
   /**

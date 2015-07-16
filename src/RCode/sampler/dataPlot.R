@@ -7,11 +7,11 @@ library(dplyr)
 # data
 setwd("/media/Stock/git/jmotif-GI.git/src/RCode/sampler")
 #
-tek14=read.table(gzfile("data/TEK14.txt.gz"),header=F,sep=",")
-tek14$x=seq(1:length(tek14$V1))
-tek14_cover=ggplot(tek14, aes(x=x,y=V1)) + geom_line() + 
-  ggtitle("TEK14 dataset") + theme_bw() + theme(axis.title.y=element_blank())
-tek14_cover
+tek16=read.table(gzfile("data/TEK16.txt.gz"),header=F,sep=",")
+tek16$x=seq(1:length(tek16$V1))
+tek16_cover=ggplot(tek16, aes(x=x,y=V1)) + geom_line() + 
+  ggtitle("TEK16 dataset") + theme_bw() + theme(axis.title.y=element_blank())
+tek16_cover
 
 ecg0606=read.table(gzfile("data/ecg0606_1.csv.gz"),header=F,sep=",")
 ecg0606$x=seq(1:length(ecg0606$V1))
@@ -33,11 +33,11 @@ respiration_cover
 
 #p = rectGrob()
 #grid.arrange(p, arrangeGrob(p,p,p, heights=c(3/4, 1/4, 1/4), ncol=1), ncol=2)
-grid.arrange(ecg0606_cover, video_cover, tek14_cover, respiration_cover, ncol=2)
+grid.arrange(ecg0606_cover, video_cover, tek16_cover, respiration_cover, ncol=2)
 
 CairoPDF(file = "data_4",
          width = 12, height = 6, onefile = TRUE, family = "Helvetica",
          title = "R Graphics Output", fonts = NULL, version = "1.1",
          paper = "special")
-print(grid.arrange(ecg0606_cover, video_cover, tek14_cover, respiration_cover, ncol=2))
+print(grid.arrange(ecg0606_cover, video_cover, tek16_cover, respiration_cover, ncol=2))
 dev.off()
