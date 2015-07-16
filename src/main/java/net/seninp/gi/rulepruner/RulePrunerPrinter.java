@@ -73,7 +73,7 @@ public class RulePrunerPrinter {
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(new File(
             RulePrunerParameters.OUT_FILE)));
-        bw.write("window,paa,alphabet,isCovered,grammarsize,compressedGrammarSize,approxDist\n");
+        bw.write("window,paa,alphabet,isCovered,coverage,grammarsize,compressedGrammarSize,approxDist\n");
 
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
