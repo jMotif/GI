@@ -5,9 +5,20 @@ library(gridExtra)
 library(Cairo)
 library(dplyr)
 # data
-setwd("/media/Stock/git/jmotif-GI.git/src/RCode/sampler")
+setwd("/home/psenin/git/jmotif-gi/src/RCode/sampler")
 #
-tek14=read.table(gzfile("data/TEK14.txt.out.gz"),header=T,sep=",")
+tek14=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
+
+p=ggplot(filter(tek14, isCovered==1),
+         aes(x=approxDist,y=factor(window))) + 
+  geom_point(alpha=0.5)
+p
+
+p=ggplot(filter(tek14, isCovered==1),
+         aes(y=approxDist,x=alphabet)) + 
+  geom_point(alpha=0.5)
+p
+
 tek14_cover=ggplot(tek14, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
   geom_density2d() + ggtitle("TEK14 time series coverage by grammar") + theme_bw() +
   scale_color_discrete(guide=guide_legend(title = NULL),
