@@ -440,11 +440,11 @@ public class RulePrunerPrinter {
       int start = i.getStartPos();
       int end = i.getEndPos();
       for (int j = start; j <= end; j++) {
-        if (false == range[j]) {
-          cover++;
+        if (range[j]) {
+          overlap++;
         }
         else {
-          overlap++;
+          cover++;
         }
       }
     }
@@ -457,7 +457,7 @@ public class RulePrunerPrinter {
       return (double) cover
           / (double) (rule.getExpandedRuleString().length() + rule.getRuleIntervals().size());
     }
-    // else divide newly covered points mount by the sum of the rule string length and occurrence
+    // else divide newly covered points amount by the sum of the rule string length and occurrence
     // (i.e. encoding size)
     return ((double) cover / (double) (cover + overlap))
         / (double) (rule.getExpandedRuleString().length() + rule.getRuleIntervals().size());
