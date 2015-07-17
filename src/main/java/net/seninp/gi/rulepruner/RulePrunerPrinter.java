@@ -136,7 +136,7 @@ public class RulePrunerPrinter {
               double approximationDistance = sp.approximationDistance(ts, WINDOW_SIZE, PAA_SIZE,
                   ALPHABET_SIZE, RulePrunerParameters.SAX_NR_STRATEGY,
                   RulePrunerParameters.SAX_NORM_THRESHOLD);
-              logStr.append(dfSize.format(approximationDistance)).append(CR);
+              logStr.append(dfSize.format(approximationDistance)).append(COMMA);
 
               // build a grammar
               //
@@ -175,9 +175,14 @@ public class RulePrunerPrinter {
               // compute the coverage in percent
               //
               double coverage = computeCover(compressedCover);
-              logStr.append(dfPercent.format(coverage)).append(COMMA);
+              logStr.append(dfPercent.format(coverage));
+
+              // wrap it up
+              //
+              logStr.append(CR);
 
               // print the output
+              //
               bw.write(logStr.toString());
               consoleLogger.info(logStr.toString().replace(CR, ""));
 
