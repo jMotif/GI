@@ -27,12 +27,22 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.beust.jcommander.JCommander;
 
+/**
+ * Rule pruner experimentation.
+ * 
+ * @author psenin
+ * 
+ */
 public class RulePrunerPrinter {
 
+  // constants and formatter
   private static final String COMMA = ",";
   private static final String CR = "\n";
+  private static final DecimalFormat dfPercent = (new DecimalFormat("0.00"));
+  private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
 
-  private static final DecimalFormat df = (new DecimalFormat("0.00"));
+  private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,compressedGrammarSize,"
+      + "isCovered,coverage\n";
 
   // logging stuff
   //
@@ -41,9 +51,16 @@ public class RulePrunerPrinter {
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(RulePrunerPrinter.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
-    df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    dfPercent.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
+    dfSize.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
   }
 
+  /**
+   * Main runnable.
+   * 
+   * @param args
+   * @throws Exception
+   */
   public static void main(String[] args) throws Exception {
 
     try {
@@ -55,43 +72,52 @@ public class RulePrunerPrinter {
         jct.usage();
       }
       else {
+
         // get params printed
         //
         StringBuffer sb = new StringBuffer(1024);
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:                  ").append(RulePrunerParameters.IN_FILE)
+        sb.append("  input file:          ").append(RulePrunerParameters.IN_FILE).append(CR);
+        sb.append("  output file:         ").append(RulePrunerParameters.OUT_FILE).append(CR);
+        sb.append("  SAX num. reduction:  ").append(RulePrunerParameters.SAX_NR_STRATEGY)
             .append(CR);
-        sb.append("  output file:                 ").append(RulePrunerParameters.OUT_FILE)
+        sb.append("  SAX norm. threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
             .append(CR);
-        sb.append("  SAX numerosity reduction:    ").append(RulePrunerParameters.SAX_NR_STRATEGY)
-            .append(CR);
-        sb.append("  SAX normalization threshold: ")
-            .append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  GI Algorithm:                ")
+        sb.append("  GI Algorithm:        ")
             .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:             ").append(RulePrunerParameters.GRID_BOUNDARIES)
+        sb.append("  Grid boundaries:     ").append(RulePrunerParameters.GRID_BOUNDARIES)
             .append(CR);
 
+        // printer out the params before starting
+        System.err.println(sb.toString());
+
+        // read the data in
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
 
-        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(
-            RulePrunerParameters.OUT_FILE)));
-        bw.write("window,paa,alphabet,isCovered,coverage,grammarsize,compressedGrammarSize,approxDist\n");
-
+        // parse the boundaries params
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
+        // create the output file
+        BufferedWriter bw = new BufferedWriter(new FileWriter(new File(
+            RulePrunerParameters.OUT_FILE)));
+        bw.write(OUTPUT_HEADER);
+
+        // we need to use this in the loop
         SAXProcessor sp = new SAXProcessor();
 
-        System.err.println(sb.toString());
-
+        // iterate over the grid evaluating the grammar
+        //
         for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
           for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
+
+            // check for invalid cases
             if (PAA_SIZE > WINDOW_SIZE) {
               continue;
             }
+
             for (int ALPHABET_SIZE = boundaries[6]; ALPHABET_SIZE < boundaries[7]; ALPHABET_SIZE += boundaries[8]) {
 
               StringBuffer logStr = new StringBuffer();
@@ -104,6 +130,13 @@ public class RulePrunerPrinter {
               SAXRecords saxData = ps.process(ts, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
                   RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
               saxData.buildIndex();
+
+              // compute SAX approximation distance
+              //
+              double approximationDistance = sp.approximationDistance(ts, WINDOW_SIZE, PAA_SIZE,
+                  ALPHABET_SIZE, RulePrunerParameters.SAX_NR_STRATEGY,
+                  RulePrunerParameters.SAX_NORM_THRESHOLD);
+              logStr.append(dfSize.format(approximationDistance)).append(CR);
 
               // build a grammar
               //
@@ -119,18 +152,19 @@ public class RulePrunerPrinter {
                 rules = grammar.toGrammarRulesData();
               }
 
-              Integer size = computeSize(ts, rules, saxData, PAA_SIZE);
+              Integer grammarSize = computeGrammarSize(ts, rules, saxData, PAA_SIZE);
+              logStr.append(grammarSize).append(COMMA);
 
+              // prune grammar' rules
+              //
               GrammarRules compressedGrammar = performCompression(ts, rules);
-              Integer compressedSize = computeSize(ts, compressedGrammar, saxData, PAA_SIZE);
+              Integer compressedSize = computeGrammarSize(ts, compressedGrammar, saxData, PAA_SIZE);
+              logStr.append(compressedSize).append(COMMA);
 
-              double approximationDistance = sp.approximationDistance(ts, WINDOW_SIZE, PAA_SIZE,
-                  ALPHABET_SIZE, RulePrunerParameters.SAX_NR_STRATEGY,
-                  RulePrunerParameters.SAX_NORM_THRESHOLD);
-
+              // compute the cover
+              //
               boolean[] compressedCover = new boolean[ts.length];
               compressedCover = updateRanges(compressedCover, compressedGrammar);
-
               if (hasEmptyRanges(compressedCover)) {
                 logStr.append("0").append(COMMA);
               }
@@ -138,13 +172,12 @@ public class RulePrunerPrinter {
                 logStr.append("1").append(COMMA);
               }
 
+              // compute the coverage in percent
+              //
               double coverage = computeCover(compressedCover);
-              logStr.append(df.format(coverage)).append(COMMA);
+              logStr.append(dfPercent.format(coverage)).append(COMMA);
 
-              logStr.append(size).append(COMMA);
-              logStr.append(compressedSize).append(COMMA);
-              logStr.append(approximationDistance).append(CR);
-
+              // print the output
               bw.write(logStr.toString());
               consoleLogger.info(logStr.toString().replace(CR, ""));
 
@@ -163,6 +196,12 @@ public class RulePrunerPrinter {
 
   }
 
+  /**
+   * Compute the cover in percent.
+   * 
+   * @param cover the cover array.
+   * @return coverage percentage.
+   */
   private static double computeCover(boolean[] cover) {
     int covered = 0;
     for (boolean i : cover) {
@@ -197,7 +236,7 @@ public class RulePrunerPrinter {
    * 
    * @return the grammar size.
    */
-  private static Integer computeSize(double[] ts1, GrammarRules rules, SAXRecords saxData,
+  private static Integer computeGrammarSize(double[] ts1, GrammarRules rules, SAXRecords saxData,
       Integer paaSize) {
 
     // first we compute the cover by rules

@@ -1,26 +1,22 @@
+# libs
 library(ggplot2)
+library(grid)
+library(gridExtra)
+library(scales)
+library(Cairo)
 library(dplyr)
-data=read.csv("../../rules_num.txt")
-names(data) <- c("window","paa","alphabet","size","approx_dist")
+#
+ecg0606=read.table(gzfile("data/ecg0606_1.updated.csv.out.gz"),header=T,sep=",")
+names(ecg0606)
+ecg0606p=ggplot(filter(ecg0606, isCovered==1),
+         aes(x=compressedGrammarSize,y=approxDist,color=factor(paa))) + 
+  geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
+  theme_bw()
+ecg0606p
 
-filter(data, window==170, paa==4, alphabet==4)
-
-filter(data, window==170, paa==6, alphabet==3)
-
-filter(data, approx_dist <10)
-
-names(data)
-p=ggplot(filter(data, window<600, approx_dist<200, size<2000),
-  aes(x=size,y=approx_dist,color=factor(paa),shape=factor(alphabet),size=factor(window))) + 
-  geom_point(alpha=0.5) + guides(color=guide_legend(ncol=4,override.aes=list(size=5,alpha=1))) + 
-  guides(shape=guide_legend(ncol=2),override.aes=list(size=4)) + guides(size=guide_legend(ncol=3)) +
-  theme_bw() + scale_shape_manual(values=seq(0,10))
-p
-
-p + geom_point(data=filter(data, paa==4, alphabet==4, window==170), aes(x=size,y=approx_dist), color="orange")
-
-min(data$size)
-
-filter(data, size==min(data$size))
-
-table(filter(data,alphabet==6))
+tek16=read.table(gzfile("data/TEK16.updated.txt.out.gz"),header=T,sep=",")
+tek16p=ggplot(filter(tek16, isCovered==1),
+               aes(x=compressedGrammarSize,y=approxDist,color=factor(paa))) + 
+  geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
+  theme_bw()
+tek16p
