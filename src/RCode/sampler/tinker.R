@@ -14,9 +14,15 @@ ecg0606p=ggplot(filter(ecg0606, isCovered==1),
   theme_bw()
 ecg0606p
 
-tek16=read.table(gzfile("data/TEK16.updated.txt.out.gz"),header=T,sep=",")
-tek16p=ggplot(filter(tek16, isCovered==1),
-               aes(x=compressedGrammarSize,y=approxDist,color=factor(paa))) + 
+ecg0606a=ggplot(filter(ecg0606, isCovered==1),
+          aes(x=compressedGrammarSize,y=approxDist,color=factor(alphabet))) + 
   geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
   theme_bw()
-tek16p
+ecg0606a
+
+ecg0606w=ggplot(filter(ecg0606, isCovered==1, compressedGrammarSize<20000),
+                aes(x=compressedGrammarSize,y=approxDist,color=factor(window))) + 
+  geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
+  theme_bw()
+ecg0606w
+
