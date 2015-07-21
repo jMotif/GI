@@ -42,6 +42,11 @@ public class RulePrunerParameters {
   @Parameter(names = { "--algorithm", "-a" }, description = "algorithm to use")
   public static GIAlgorithm GI_ALGORITHM_IMPLEMENTATION = GIAlgorithm.SEQUITUR;
 
+  // sub-sampling parameter
+  //
+  @Parameter(names = { "--subsample" }, description = "subsampling % for longer time series")
+  public static double SUBSAMPLING_PERCENTAGE = 0.1;
+
   // grid boundaries for discretization parameters
   //
   @Parameter(names = { "--bounds", "-b" }, description = "grid boundaries (Wmin Wmax Wstep Pmin Pmax Pstep Amin Amax Astep)")
