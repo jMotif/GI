@@ -79,23 +79,34 @@ public class RulePrunerPrinter {
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
-        sb.append("  input file:          ").append(RulePrunerParameters.IN_FILE).append(CR);
-        sb.append("  output file:         ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX num. reduction:  ").append(RulePrunerParameters.SAX_NR_STRATEGY)
+        sb.append("  input file:           ").append(RulePrunerParameters.IN_FILE).append(CR);
+        sb.append("  output file:          ").append(RulePrunerParameters.OUT_FILE).append(CR);
+        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY)
             .append(CR);
-        sb.append("  SAX norm. threshold: ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
+        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
             .append(CR);
-        sb.append("  GI Algorithm:        ")
+        sb.append("  GI Algorithm:         ")
             .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:     ").append(RulePrunerParameters.GRID_BOUNDARIES)
+        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES)
             .append(CR);
+        if (!(Double.isNaN(RulePrunerParameters.SUBSAMPLING_FRACTION))) {
+          sb.append("  Subsampling fraction: ").append(RulePrunerParameters.SUBSAMPLING_FRACTION)
+              .append(CR);
+        }
 
         // printer out the params before starting
-        System.err.println(sb.toString());
+        System.err.print(sb.toString());
 
         // read the data in
         String dataFName = RulePrunerParameters.IN_FILE;
         double[] ts = TSProcessor.readFileColumn(dataFName, 0, 0);
+        if (!(Double.isNaN(RulePrunerParameters.SUBSAMPLING_FRACTION))) {
+          ts = Arrays.copyOfRange(ts, 0,
+              (int) Math.round((double) ts.length * RulePrunerParameters.SUBSAMPLING_FRACTION));
+        }
+
+        // printer out the params before starting
+        System.err.println("working with series of " + ts.length + " points ... " + CR);
 
         // parse the boundaries params
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);

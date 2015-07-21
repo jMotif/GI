@@ -44,8 +44,8 @@ public class RulePrunerParameters {
 
   // sub-sampling parameter
   //
-  @Parameter(names = { "--subsample" }, description = "subsampling % for longer time series")
-  public static double SUBSAMPLING_PERCENTAGE = 0.1;
+  @Parameter(names = { "--subsample" }, description = "subsampling fraction (0.0 - 1.0) for longer time series")
+  public static Double SUBSAMPLING_FRACTION = Double.NaN;
 
   // grid boundaries for discretization parameters
   //

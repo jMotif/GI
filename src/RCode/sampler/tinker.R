@@ -42,7 +42,7 @@ datp=ggplot(filter(dat, coverage>0.99, paa>1, paa<20),
 datp
 
 datc=ggplot(dat, aes(x=compressedGrammarSize,y=approxDist)) + 
-  stat_density2d(aes(fill = factor(isCovered), alpha=0.3, geom=c("density2d")) + 
+  stat_density2d(aes(fill = factor(isCovered)), alpha=0.3, geom=c("polygon","density2d")) + 
   ggtitle("TEK16 time series coverage by grammar") + theme_bw() +
   #scale_y_continuous(limits=c(50,250)) + scale_x_continuous(limits=c(0,20000)) + 
   scale_color_discrete(guide=guide_legend(title = NULL),
@@ -50,11 +50,12 @@ datc=ggplot(dat, aes(x=compressedGrammarSize,y=approxDist)) +
   theme(legend.position="bottom")
 datc
 
-filter(dat, compressedGrammarSize>7500, compressedGrammarSize<10000, 
-       approxDist>125,approxDist<200)
-
 dat$reduction=dat$compressedGrammarSize/dat$grammarSize
 head(arrange(dat,reduction))
+hist(dat$reduction)
+p = ggplot(dat[dat$coverage>0.9,],aes(x=reduction,y=alphabet)) + geom_point()
+p
+
 
 
 
@@ -62,15 +63,9 @@ filter(ecg0606, coverage>0.8, paa>1, paa<20, approxDist>90, approxDist<100, comp
 
 
 
-ecg0606a=ggplot(filter(ecg0606, isCovered==1),
-          aes(x=compressedGrammarSize,y=approxDist,color=factor(alphabet))) + 
+tek16=read.table(gzfile("data/TEK16.updated.txt.out.gz"),header=T,sep=",")
+tek16p=ggplot(filter(tek16, isCovered==1),
+               aes(x=compressedGrammarSize,y=approxDist,color=factor(paa))) + 
   geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
   theme_bw()
-ecg0606a
-
-ecg0606w=ggplot(filter(ecg0606, isCovered==1, compressedGrammarSize<20000),
-                aes(x=compressedGrammarSize,y=approxDist,color=factor(window))) + 
-  geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
-  theme_bw()
-ecg0606w
-
+tek16p
