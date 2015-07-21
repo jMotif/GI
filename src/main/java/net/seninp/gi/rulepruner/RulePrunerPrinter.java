@@ -41,8 +41,8 @@ public class RulePrunerPrinter {
   private static final DecimalFormat dfPercent = (new DecimalFormat("0.00"));
   private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
 
-  private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,compressedGrammarSize,"
-      + "isCovered,coverage\n";
+  private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,grammarRules,"
+      + "compressedGrammarSize,prunedRules,isCovered,coverage\n";
 
   // logging stuff
   //
@@ -81,14 +81,11 @@ public class RulePrunerPrinter {
 
         sb.append("  input file:           ").append(RulePrunerParameters.IN_FILE).append(CR);
         sb.append("  output file:          ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY)
-            .append(CR);
-        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
-            .append(CR);
-        sb.append("  GI Algorithm:         ")
-            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES)
-            .append(CR);
+        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:         ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
+        
         if (!(Double.isNaN(RulePrunerParameters.SUBSAMPLING_FRACTION))) {
           sb.append("  Subsampling fraction: ").append(RulePrunerParameters.SUBSAMPLING_FRACTION)
               .append(CR);
@@ -165,12 +162,14 @@ public class RulePrunerPrinter {
 
               Integer grammarSize = computeGrammarSize(ts, rules, saxData, PAA_SIZE);
               logStr.append(grammarSize).append(COMMA);
+              logStr.append(rules.size()).append(COMMA);
 
               // prune grammar' rules
               //
               GrammarRules compressedGrammar = performCompression(ts, rules);
               Integer compressedSize = computeGrammarSize(ts, compressedGrammar, saxData, PAA_SIZE);
               logStr.append(compressedSize).append(COMMA);
+              logStr.append(compressedGrammar.size()).append(COMMA);
 
               // compute the cover
               //
