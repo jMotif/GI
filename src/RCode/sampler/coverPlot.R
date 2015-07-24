@@ -15,7 +15,7 @@ tek16_cover=ggplot(tek16, aes(x=compressedGrammarSize,y=approxDist, color=factor
   theme(legend.position="bottom")
 tek16_cover
 
-ecg0606=read.table(gzfile("data/ecg0606_1.csv.out.gz"),header=T,sep=",")
+ecg0606=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
 ecg0606_cover=ggplot(ecg0606, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
   geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
   scale_color_discrete(guide=guide_legend(title = NULL),
@@ -23,7 +23,7 @@ ecg0606_cover=ggplot(ecg0606, aes(x=compressedGrammarSize,y=approxDist, color=fa
   theme(legend.position="bottom")
 ecg0606_cover
 
-video=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
+video=read.table(gzfile("data/video_data.txt.out.gz"),header=T,sep=",")
 video_cover=ggplot(video, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
   geom_density2d() + ggtitle("Video dataset time series coverage by grammar") + theme_bw() +
   scale_color_discrete(guide=guide_legend(title = NULL),

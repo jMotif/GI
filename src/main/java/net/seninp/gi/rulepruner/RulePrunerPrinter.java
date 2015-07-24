@@ -166,15 +166,15 @@ public class RulePrunerPrinter {
 
               // prune grammar' rules
               //
-              GrammarRules compressedGrammar = performCompression(ts, rules);
-              Integer compressedSize = computeGrammarSize(ts, compressedGrammar, saxData, PAA_SIZE);
+              GrammarRules prunedRulesSet = performPruning(ts, rules);
+              Integer compressedSize = computeGrammarSize(ts, prunedRulesSet, saxData, PAA_SIZE);
               logStr.append(compressedSize).append(COMMA);
-              logStr.append(compressedGrammar.size()).append(COMMA);
+              logStr.append(prunedRulesSet.size()).append(COMMA);
 
               // compute the cover
               //
               boolean[] compressedCover = new boolean[ts.length];
-              compressedCover = updateRanges(compressedCover, compressedGrammar);
+              compressedCover = updateRanges(compressedCover, prunedRulesSet);
               if (hasEmptyRanges(compressedCover)) {
                 logStr.append("0").append(COMMA);
               }
@@ -319,7 +319,7 @@ public class RulePrunerPrinter {
     return true;
   }
 
-  private static GrammarRules performCompression(double[] ts1, GrammarRules grammarRules) {
+  private static GrammarRules performPruning(double[] ts1, GrammarRules grammarRules) {
 
     // this is where we keep range coverage
     boolean[] range = new boolean[ts1.length];

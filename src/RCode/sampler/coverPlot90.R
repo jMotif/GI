@@ -7,7 +7,7 @@ library(dplyr)
 # data
 setwd("/media/Stock/git/jmotif-GI.git/src/RCode/sampler")
 #
-tek16=read.table(gzfile("data/TEK16.updated.txt.out.gz"),header=T,sep=",")
+tek16=read.table(gzfile("data/TEK16.txt.out.gz"),header=T,sep=",")
 tek16$covered90=tek16$coverage>0.9
 tek16_cover=ggplot(tek16, aes(x=compressedGrammarSize,y=approxDist, color=factor(covered90))) + 
   geom_density2d() + ggtitle("TEK16 time series 90% coverage by grammar") + theme_bw() +
@@ -16,7 +16,7 @@ tek16_cover=ggplot(tek16, aes(x=compressedGrammarSize,y=approxDist, color=factor
   theme(legend.position="bottom")
 tek16_cover
 
-ecg0606=read.table(gzfile("data/ecg0606_1.updated.csv.out.gz"),header=T,sep=",")
+ecg0606=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
 ecg0606$covered90=ecg0606$coverage>0.9
 ecg0606_cover=ggplot(ecg0606, aes(x=compressedGrammarSize,y=approxDist, color=factor(covered90))) + 
   geom_density2d() + ggtitle("ECG0606 time series 90% coverage by grammar") + theme_bw() +
@@ -25,7 +25,7 @@ ecg0606_cover=ggplot(ecg0606, aes(x=compressedGrammarSize,y=approxDist, color=fa
   theme(legend.position="bottom")
 ecg0606_cover
 
-video=read.table(gzfile("data/ann_gun_CentroidA1.updated.csv.out.gz"),header=T,sep=",")
+video=read.table(gzfile("data/video_data.txt.out.gz"),header=T,sep=",")
 video$covered90=video$coverage>0.9
 video_cover=ggplot(video, aes(x=compressedGrammarSize,y=approxDist, color=factor(covered90))) + 
   geom_density2d() + ggtitle("Video dataset time series 90% coverage by grammar") + theme_bw() +
@@ -34,7 +34,7 @@ video_cover=ggplot(video, aes(x=compressedGrammarSize,y=approxDist, color=factor
   theme(legend.position="bottom")
 video_cover
 
-respiration=read.table(gzfile("data/nprs43.updated.txt.out.gz"),header=T,sep=",")
+respiration=read.table(gzfile("data/nprs43.txt.out.gz"),header=T,sep=",")
 respiration$covered90=respiration$coverage>0.9
 respiration_cover=ggplot(respiration, aes(x=compressedGrammarSize,y=approxDist, color=factor(covered90))) + 
   geom_density2d() + ggtitle("Respiration dataset time series 90% coverage by grammar") + theme_bw() +

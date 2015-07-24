@@ -8,7 +8,7 @@ library(dplyr)
 # data
 setwd("/home/psenin/git/jmotif-gi/src/RCode/sampler")
 #
-ecg0606=read.table(gzfile("data/ecg0606_1.csv.out.gz"),header=T,sep=",")
+ecg0606=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
 p11=ggplot(filter(ecg0606, isCovered==1),aes(x=approxDist,y=window)) + 
   xlab("Approximation distance") + ylab("Sliding window size") +
   geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("ECG0606: approximation distance vs window size")
@@ -44,7 +44,7 @@ p16
 grid.arrange(p11, p12, p13, p14, p15, p16, ncol=1)
 
 
-video=read.table(gzfile("data/ann_gun_CentroidA1.csv.out.gz"),header=T,sep=",")
+video=read.table(gzfile("data/video_data.txt.out.gz"),header=T,sep=",")
 p21=ggplot(filter(video, isCovered==1),aes(x=approxDist,y=window)) + 
   xlab("Approximation distance") + ylab("Sliding window size") +
   geom_point(alpha=0.5,size=2) + theme_bw() + ggtitle("Video: approximation distance vs window size")
