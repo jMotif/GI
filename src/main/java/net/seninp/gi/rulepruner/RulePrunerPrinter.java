@@ -103,7 +103,7 @@ public class RulePrunerPrinter {
         }
 
         // printer out the params before starting
-        System.err.println("working with series of " + ts.length + " points ... " + CR);
+        System.err.println("  working with series of " + ts.length + " points ... " + CR);
 
         // parse the boundaries params
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
@@ -257,7 +257,6 @@ public class RulePrunerPrinter {
     // first we compute the cover by rules
     //
     boolean[] range = new boolean[ts1.length];
-
     for (GrammarRuleRecord r : rules) {
       if (0 == r.getRuleNumber()) {
         continue;
@@ -265,38 +264,33 @@ public class RulePrunerPrinter {
       updateRanges(range, r.getRuleIntervals());
     }
 
+    // res is the final grammar's size
+    //
     int res = 0;
 
-    if (isCovered(range)) {
+    
+    // first we compute the size needed for encoding of rules
+    //
+    for (GrammarRuleRecord r : rules) {
 
-      // if all is covered
+      // skip the rule zero
       //
-      for (GrammarRuleRecord r : rules) {
-        if (0 == r.getRuleNumber()) {
-          // skip the rule zero
-          continue;
-        }
-        // the increment is computed as the size of the expanded rule string (bytes)
-        // plus the number of occurrences * 2 (a word per each occurrence)
-        //
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
+      if (0 == r.getRuleNumber()) {
+        continue;
       }
-
+      
+      // the increment is computed as the size in bytes which is the sum of:
+      // - the expanded rule string (a letter == byte)
+      // - the number of occurrences * 2 (each occurrence index == a word)
+      //
+      res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+          + r.getOccurrences().size() * 2;
     }
-    else {
 
-      for (GrammarRuleRecord r : rules) {
-        if (0 == r.getRuleNumber()) {
-          // skip the rule zero
-          continue;
-        }
-        // the increment is computed as the size of the expanded rule string (bytes)
-        // plus the number of occurrences * 2 (a word per each occurrence)
-        //
-        res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-            + r.getOccurrences().size() * 2;
-      }
+    // if happens that not the whole time series is covered, we add the space needed to encode the gaps
+    // each uncovered point corresponds to a word of length PAA and an index
+    //
+    if (!(isCovered(range))) {
 
       for (int i = 0; i < range.length; i++) {
         if (false == range[i] && (null != saxData.getByIndex(i))) {
