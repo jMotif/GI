@@ -13,12 +13,51 @@ for(f in ll){
   print(paste(f))
   dat=read.table(gzfile(f),header=T,sep=",")
   dat$reduction=dat$compressedGrammarSize/dat$grammarSize
-  print(head(arrange(dat,reduction)[,c(1,2,3,5,6,7,8,11)]))
+  names(dat) <- c("win","paa","a","approx","gSize","rules","prunedSize","prunedRules","covered","cvr","red")
+  print(head(arrange(dat,red)[,c(1,2,3,4,5,6,7,8,11)]))
 }
 
 
-dat=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
+dat=read.table("/media/Stock/tmp/test.csv.out",header=T,sep=",")
+names(dat)
+dat_cover=ggplot(dat, aes(x=grammarSize,y=approxDist, color=factor(isCovered))) + 
+  geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
+  scale_color_discrete(guide=guide_legend(title = NULL),
+                       labels=c("not covered", "covered")) +
+  theme(legend.position="bottom")
+dat_cover
 
+setwd("/media/Stock/tmp/ydata-labeled-time-series-anomalies-v1_0/A4Benchmark/")
+files <- list.files(pattern = "csv")
+
+library(ggplot2)
+
+dat=read.csv("A4Benchmark-TS12.csv")
+names(dat)
+p=ggplot(dat,aes(x=c(1:length(dat$value)),y=value,color=anomaly)) + geom_line(size=2)
+p+theme_bw()
+
+write.table(dat$value,"/media/Stock/tmp/test.csv",row.names=F,col.names=F)
+
+
+
+dat_cover=ggplot(filter(dat, covergaeis, 
+                        aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
+                   geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
+                   scale_color_discrete(guide=guide_legend(title = NULL),
+                                        labels=c("not covered", "covered")) +
+                   theme(legend.position="bottom")
+                 dat_cover
+                 
+
+
+dat=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
+dat_cover=ggplot(dat, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
+  geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
+  scale_color_discrete(guide=guide_legend(title = NULL),
+                       labels=c("not covered", "covered")) +
+  theme(legend.position="bottom")
+dat_cover
 
 
 
