@@ -58,8 +58,8 @@ public class RulePrunerPrinter {
   /**
    * Main runnable.
    * 
-   * @param args
-   * @throws Exception
+   * @param args parameters used.
+   * @throws Exception if error occurs.
    */
   public static void main(String[] args) throws Exception {
 

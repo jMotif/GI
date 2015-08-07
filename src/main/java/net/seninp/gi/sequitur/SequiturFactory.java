@@ -62,7 +62,7 @@ public final class SequiturFactory {
    * @param inputString The string to digest. Symbols expected to be separated by space.
    * 
    * @return The top rule handler.
-   * @throws Exception
+   * @throws Exception if error occurs.
    */
   public static SAXRule runSequitur(String inputString) throws Exception {
 
@@ -118,9 +118,12 @@ public final class SequiturFactory {
    * Digests a string of symbols separated by space.
    * 
    * @param string The string to digest. Symbols expected to be separated by space.
+   * @param alphabetSize The alphabet size to use.
+   * @param threshold the merging distance threshold to use.
    * 
    * @return The top rule handler.
-   * @throws Exception
+   * 
+   * @throws Exception if error occurs.
    */
   public static SAXRule runSequiturWithEditDistanceThreshold(String string, Integer alphabetSize,
       Integer threshold) throws Exception {
@@ -193,6 +196,7 @@ public final class SequiturFactory {
    * Recovers start and stop coordinates of a rule subsequences.
    * 
    * @param ruleIdx The rule index.
+   * 
    * @return The array of all intervals corresponding to this rule.
    */
   public static ArrayList<RuleInterval> getRulePositionsByRuleNum(int ruleIdx, SAXRule grammar,

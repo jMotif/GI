@@ -23,8 +23,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 
 /**
- * Template for Sequitur data structures. Adaption of Eibe Frank code for JMotif API, see
- * {@link sequitur.info} for original version.
+ * Template for Sequitur data structures. Adaption of Eibe Frank code for JMotif API.
  * 
  * @author Manfred Lerner, seninp
  * 
@@ -133,6 +132,8 @@ public abstract class SAXSymbol {
 
   /**
    * Returns true if this is the guard symbol. Overwritten in subclass guard.
+   * 
+   * @return true if the guard.
    */
   public boolean isGuard() {
     return false;
@@ -140,6 +141,8 @@ public abstract class SAXSymbol {
 
   /**
    * Returns true if this is a non-terminal. Overwritten in subclass nonTerminal.
+   * 
+   * @return true if the non-terminal.
    */
   public boolean isNonTerminal() {
     return false;
@@ -208,6 +211,8 @@ public abstract class SAXSymbol {
 
   /**
    * Replace a digram with a non-terminal.
+   * 
+   * @param r a rule to use.
    */
   public void substitute(SAXRule r) {
     // System.out.println("[sequitur debug] *substitute* " + this.value + " with rule "
@@ -235,7 +240,8 @@ public abstract class SAXSymbol {
   /**
    * Deals with a matching digram.
    * 
-   * @param
+   * @param theDigram the first matching digram.
+   * @param matchingDigram the second matching digram.
    */
   public void match(SAXSymbol theDigram, SAXSymbol matchingDigram) {
 
@@ -382,8 +388,8 @@ public abstract class SAXSymbol {
   /**
    * This routine is used for the debugging.
    * 
-   * @param symbol
-   * @return
+   * @param symbol the symbol we looking into.
+   * @return symbol's payload.
    */
   protected static String getPayload(SAXSymbol symbol) {
     if (symbol.isGuard()) {

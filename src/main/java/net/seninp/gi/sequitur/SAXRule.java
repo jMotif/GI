@@ -29,8 +29,7 @@ import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 
 /**
- * The Rule. Adaption of Eibe Frank code for JMotif API, see {@link sequitur.info} for original
- * version.
+ * The Rule. Adaption of Eibe Frank code for JMotif API.
  * 
  * @author Manfred Lerner, seninp
  * 
@@ -246,10 +245,10 @@ public class SAXRule {
     }
 
     StringBuilder resultString = new StringBuilder(8192);
-    
+
     GrammarRuleRecord ruleRecord = arrRuleRecords.get(0);
     resultString.append(ruleRecord.getRuleString());
-    
+
     int currentSearchStart = resultString.indexOf("R");
     while (currentSearchStart >= 0) {
       int spaceIdx = resultString.indexOf(" ", currentSearchStart);
@@ -337,8 +336,6 @@ public class SAXRule {
   /**
    * Add-on to the original code by manfred and seninp. This one similar to the original getRules()
    * but populates and returns the array list of SAXRuleRecords.
-   * 
-   * @return list of SAXRuleRecords.
    */
   protected void getSAXRules() {
 

@@ -22,11 +22,10 @@ package net.seninp.gi.sequitur;
 /**
  * 
  * The Guard node - serves as head of the "doubly-linked" list representing a rule - in other words
- * it's a rule handler. Adaption of Eibe Frank code for JMotif API, see {@link sequitur.info} for
- * original version.
+ * it's a rule handler. Adaption of Eibe Frank code for JMotif API.
  * 
  * 
- * @author Manfred Lerner
+ * @author Manfred Lerner, seninp
  * 
  */
 public class SAXGuard extends SAXSymbol {

@@ -20,8 +20,7 @@ package net.seninp.gi.sequitur;
  */
 
 /**
- * This is a regular, a.k.a. "terminal", symbol. Adaption of Eibe Frank code for JMotif API, see
- * {@link sequitur.info} for original version.
+ * This is a regular, a.k.a. "terminal", symbol. Adaption of Eibe Frank code for JMotif API.
  * 
  * 
  * @author Manfred Lerner

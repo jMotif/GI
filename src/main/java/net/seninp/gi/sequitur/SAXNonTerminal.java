@@ -20,10 +20,9 @@ package net.seninp.gi.sequitur;
  */
 
 /**
- * The Non-Terminal symbol - i.e. Rule. Adaption of Eibe Frank code for JMotif API, see
- * {@link sequitur.info} for original version.
+ * The Non-Terminal symbol - i.e. Rule. Adaption of Eibe Frank code for JMotif API.
  * 
- * @author Manfred Lerner
+ * @author Manfred Lerner, seninp
  * 
  */
 public class SAXNonTerminal extends SAXSymbol implements Cloneable {
