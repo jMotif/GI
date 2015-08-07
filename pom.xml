@@ -7,7 +7,7 @@
 
 	<groupId>net.seninp</groupId>
 	<artifactId>jmotif-gi</artifactId>
-	<version>0.4.0</version>
+	<version>0.4.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>jmotif-gi</name>
