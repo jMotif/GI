@@ -43,9 +43,10 @@ public class ParallelRePairImplementation {
   /**
    * This builds a RE-Pair in a parallel fashion.
    * 
-   * @param parallelRes
-   * @param threadsNum
-   * @return
+   * @param grammar the structure used for a grammar keeper.
+   * @param threadsNum the number of threads to use.
+   * 
+   * @return a RePair grammar keeper.
    */
   public ParallelGrammarKeeper buildGrammar(ParallelGrammarKeeper grammar, int threadsNum) {
 

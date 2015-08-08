@@ -45,6 +45,8 @@ public class RePairRule {
 
   /**
    * Constructor, assigns a rule ID using the global counter.
+   * 
+   * @param rg the grammar handler.
    */
   public RePairRule(RePairGrammar rg) {
 

@@ -196,7 +196,10 @@ public final class SequiturFactory {
    * Recovers start and stop coordinates of a rule subsequences.
    * 
    * @param ruleIdx The rule index.
-   * 
+   * @param grammar The grammar to analyze.
+   * @param saxFrequencyData the SAX frquency data used for the grammar construction.
+   * @param originalTimeSeries the original time series.
+   * @param saxWindowSize the SAX sliding window size.
    * @return The array of all intervals corresponding to this rule.
    */
   public static ArrayList<RuleInterval> getRulePositionsByRuleNum(int ruleIdx, SAXRule grammar,
@@ -330,23 +333,23 @@ public final class SequiturFactory {
   /**
    * Translates the time series into the set of rules.
    * 
-   * @param timeseries
-   * @param saxWindowSize
-   * @param saxPAASize
-   * @param saxAlphabetSize
-   * @param numerosityReductionStrategy
-   * @param normalizationThreshold
-   * @return
-   * @throws Exception
-   * @throws IOException
+   * @param timeseries the input time series.
+   * @param saxWindowSize the sliding window size.
+   * @param saxPAASize the PAA num.
+   * @param saxAlphabetSize the SAX alphabet size.
+   * @param numerosityReductionStrategy the SAX Numerosity Reduction strategy.
+   * @param normalizationThreshold the SAX normalization threshod.
+   * @return the set of rules, i.e. the grammar.
+   * @throws Exception if error occurs.
+   * @throws IOException if error occurs.
    */
   public static GrammarRules series2SequiturRules(double[] timeseries, int saxWindowSize,
       int saxPAASize, int saxAlphabetSize, NumerosityReductionStrategy numerosityReductionStrategy,
       double normalizationThreshold) throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
-    SAXRecords saxFrequencyData = discretize(timeseries, numerosityReductionStrategy,
-        saxWindowSize, saxPAASize, saxAlphabetSize, normalizationThreshold);
+    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize,
+        saxAlphabetSize, normalizationThreshold, numerosityReductionStrategy);
 
     consoleLogger.debug("Inferring the grammar...");
     // this is a string we are about to feed into Sequitur
@@ -393,8 +396,8 @@ public final class SequiturFactory {
       throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
-    SAXRecords saxFrequencyData = discretize(timeseries, NumerosityReductionStrategy.EXACT,
-        saxWindowSize, saxPAASize, saxAlphabetSize, normalizationThreshold);
+    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize,
+        saxAlphabetSize, normalizationThreshold, NumerosityReductionStrategy.EXACT);
 
     consoleLogger.debug("Inferring the grammar...");
     // this is a string we are about to feed into Sequitur
@@ -438,18 +441,19 @@ public final class SequiturFactory {
   /**
    * Performs discretization.
    * 
-   * @param timeseries
-   * @param numerosityReductionStrategy
-   * @param saxWindowSize
-   * @param saxPAASize
-   * @param saxAlphabetSize
-   * @param normalizationThreshold
-   * @return
-   * @throws Exception
+   * @param timeseries the input time series.
+   * @param saxWindowSize the sliding window size.
+   * @param saxPAASize the PAA num.
+   * @param saxAlphabetSize the SAX alphabet size.
+   * @param numerosityReductionStrategy the SAX Numerosity Reduction strategy.
+   * @param normalizationThreshold the SAX normalization threshod.
+   * 
+   * @return discretized ts data.
+   * @throws Exception if error occurs.
    */
-  public static SAXRecords discretize(double[] timeseries,
-      NumerosityReductionStrategy numerosityReductionStrategy, int saxWindowSize, int saxPAASize,
-      int saxAlphabetSize, double normalizationThreshold) throws Exception {
+  public static SAXRecords discretize(double[] timeseries, int saxWindowSize, int saxPAASize,
+      int saxAlphabetSize, double normalizationThreshold,
+      NumerosityReductionStrategy numerosityReductionStrategy) throws Exception {
 
     SAXRecords saxFrequencyData = new SAXRecords();
 
@@ -495,12 +499,12 @@ public final class SequiturFactory {
   /**
    * Performs discretization.
    * 
-   * @param timeseries
-   * @param saxPAASize
-   * @param saxAlphabetSize
-   * @param normalizationThreshold
-   * @return
-   * @throws Exception
+   * @param timeseries the input time series.
+   * @param saxPAASize the PAA num.
+   * @param saxAlphabetSize the SAX alphabet size.
+   * @param normalizationThreshold the SAX normalization threshod.
+   * @return discretized TS.
+   * @throws Exception if error occurs.
    */
   public static SAXRecords discretizeNoSlidingWindow(double[] timeseries, int saxPAASize,
       int saxAlphabetSize, double normalizationThreshold) throws Exception {
