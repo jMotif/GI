@@ -236,6 +236,9 @@ public class RulePrunerPrinter {
         bw.close();
 
         Collections.sort(res, new ReductionSorter());
+
+        System.out.println("\nApparently, the best parameters are " + res.get(0).toString());
+
       }
     }
     catch (Exception e) {
