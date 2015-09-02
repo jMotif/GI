@@ -16,9 +16,12 @@ for(f in ll){
   names(dat) <- c("win","paa","a","approx","gSize","rules","prunedSize","prunedRules","covered","cvr","red")
   print(head(arrange(dat,red)[,c(1,2,3,4,5,6,7,8,11)]))
 }
-
-
-dat=read.table("/media/Stock/tmp/test.csv.out",header=T,sep=",")
+#
+#
+#
+#
+#
+dat=read.table("/media/Stock/tmp/test.out",header=T,sep=",")
 names(dat)
 dat_cover=ggplot(dat, aes(x=grammarSize,y=approxDist, color=factor(isCovered))) + 
   geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
@@ -27,43 +30,8 @@ dat_cover=ggplot(dat, aes(x=grammarSize,y=approxDist, color=factor(isCovered))) 
   theme(legend.position="bottom")
 dat_cover
 
-setwd("/media/Stock/tmp/ydata-labeled-time-series-anomalies-v1_0/A4Benchmark/")
-files <- list.files(pattern = "csv")
-
-library(ggplot2)
-
-dat=read.csv("A4Benchmark-TS12.csv")
-names(dat)
-p=ggplot(dat,aes(x=c(1:length(dat$value)),y=value,color=anomaly)) + geom_line(size=2)
-p+theme_bw()
-
-write.table(dat$value,"/media/Stock/tmp/test.csv",row.names=F,col.names=F)
 
 
-
-dat_cover=ggplot(filter(dat, covergaeis, 
-                        aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-                   geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
-                   scale_color_discrete(guide=guide_legend(title = NULL),
-                                        labels=c("not covered", "covered")) +
-                   theme(legend.position="bottom")
-                 dat_cover
-                 
-
-
-dat=read.table(gzfile("data/ecg_0606.txt.out.gz"),header=T,sep=",")
-dat_cover=ggplot(dat, aes(x=compressedGrammarSize,y=approxDist, color=factor(isCovered))) + 
-  geom_density2d() + ggtitle("ECG0606 time series coverage by grammar") + theme_bw() +
-  scale_color_discrete(guide=guide_legend(title = NULL),
-                       labels=c("not covered", "covered")) +
-  theme(legend.position="bottom")
-dat_cover
-
-
-
-
-dat=read.table(gzfile("data/ecg_108.txt.out.gz"),header=T,sep=",")
-names(dat)
 
 dat$reduction=dat$compressedGrammarSize/dat$grammarSize
 
@@ -115,9 +83,10 @@ datc=ggplot(dat, aes(x=compressedGrammarSize,y=approxDist)) +
 datc
 
 dat$reduction=dat$compressedGrammarSize/dat$grammarSize
-head(arrange(dat,reduction))
+head(arrange(dat[dat$coverage>0.99,],reduction))
+
 hist(dat$reduction)
-p = ggplot(dat[dat$coverage>0.9,],aes(x=reduction,y=alphabet)) + geom_point()
+p = ggplot(dat[dat$coverage>0.99,],aes(x=reduction,y=alphabet)) + geom_point()
 p
 
 
