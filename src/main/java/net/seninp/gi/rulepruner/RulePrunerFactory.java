@@ -19,14 +19,14 @@ public class RulePrunerFactory {
   /**
    * Performs pruning.
    * 
-   * @param ts1
-   * @param grammarRules
-   * @return
+   * @param ts the input time series.
+   * @param grammarRules the grammar.
+   * @return pruned ruleset.
    */
-  public static GrammarRules performPruning(double[] ts1, GrammarRules grammarRules) {
+  public static GrammarRules performPruning(double[] ts, GrammarRules grammarRules) {
 
     // this is where we keep range coverage
-    boolean[] range = new boolean[ts1.length];
+    boolean[] range = new boolean[ts.length];
     // these are rules used in current cover
     HashSet<Integer> usedRules = new HashSet<Integer>();
     usedRules.add(0);
@@ -124,18 +124,19 @@ public class RulePrunerFactory {
   /**
    * Computes the grammar size.
    * 
+   * @param ts the input timeseries.
    * @param rules the grammar rules.
    * @param saxData the original SAX data.
    * @param paaSize the SAX transform word size.
    * 
    * @return the grammar size.
    */
-  public static Integer computeGrammarSize(double[] ts1, GrammarRules rules, SAXRecords saxData,
+  public static Integer computeGrammarSize(double[] ts, GrammarRules rules, SAXRecords saxData,
       Integer paaSize) {
 
     // first we compute the cover by rules
     //
-    boolean[] range = new boolean[ts1.length];
+    boolean[] range = new boolean[ts.length];
     for (GrammarRuleRecord r : rules) {
       if (0 == r.getRuleNumber()) {
         continue;
@@ -184,11 +185,11 @@ public class RulePrunerFactory {
   }
 
   /**
-   * Checks if the
+   * Checks if the cover is complete.
    * 
-   * @param cover
-   * @param intervals
-   * @return
+   * @param cover the cover.
+   * @param intervals set of rule intervals.
+   * @return true if the set complete.
    */
   public static boolean isCompletlyCovered(ArrayList<RuleInterval> cover,
       ArrayList<RuleInterval> intervals) {
@@ -255,7 +256,8 @@ public class RulePrunerFactory {
    * Updating the coverage ranges.
    * 
    * @param range the global range array.
-   * @param ruleIntervals The grammar (i.e. set of rules) used for this update.
+   * @param grammar The grammar (i.e. set of rules) used for this update.
+   * 
    * @return an updated array.
    */
   public static boolean[] updateRanges(boolean[] range, GrammarRules grammar) {
@@ -274,6 +276,7 @@ public class RulePrunerFactory {
    * 
    * @param range the range we compute the cover delta for.
    * @param rule the grammatical rule candidate.
+   * 
    * @return the delta value.
    */
   public static double getCoverDelta(boolean[] range, GrammarRuleRecord rule) {
@@ -334,8 +337,8 @@ public class RulePrunerFactory {
   /**
    * Checks if the range is completely covered.
    * 
-   * @param range
-   * @return
+   * @param range the range.
+   * @return true if covered.
    */
   public static boolean isCovered(boolean[] range) {
     for (boolean i : range) {
