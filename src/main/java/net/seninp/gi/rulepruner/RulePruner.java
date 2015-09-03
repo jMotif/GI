@@ -69,6 +69,10 @@ public class RulePruner {
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
     SAXRecords saxData = ps.process(ts, 2, windowSize, paaSize, alphabetSize,
         RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
+    if (Thread.currentThread().isInterrupted() && null == saxData) {
+      System.err.println("Sampler being interrupted, returning NULL!");
+      return null;
+    }
     saxData.buildIndex();
 
     // compute SAX approximation distance

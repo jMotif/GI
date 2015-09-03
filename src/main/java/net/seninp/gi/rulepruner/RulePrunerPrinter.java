@@ -78,10 +78,14 @@ public class RulePrunerPrinter {
 
         sb.append("  input file:           ").append(RulePrunerParameters.IN_FILE).append(CR);
         sb.append("  output file:          ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
-        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
-        sb.append("  GI Algorithm:         ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
+        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY)
+            .append(CR);
+        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
+            .append(CR);
+        sb.append("  GI Algorithm:         ")
+            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES)
+            .append(CR);
 
         if (!(Double.isNaN(RulePrunerParameters.SUBSAMPLING_FRACTION))) {
           sb.append("  Subsampling fraction: ").append(RulePrunerParameters.SUBSAMPLING_FRACTION)
@@ -129,8 +133,13 @@ public class RulePrunerPrinter {
 
               SampledPoint p = rp.sample(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
                   RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
-
-              res.add(p);
+              if (Thread.currentThread().isInterrupted() && null == p) {
+                System.err.println("Seen null sampled point, I guess we were interrupted!");
+                Collections.sort(res, new ReductionSorter());
+                System.out.println(
+                    "\nApparently, the best parameters so far are " + res.get(0).toString());
+                return;
+              }
             }
           }
         }
