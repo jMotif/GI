@@ -78,18 +78,13 @@ public class RulePrunerPrinter {
 
         sb.append("  input file:           ").append(RulePrunerParameters.IN_FILE).append(CR);
         sb.append("  output file:          ").append(RulePrunerParameters.OUT_FILE).append(CR);
-        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY)
-            .append(CR);
-        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD)
-            .append(CR);
-        sb.append("  GI Algorithm:         ")
-            .append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
-        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES)
-            .append(CR);
+        sb.append("  SAX num. reduction:   ").append(RulePrunerParameters.SAX_NR_STRATEGY).append(CR);
+        sb.append("  SAX norm. threshold:  ").append(RulePrunerParameters.SAX_NORM_THRESHOLD).append(CR);
+        sb.append("  GI Algorithm:         ").append(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION).append(CR);
+        sb.append("  Grid boundaries:      ").append(RulePrunerParameters.GRID_BOUNDARIES).append(CR);
 
         if (!(Double.isNaN(RulePrunerParameters.SUBSAMPLING_FRACTION))) {
-          sb.append("  Subsampling fraction: ").append(RulePrunerParameters.SUBSAMPLING_FRACTION)
-              .append(CR);
+          sb.append("  Subsampling fraction: ").append(RulePrunerParameters.SUBSAMPLING_FRACTION).append(CR);
         }
 
         // printer out the params before starting
