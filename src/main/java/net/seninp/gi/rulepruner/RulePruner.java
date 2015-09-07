@@ -95,7 +95,7 @@ public class RulePruner {
       rules = grammar.toGrammarRulesData();
     }
 
-    Integer grammarSize = RulePrunerFactory.computeGrammarSize(ts, rules, saxData, paaSize);
+    Integer grammarSize = RulePrunerFactory.computePrunedGrammarSize(ts, rules, saxData, paaSize);
     logStr.append(grammarSize).append(COMMA);
     logStr.append(rules.size()).append(COMMA);
     res.setGrammarSize(grammarSize);
@@ -104,7 +104,7 @@ public class RulePruner {
     // prune grammar' rules
     //
     GrammarRules prunedRulesSet = RulePrunerFactory.performPruning(ts, rules);
-    Integer compressedSize = RulePrunerFactory.computeGrammarSize(ts, prunedRulesSet, saxData,
+    Integer compressedSize = RulePrunerFactory.computePrunedGrammarSize(ts, prunedRulesSet, saxData,
         paaSize);
     logStr.append(compressedSize).append(COMMA);
     logStr.append(prunedRulesSet.size()).append(COMMA);

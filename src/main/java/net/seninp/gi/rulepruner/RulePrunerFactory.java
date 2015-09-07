@@ -122,7 +122,7 @@ public class RulePrunerFactory {
   }
 
   /**
-   * Computes the grammar size.
+   * Computes the size of a pruned grammar.
    * 
    * @param ts the input timeseries.
    * @param rules the grammar rules.
@@ -131,18 +131,8 @@ public class RulePrunerFactory {
    * 
    * @return the grammar size.
    */
-  public static Integer computeGrammarSize(double[] ts, GrammarRules rules, SAXRecords saxData,
-      Integer paaSize) {
-
-    // first we compute the cover by rules
-    //
-    boolean[] range = new boolean[ts.length];
-    for (GrammarRuleRecord r : rules) {
-      if (0 == r.getRuleNumber()) {
-        continue;
-      }
-      updateRanges(range, r.getRuleIntervals());
-    }
+  public static Integer computePrunedGrammarSize(double[] ts, GrammarRules rules,
+      SAXRecords saxData, Integer paaSize) {
 
     // res is the final grammar's size
     //
@@ -161,9 +151,20 @@ public class RulePrunerFactory {
       // the increment is computed as the size in bytes which is the sum of:
       // - the expanded rule string (a letter == byte)
       // - the number of occurrences * 2 (each occurrence index == a word)
+      // it is safe to skip a space since a word size is fixed
       //
       res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
           + r.getOccurrences().size() * 2;
+    }
+
+    // first we compute the cover by rules
+    //
+    boolean[] range = new boolean[ts.length];
+    for (GrammarRuleRecord r : rules) {
+      if (0 == r.getRuleNumber()) {
+        continue;
+      }
+      updateRanges(range, r.getRuleIntervals());
     }
 
     // if happens that not the whole time series is covered, we add the space needed to encode the
@@ -181,6 +182,54 @@ public class RulePrunerFactory {
         }
       }
     }
+    return res;
+  }
+
+  /**
+   * Computes the size of a normal, i.e. unpruned grammar.
+   * 
+   * @param ts the input timeseries.
+   * @param rules the grammar rules.
+   * @param saxData the original SAX data.
+   * @param paaSize the SAX transform word size.
+   * 
+   * @return the grammar size.
+   */
+  public static Integer computeValidGrammarSize(double[] ts, GrammarRules rules, SAXRecords saxData,
+      Integer paaSize) {
+
+    // res is the final grammar's size
+    //
+    int res = 0;
+
+    // first we compute the size needed for encoding of rules
+    //
+    for (GrammarRuleRecord r : rules) {
+
+      // skip the rule zero
+      //
+      if (0 == r.getRuleNumber()) {
+        continue;
+      }
+
+      // split the rule string onto constituting tokens
+      //
+      int ruleSize = 0;
+      String ruleStr = r.getRuleString();
+      String[] tokens = ruleStr.split("\\s+");
+      for (String t : tokens) {
+        if (t.startsWith("R")) {
+          // it is other rule, so we use a number --> 2 bytes
+          ruleSize = ruleSize + 2;
+        }
+        else {
+          ruleSize = ruleSize + paaSize;
+        }
+      }
+
+      res = res + ruleSize + r.getOccurrences().size() * 2;
+    }
+
     return res;
   }
 
