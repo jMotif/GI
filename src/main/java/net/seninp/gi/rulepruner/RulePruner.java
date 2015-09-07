@@ -95,7 +95,7 @@ public class RulePruner {
       rules = grammar.toGrammarRulesData();
     }
 
-    Integer grammarSize = RulePrunerFactory.computePrunedGrammarSize(ts, rules, saxData, paaSize);
+    Integer grammarSize = RulePrunerFactory.computeValidGrammarSize(ts, rules, saxData, paaSize);
     logStr.append(grammarSize).append(COMMA);
     logStr.append(rules.size()).append(COMMA);
     res.setGrammarSize(grammarSize);
