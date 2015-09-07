@@ -164,7 +164,7 @@ public class RulePrunerFactory {
       if (0 == r.getRuleNumber()) {
         continue;
       }
-      updateRanges(range, r.getRuleIntervals());
+      range = updateRanges(range, r.getRuleIntervals());
     }
 
     // if happens that not the whole time series is covered, we add the space needed to encode the
@@ -182,6 +182,7 @@ public class RulePrunerFactory {
         }
       }
     }
+
     return res;
   }
 
@@ -227,7 +228,33 @@ public class RulePrunerFactory {
         }
       }
 
-      res = res + ruleSize + r.getOccurrences().size() * 2;
+      res = res + (ruleSize + r.getOccurrences().size() * 2);
+    }
+
+    // first we compute the cover by rules
+    //
+    boolean[] range = new boolean[ts.length];
+    for (GrammarRuleRecord r : rules) {
+      if (0 == r.getRuleNumber()) {
+        continue;
+      }
+      range = updateRanges(range, r.getRuleIntervals());
+    }
+
+    // if happens that not the whole time series is covered, we add the space needed to encode the
+    // gaps
+    // each uncovered point corresponds to a word of length PAA and an index
+    //
+    if (!(isCovered(range))) {
+
+      for (int i = 0; i < range.length; i++) {
+        if (false == range[i] && (null != saxData.getByIndex(i))) {
+          // each uncovered by a rule position is actually an individual PAA word
+          // and a position index
+          //
+          res = res + paaSize + 2;
+        }
+      }
     }
 
     return res;
