@@ -270,9 +270,11 @@ public class RulePrunerFactory {
   public static boolean isCompletlyCovered(ArrayList<RuleInterval> cover,
       ArrayList<RuleInterval> intervals) {
 
-    int min = cover.get(0).getStartPos();
-    int max = cover.get(0).getEndPos();
-    for (RuleInterval i : cover) {
+    // first we build an array of intervals
+    //
+    int min = intervals.get(0).getStartPos();
+    int max = intervals.get(0).getEndPos();
+    for (RuleInterval i : intervals) {
       if (i.getStartPos() < min) {
         min = i.getStartPos();
       }
@@ -280,33 +282,41 @@ public class RulePrunerFactory {
         max = i.getEndPos();
       }
     }
-
-    boolean[] coverrange = new boolean[max - min];
-
-    for (RuleInterval i : cover) {
+    boolean[] intervalsRange = new boolean[max - min];
+    for (RuleInterval i : intervals) {
       for (int j = i.getStartPos(); j < i.getEndPos(); j++) {
-        coverrange[j - min] = true;
+        intervalsRange[j - min] = true;
       }
     }
 
-    boolean covered = true;
-    for (RuleInterval i : intervals) {
+    // so now here we have the range where true value correspond to the ranges belonging to
+    // "intervals", which we effectively checking for being covered by cover
+    //
+    // true means uncovered
+    //
+
+    for (RuleInterval i : cover) {
+
       for (int j = i.getStartPos(); j < i.getEndPos(); j++) {
+
         if (j < min || j >= max) {
-          covered = false;
-          break;
-        }
-        if (coverrange[j - min]) {
           continue;
         }
         else {
-          covered = false;
-          break;
+          intervalsRange[j - min] = false;
         }
+
+      }
+
+    }
+
+    for (boolean b : intervalsRange) {
+      if (true == b) {
+        return false;
       }
     }
 
-    return covered;
+    return true;
   }
 
   /**
