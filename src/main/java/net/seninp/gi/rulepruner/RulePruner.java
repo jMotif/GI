@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.seninp.gi.GIAlgorithm;
+import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
@@ -131,6 +132,17 @@ public class RulePruner {
     res.setCoverage(coverage);
 
     res.setReduction((double) compressedSize / (double) grammarSize);
+
+    // get the most frequent rule
+    //
+    int maxFreq = Integer.MIN_VALUE;
+    for (GrammarRuleRecord r : prunedRulesSet) {
+      if (r.getOccurrences().size() > maxFreq) {
+        maxFreq = r.getOccurrences().size();
+      }
+    }
+    
+    res.setMaxFrequency(maxFreq);
 
     // wrap it up
     //
