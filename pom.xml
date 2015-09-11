@@ -248,7 +248,7 @@
     <dependency>
       <groupId>net.seninp</groupId>
       <artifactId>jmotif-sax</artifactId>
-      <version>0.8.1-SNAPSHOT</version>
+      <version>0.8.0</version>
     </dependency>
   </dependencies>
 
