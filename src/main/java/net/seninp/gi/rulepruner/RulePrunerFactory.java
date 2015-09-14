@@ -111,11 +111,33 @@ public class RulePrunerFactory {
     // + Arrays.toString(usedRules.toArray(new Integer[usedRules.size()])));
 
     GrammarRules prunedRules = new GrammarRules();
-    prunedRules.addRule(grammarRules.get(0));
 
     for (Integer rId : usedRules) {
       prunedRules.addRule(grammarRules.get(rId));
     }
+
+    // process the R0 for discrepancies
+    //
+    // split the rule string onto constituting tokens
+    //
+    String ruleStr = grammarRules.get(0).getRuleString();
+    StringBuffer newRuleString = new StringBuffer();
+    String[] tokens = ruleStr.split("\\s+");
+    for (String t : tokens) {
+      if (t.startsWith("R")) {
+        Integer rId = Integer.valueOf(t.substring(1));
+        if (usedRules.contains(rId)) {
+          newRuleString.append(t).append(" ");
+        }
+        // else {
+        // System.err.println("removed rule " + rId + " from R0");
+        // }
+      }
+    }
+    newRuleString.delete(newRuleString.length() - 1, newRuleString.length());
+    GrammarRuleRecord newR0 = new GrammarRuleRecord();
+    newR0.setRuleNumber(0);
+    newR0.setRuleString(newRuleString.toString());
 
     return prunedRules;
 
@@ -138,14 +160,45 @@ public class RulePrunerFactory {
     //
     int res = 0;
 
+    HashSet<Integer> existingRules = new HashSet<Integer>();
+    for (GrammarRuleRecord r : rules) {
+      existingRules.add(r.getRuleNumber());
+    }
+
     // first we compute the size needed for encoding of rules
     //
     for (GrammarRuleRecord r : rules) {
 
-      // skip the rule zero
-      //
+      int ruleSize = 0;
+
       if (0 == r.getRuleNumber()) {
-        continue;
+        // split the rule string onto constituting tokens
+        //
+        String ruleStr = r.getRuleString();
+        String[] tokens = ruleStr.split("\\s+");
+        for (String t : tokens) {
+          if (t.startsWith("R")) {
+            // it is other rule, so we use a number --> 2 bytes
+            // and pointer on its time-series occurrence
+            ruleSize = ruleSize + 2 + 2;
+          }
+          else {
+            ruleSize = ruleSize + paaSize + 2;
+          }
+        }
+      }
+      else {
+        ruleSize = r.getExpandedRuleString().replaceAll("\\s+", "").length();
+        String ruleStr = r.getRuleString();
+        String[] tokens = ruleStr.split("\\s+");
+        for (String t : tokens) {
+          if (t.startsWith("R") && existingRules.contains(Integer.valueOf(t.substring(1)))) {
+            int expRSize = rules.get(Integer.valueOf(t.substring(1))).getExpandedRuleString()
+                .replaceAll("\\s", "").length();
+            ruleSize = ruleSize - expRSize + 2;
+          }
+        }
+        ruleSize = ruleSize + r.getOccurrences().size() * 2;
       }
 
       // the increment is computed as the size in bytes which is the sum of:
@@ -153,35 +206,36 @@ public class RulePrunerFactory {
       // - the number of occurrences * 2 (each occurrence index == a word)
       // it is safe to skip a space since a word size is fixed
       //
-      res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
-          + r.getOccurrences().size() * 2;
+      // res = res + r.getExpandedRuleString().replaceAll("\\s", "").length()
+      // + r.getOccurrences().size() * 2;
+      res = res + ruleSize;
     }
 
     // first we compute the cover by rules
     //
-    boolean[] range = new boolean[ts.length];
-    for (GrammarRuleRecord r : rules) {
-      if (0 == r.getRuleNumber()) {
-        continue;
-      }
-      range = updateRanges(range, r.getRuleIntervals());
-    }
+    // boolean[] range = new boolean[ts.length];
+    // for (GrammarRuleRecord r : rules) {
+    // if (0 == r.getRuleNumber()) {
+    // continue;
+    // }
+    // range = updateRanges(range, r.getRuleIntervals());
+    // }
 
     // if happens that not the whole time series is covered, we add the space needed to encode the
     // gaps
     // each uncovered point corresponds to a word of length PAA and an index
     //
-    if (!(isCovered(range))) {
-
-      for (int i = 0; i < range.length; i++) {
-        if (false == range[i] && (null != saxData.getByIndex(i))) {
-          // each uncovered by a rule position is actually an individual PAA word
-          // and a position index
-          //
-          res = res + paaSize + 2;
-        }
-      }
-    }
+    // if (!(isCovered(range))) {
+    //
+    // for (int i = 0; i < range.length; i++) {
+    // if (false == range[i] && (null != saxData.getByIndex(i))) {
+    // // each uncovered by a rule position is actually an individual PAA word
+    // // and a position index
+    // //
+    // res = res + paaSize + 2;
+    // }
+    // }
+    // }
 
     return res;
   }
@@ -207,57 +261,75 @@ public class RulePrunerFactory {
     //
     for (GrammarRuleRecord r : rules) {
 
+      int ruleSize = 0;
+
       // skip the rule zero
       //
       if (0 == r.getRuleNumber()) {
-        continue;
+        // split the rule string onto constituting tokens
+        //
+        String ruleStr = r.getRuleString();
+        String[] tokens = ruleStr.split("\\s+");
+        for (String t : tokens) {
+          if (t.startsWith("R")) {
+            // it is other rule, so we use a number --> 2 bytes
+            // and pointer on its time-series occurrence
+            ruleSize = ruleSize + 2 + 2;
+          }
+          else {
+            ruleSize = ruleSize + paaSize + 2;
+          }
+        }
+
+      }
+      else {
+        // split the rule string onto constituting tokens
+        //
+        String ruleStr = r.getRuleString();
+        String[] tokens = ruleStr.split("\\s+");
+        for (String t : tokens) {
+          if (t.startsWith("R")) {
+            // it is other rule, so we use a number --> 2 bytes
+            ruleSize = ruleSize + 2;
+          }
+          else {
+            ruleSize = ruleSize + paaSize;
+          }
+        }
+        ruleSize = ruleSize + r.getOccurrences().size() * 2;
       }
 
-      // split the rule string onto constituting tokens
-      //
-      int ruleSize = 0;
-      String ruleStr = r.getRuleString();
-      String[] tokens = ruleStr.split("\\s+");
-      for (String t : tokens) {
-        if (t.startsWith("R")) {
-          // it is other rule, so we use a number --> 2 bytes
-          ruleSize = ruleSize + 2;
-        }
-        else {
-          ruleSize = ruleSize + paaSize;
-        }
-      }
-
-      res = res + (ruleSize + r.getOccurrences().size() * 2);
+      res = res + ruleSize;
     }
 
     // first we compute the cover by rules
     //
-    boolean[] range = new boolean[ts.length];
-    for (GrammarRuleRecord r : rules) {
-      if (0 == r.getRuleNumber()) {
-        continue;
-      }
-      range = updateRanges(range, r.getRuleIntervals());
-    }
+    // boolean[] range = new boolean[ts.length];
+    // for (GrammarRuleRecord r : rules) {
+    // if (0 == r.getRuleNumber()) {
+    // continue;
+    // }
+    // range = updateRanges(range, r.getRuleIntervals());
+    // }
 
     // if happens that not the whole time series is covered, we add the space needed to encode the
     // gaps
     // each uncovered point corresponds to a word of length PAA and an index
     //
-    if (!(isCovered(range))) {
-
-      for (int i = 0; i < range.length; i++) {
-        if (false == range[i] && (null != saxData.getByIndex(i))) {
-          // each uncovered by a rule position is actually an individual PAA word
-          // and a position index
-          //
-          res = res + paaSize + 2;
-        }
-      }
-    }
+    // if (!(isCovered(range))) {
+    //
+    // for (int i = 0; i < range.length; i++) {
+    // if (false == range[i] && (null != saxData.getByIndex(i))) {
+    // // each uncovered by a rule position is actually an individual PAA word
+    // // and a position index
+    // //
+    // res = res + paaSize;
+    // }
+    // }
+    // }
 
     return res;
+
   }
 
   /**

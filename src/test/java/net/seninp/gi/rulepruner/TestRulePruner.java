@@ -89,11 +89,12 @@ public class TestRulePruner {
 
   @Test
   public void test() {
-    assertEquals(new Integer(24), RulePrunerFactory.computeValidGrammarSize(ts, grammar, recs, 3));
+
+    assertEquals(new Integer(32), RulePrunerFactory.computeValidGrammarSize(ts, grammar, recs, 3));
 
     GrammarRules prunedGrammar = RulePrunerFactory.performPruning(ts, grammar);
 
-    assertEquals(new Integer(18),
+    assertEquals(new Integer(26),
         RulePrunerFactory.computePrunedGrammarSize(ts, prunedGrammar, recs, 3));
   }
 
