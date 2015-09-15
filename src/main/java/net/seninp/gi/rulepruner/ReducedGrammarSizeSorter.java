@@ -1,7 +1,6 @@
 package net.seninp.gi.rulepruner;
 
 import java.util.Comparator;
-import net.seninp.gi.rulepruner.SampledPoint;
 
 public class ReducedGrammarSizeSorter implements Comparator<SampledPoint> {
 

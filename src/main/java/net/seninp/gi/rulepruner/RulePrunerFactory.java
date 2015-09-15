@@ -6,7 +6,6 @@ import java.util.HashSet;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
 
 /**
  * Pruner methods implementation.
@@ -108,37 +107,87 @@ public class RulePrunerFactory {
 
     GrammarRules prunedRules = new GrammarRules();
 
+    // regularize pruned rules
+    //
     for (Integer rId : usedRules) {
-      prunedRules.addRule(grammarRules.get(rId));
+      String oldRuleStr = grammarRules.get(rId).getRuleString();
+      StringBuffer newRuleStr = new StringBuffer();
+      String[] tokens = oldRuleStr.split("\\s+");
+      for (String t : tokens) {
+        if (t.startsWith("R")) {
+          Integer ruleId = Integer.valueOf(t.substring(1));
+          if (usedRules.contains(ruleId)) {
+            newRuleStr.append(t).append(" ");
+          }
+          else {
+            // System.err.println("updating the rule " + rId);
+            newRuleStr.append(resolve(ruleId, usedRules, grammarRules)).append(" ");
+          }
+        }
+        else {
+          newRuleStr.append(t).append(" ");
+        }
+      }
+      if (newRuleStr.length() > 0) {
+        newRuleStr.delete(newRuleStr.length() - 1, newRuleStr.length());
+      }
+      GrammarRuleRecord regRule = grammarRules.get(rId);
+      regRule.setRuleString(newRuleStr.toString());
+      prunedRules.addRule(regRule);
     }
 
     // process the R0 for discrepancies
     //
     // split the rule string onto constituting tokens
     //
-    String ruleStr = grammarRules.get(0).getRuleString();
-    StringBuffer newRuleString = new StringBuffer();
-    String[] tokens = ruleStr.split("\\s+");
+    // String ruleStr = grammarRules.get(0).getRuleString();
+    // StringBuffer newRuleString = new StringBuffer();
+    // String[] tokens = ruleStr.split("\\s+");
+    // for (String t : tokens) {
+    // if (t.startsWith("R")) {
+    // Integer rId = Integer.valueOf(t.substring(1));
+    // if (usedRules.contains(rId)) {
+    // newRuleString.append(t).append(" ");
+    // }
+    // // else {
+    // // System.err.println("removed rule " + rId + " from R0");
+    // // }
+    // }
+    // }
+    // if (newRuleString.length() > 0) {
+    // newRuleString.delete(newRuleString.length() - 1, newRuleString.length());
+    // }
+    // GrammarRuleRecord newR0 = new GrammarRuleRecord();
+    // newR0.setRuleNumber(0);
+    // newR0.setRuleString(newRuleString.toString());
+
+    return prunedRules;
+
+  }
+
+  private static String resolve(Integer ruleId, HashSet<Integer> usedRules,
+      GrammarRules grammarRules) {
+    String currentString = grammarRules.get(ruleId).getRuleString();
+    StringBuffer newString = new StringBuffer();
+    String[] tokens = currentString.split("\\s+");
     for (String t : tokens) {
       if (t.startsWith("R")) {
         Integer rId = Integer.valueOf(t.substring(1));
         if (usedRules.contains(rId)) {
-          newRuleString.append(t).append(" ");
+          newString.append(t).append(" ");
         }
-        // else {
-        // System.err.println("removed rule " + rId + " from R0");
-        // }
+        else {
+          newString.append(resolve(rId, usedRules, grammarRules)).append(" ");
+        }
+      }
+      else {
+        newString.append(t).append(" ");
       }
     }
-    if (newRuleString.length() > 0) {
-      newRuleString.delete(newRuleString.length() - 1, newRuleString.length());
+    if (newString.length() > 0) {
+      newString.delete(newString.length() - 1, newString.length());
     }
-    GrammarRuleRecord newR0 = new GrammarRuleRecord();
-    newR0.setRuleNumber(0);
-    newR0.setRuleString(newRuleString.toString());
-
-    return prunedRules;
-
+    return newString.toString();
   }
 
   /**
@@ -146,13 +195,11 @@ public class RulePrunerFactory {
    * 
    * @param ts the input timeseries.
    * @param rules the grammar rules.
-   * @param saxData the original SAX data.
    * @param paaSize the SAX transform word size.
    * 
    * @return the grammar size.
    */
-  public static Integer computePrunedGrammarSize(double[] ts, GrammarRules rules,
-      SAXRecords saxData, Integer paaSize) {
+  public static Integer computePrunedGrammarSize(double[] ts, GrammarRules rules, Integer paaSize) {
 
     // res is the final grammar's size
     //
@@ -196,7 +243,8 @@ public class RulePrunerFactory {
             ruleSize = ruleSize - expRSize + 2;
           }
         }
-        ruleSize = ruleSize + r.getOccurrences().size() * 2;
+        // ruleSize = ruleSize + r.getOccurrences().size() * 2;
+        ruleSize = ruleSize;
       }
 
       // the increment is computed as the size in bytes which is the sum of:
@@ -243,13 +291,11 @@ public class RulePrunerFactory {
    * 
    * @param ts the input timeseries.
    * @param rules the grammar rules.
-   * @param saxData the original SAX data.
    * @param paaSize the SAX transform word size.
    * 
    * @return the grammar size.
    */
-  public static Integer computeValidGrammarSize(double[] ts, GrammarRules rules, SAXRecords saxData,
-      Integer paaSize) {
+  public static Integer computeValidGrammarSize(double[] ts, GrammarRules rules, Integer paaSize) {
 
     // res is the final grammar's size
     //
