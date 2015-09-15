@@ -130,7 +130,9 @@ public class RulePrunerFactory {
         // }
       }
     }
-    newRuleString.delete(newRuleString.length() - 1, newRuleString.length());
+    if (newRuleString.length() > 0) {
+      newRuleString.delete(newRuleString.length() - 1, newRuleString.length());
+    }
     GrammarRuleRecord newR0 = new GrammarRuleRecord();
     newR0.setRuleNumber(0);
     newR0.setRuleString(newRuleString.toString());
