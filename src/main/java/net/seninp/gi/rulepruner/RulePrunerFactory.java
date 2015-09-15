@@ -244,7 +244,6 @@ public class RulePrunerFactory {
           }
         }
         // ruleSize = ruleSize + r.getOccurrences().size() * 2;
-        ruleSize = ruleSize;
       }
 
       // the increment is computed as the size in bytes which is the sum of:
