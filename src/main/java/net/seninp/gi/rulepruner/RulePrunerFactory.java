@@ -52,11 +52,7 @@ public class RulePrunerFactory {
         }
       }
 
-      if (null == bestRule) {
-        break;
-      }
-
-      if (0.0 == bestDelta) {
+      if (bestDelta < 0) {
         break;
       }
 
