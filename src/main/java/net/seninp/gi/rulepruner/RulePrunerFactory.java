@@ -387,19 +387,19 @@ public class RulePrunerFactory {
 
     // first we build an array of intervals
     //
-    int min = intervals.get(0).getStartPos();
-    int max = intervals.get(0).getEndPos();
+    int min = intervals.get(0).getStart();
+    int max = intervals.get(0).getEnd();
     for (RuleInterval i : intervals) {
-      if (i.getStartPos() < min) {
-        min = i.getStartPos();
+      if (i.getStart() < min) {
+        min = i.getStart();
       }
-      if (i.getEndPos() > max) {
-        max = i.getEndPos();
+      if (i.getEnd() > max) {
+        max = i.getEnd();
       }
     }
     boolean[] intervalsRange = new boolean[max - min];
     for (RuleInterval i : intervals) {
-      for (int j = i.getStartPos(); j < i.getEndPos(); j++) {
+      for (int j = i.getStart(); j < i.getEnd(); j++) {
         intervalsRange[j - min] = true;
       }
     }
@@ -412,7 +412,7 @@ public class RulePrunerFactory {
 
     for (RuleInterval i : cover) {
 
-      for (int j = i.getStartPos(); j < i.getEndPos(); j++) {
+      for (int j = i.getStart(); j < i.getEnd(); j++) {
 
         if (j < min || j >= max) {
           continue;
@@ -444,8 +444,8 @@ public class RulePrunerFactory {
   public static boolean[] updateRanges(boolean[] range, ArrayList<RuleInterval> ruleIntervals) {
     boolean[] res = Arrays.copyOf(range, range.length);
     for (RuleInterval i : ruleIntervals) {
-      int start = i.getStartPos();
-      int end = i.getEndPos();
+      int start = i.getStart();
+      int end = i.getEnd();
       for (int j = start; j <= end; j++) {
         res[j] = true;
       }
@@ -490,8 +490,8 @@ public class RulePrunerFactory {
 
     // perform the sum computation
     for (RuleInterval i : rule.getRuleIntervals()) {
-      int start = i.getStartPos();
-      int end = i.getEndPos();
+      int start = i.getStart();
+      int end = i.getEnd();
       for (int j = start; j <= end; j++) {
         if (range[j]) {
           overlapping_cover++;

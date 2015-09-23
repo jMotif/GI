@@ -199,7 +199,7 @@ public class RePairGrammar {
     int res = 0;
     int count = 0;
     for (RuleInterval ri : arrayList) {
-      res = res + (ri.getEndPos() - ri.getStartPos());
+      res = res + (ri.getEnd() - ri.getStart());
       count++;
     }
     return res / count;

@@ -78,8 +78,8 @@ public class SAXMotif implements Comparable<SAXMotif> {
   }
 
   public int compareTo(SAXMotif o) {
-    int thisLength = this.getPos().getEndPos() - this.getPos().getStartPos() + 1;
-    int otherLength = o.getPos().getEndPos() - o.getPos().getStartPos() + 1;
+    int thisLength = this.getPos().getEnd() - this.getPos().getStart() + 1;
+    int otherLength = o.getPos().getEnd() - o.getPos().getStart() + 1;
     if (thisLength > otherLength)
       return 1;
     else if (thisLength == otherLength)

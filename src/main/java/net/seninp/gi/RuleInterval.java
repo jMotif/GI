@@ -7,26 +7,26 @@ package net.seninp.gi;
  * @author Manfred Lerner, seninp
  * 
  */
-public class RuleInterval implements Comparable<RuleInterval> {
+public class RuleInterval implements Comparable<RuleInterval>, Cloneable {
 
-  // the corresponding rule id
-  public int id;
-
-  // interval start/stop
-  public int startPos;
-  public int endPos;
-
-  // coverage or any other sorting criterion
-  public double coverage;
+  public int id; // the corresponding rule id
+  public int startPos; // interval start
+  public int endPos; // interval stop
+  public double coverage; // coverage or any other sorting criterion
 
   public RuleInterval() {
+    super();
+    this.id = -1;
     this.startPos = -1;
     this.endPos = -1;
   }
 
   public RuleInterval(int startPos, int endPos) {
+    super();
+    this.id = -1;
     this.startPos = startPos;
     this.endPos = endPos;
+    this.coverage = Double.NaN;
   }
 
   public RuleInterval(int id, int startPos, int endPos, double coverage) {
@@ -34,65 +34,6 @@ public class RuleInterval implements Comparable<RuleInterval> {
     this.startPos = startPos;
     this.endPos = endPos;
     this.coverage = coverage;
-  }
-
-  /**
-   * @param startPos starting position within the original time series
-   */
-  public void setStartPos(int startPos) {
-    this.startPos = startPos;
-  }
-
-  /**
-   * @return starting position within the original time series
-   */
-  public int getStartPos() {
-    return startPos;
-  }
-
-  /**
-   * @param endPos ending position within the original time series
-   */
-  public void setEndPos(int endPos) {
-    this.endPos = endPos;
-  }
-
-  /**
-   * @return ending position within the original time series
-   */
-  public int getEndPos() {
-    return endPos;
-  }
-
-  /**
-   * @return the coverage
-   */
-  public double getCoverage() {
-    return this.coverage;
-  }
-
-  /**
-   * @param coverage the coverage to set
-   */
-  public void setCoverage(double coverage) {
-    this.coverage = coverage;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-  public String toString() {
-    return "[" + startPos + "-" + endPos + "]";
-  }
-
-  public int getLength() {
-    return this.endPos - this.startPos;
-  }
-
-  public int compareTo(RuleInterval arg0) {
-    return Integer.valueOf(this.getLength()).compareTo(Integer.valueOf(arg0.getLength()));
   }
 
   public void setId(int ruleIndex) {
@@ -104,6 +45,65 @@ public class RuleInterval implements Comparable<RuleInterval> {
    */
   public int getId() {
     return id;
+  }
+
+  /**
+   * @param startPos starting position within the original time series
+   */
+  public void setStart(int startPos) {
+    this.startPos = startPos;
+  }
+
+  /**
+   * @return starting position within the original time series
+   */
+  public int getStart() {
+    return startPos;
+  }
+
+  /**
+   * @param endPos ending position within the original time series
+   */
+  public void setEnd(int endPos) {
+    this.endPos = endPos;
+  }
+
+  /**
+   * @return ending position within the original time series
+   */
+  public int getEnd() {
+    return endPos;
+  }
+
+  /**
+   * @param coverage the coverage to set
+   */
+  public void setCoverage(double coverage) {
+    this.coverage = coverage;
+  }
+
+  /**
+   * @return the coverage
+   */
+  public double getCoverage() {
+    return this.coverage;
+  }
+
+  public int getLength() {
+    return this.endPos - this.startPos;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  public String toString() {
+    return "[" + startPos + "-" + endPos + "]";
+  }
+
+  public int compareTo(RuleInterval arg0) {
+    return Integer.valueOf(this.getLength()).compareTo(Integer.valueOf(arg0.getLength()));
   }
 
   @Override
@@ -139,4 +139,13 @@ public class RuleInterval implements Comparable<RuleInterval> {
     return true;
   }
 
+  @Override
+  public RuleInterval clone() {
+    RuleInterval clone = new RuleInterval();
+    clone.id = this.id;
+    clone.startPos = this.startPos;
+    clone.endPos = this.endPos;
+    clone.coverage = this.coverage;
+    return clone;
+  }
 }

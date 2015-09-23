@@ -171,7 +171,7 @@ public class RePairRule {
     int[] res = new int[this.ruleIntervals.size()];
     int count = 0;
     for (RuleInterval ri : this.ruleIntervals) {
-      res[count] = ri.getEndPos() - ri.getStartPos();
+      res[count] = ri.getEnd() - ri.getStart();
       count++;
     }
     return res;

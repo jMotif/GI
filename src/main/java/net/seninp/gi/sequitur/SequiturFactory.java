@@ -44,6 +44,7 @@ public final class SequiturFactory {
   //
   private static Logger consoleLogger;
   private static Level LOGGING_LEVEL = Level.INFO;
+
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(SequiturFactory.class);
     consoleLogger.setLevel(LOGGING_LEVEL);
@@ -88,7 +89,7 @@ public final class SequiturFactory {
     while (st.hasMoreTokens()) {
 
       String token = st.nextToken();
-      // System.out.println("  processing the token " + token);
+      // System.out.println(" processing the token " + token);
 
       // extract next token
       SAXTerminal symbol = new SAXTerminal(token, currentPosition);
@@ -150,7 +151,7 @@ public final class SequiturFactory {
     while (st.hasMoreTokens()) {
 
       String token = st.nextToken();
-      // System.out.println("  processing the token " + token);
+      // System.out.println(" processing the token " + token);
 
       if (null != alphabetSize && null != threshold) {
         //
@@ -228,9 +229,8 @@ public final class SequiturFactory {
       int[] extractedPositions = new int[expandedRuleSplit.length];
       for (int i = 0; i < expandedRuleSplit.length; i++) {
         consoleLogger.trace("currentIndex " + currentIndex + ", i: " + i);
-        extractedStr = extractedStr.concat(" ").concat(
-            String.valueOf(saxFrequencyData.getByIndex(saxWordsIndexes.get(currentIndex + i))
-                .getPayload()));
+        extractedStr = extractedStr.concat(" ").concat(String.valueOf(
+            saxFrequencyData.getByIndex(saxWordsIndexes.get(currentIndex + i)).getPayload()));
         extractedPositions[i] = saxWordsIndexes.get(currentIndex + i);
       }
       // System.out.println("Recovered string: " + extractedStr);
@@ -319,8 +319,8 @@ public final class SequiturFactory {
       }
       ArrayList<RuleInterval> arrPos = r.getRuleIntervals();
       for (RuleInterval saxPos : arrPos) {
-        int startPos = saxPos.getStartPos();
-        int endPos = saxPos.getEndPos();
+        int startPos = saxPos.getStart();
+        int endPos = saxPos.getEnd();
         for (int j = startPos; j < endPos; j++) {
           coverageArray[j] = coverageArray[j] + 1;
         }
@@ -348,13 +348,16 @@ public final class SequiturFactory {
       double normalizationThreshold) throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
-    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize,
-        saxAlphabetSize, normalizationThreshold, numerosityReductionStrategy);
+
+    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize, saxAlphabetSize,
+        normalizationThreshold, numerosityReductionStrategy);
 
     consoleLogger.debug("Inferring the grammar...");
+
     // this is a string we are about to feed into Sequitur
     //
     String saxDisplayString = saxFrequencyData.getSAXString(" ");
+
     // String[] split = saxDisplayString.split(" ");
     // System.out.println("*** " + split[21] + " " + split[22] + " " + split[23]);
 
@@ -393,11 +396,11 @@ public final class SequiturFactory {
 
   public static GrammarRules series2RulesWithLog(double[] timeseries, int saxWindowSize,
       int saxPAASize, int saxAlphabetSize, double normalizationThreshold, String prefix)
-      throws Exception, IOException {
+          throws Exception, IOException {
 
     consoleLogger.debug("Discretizing time series...");
-    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize,
-        saxAlphabetSize, normalizationThreshold, NumerosityReductionStrategy.EXACT);
+    SAXRecords saxFrequencyData = discretize(timeseries, saxWindowSize, saxPAASize, saxAlphabetSize,
+        normalizationThreshold, NumerosityReductionStrategy.EXACT);
 
     consoleLogger.debug("Inferring the grammar...");
     // this is a string we are about to feed into Sequitur
@@ -455,43 +458,8 @@ public final class SequiturFactory {
       int saxAlphabetSize, double normalizationThreshold,
       NumerosityReductionStrategy numerosityReductionStrategy) throws Exception {
 
-    SAXRecords saxFrequencyData = new SAXRecords();
-
-    // scan across the time series extract sub sequences, and convert
-    // them to strings`
-    char[] previousString = null;
-    for (int i = 0; i < timeseries.length - (saxWindowSize - 1); i++) {
-
-      // fix the current subsection
-      double[] subSection = Arrays.copyOfRange(timeseries, i, i + saxWindowSize);
-
-      // Z normalize it
-      subSection = tp.znorm(subSection, normalizationThreshold);
-
-      // perform PAA conversion if needed
-      double[] paa = tp.paa(subSection, saxPAASize);
-
-      // Convert the PAA to a string.
-      char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
-
-      if (NumerosityReductionStrategy.EXACT.equals(numerosityReductionStrategy)
-          && Arrays.equals(previousString, currentString)) {
-        // NumerosityReduction
-        continue;
-      }
-      else if ((null != previousString)
-          && NumerosityReductionStrategy.MINDIST.equals(numerosityReductionStrategy)) {
-        double dist = sp.saxMinDist(previousString, currentString,
-            normalA.getDistanceMatrix(saxAlphabetSize));
-        if (0.0D == dist) {
-          continue;
-        }
-      }
-
-      previousString = currentString;
-
-      saxFrequencyData.add(currentString, i);
-    }
+    SAXRecords saxFrequencyData = sp.ts2saxViaWindow(timeseries, saxWindowSize, saxPAASize,
+        normalA.getCuts(saxAlphabetSize), numerosityReductionStrategy, normalizationThreshold);
 
     return saxFrequencyData;
   }
@@ -502,29 +470,15 @@ public final class SequiturFactory {
    * @param timeseries the input time series.
    * @param saxPAASize the PAA num.
    * @param saxAlphabetSize the SAX alphabet size.
-   * @param normalizationThreshold the SAX normalization threshod.
+   * @param normalizationThreshold the SAX normalization threshold.
    * @return discretized TS.
    * @throws Exception if error occurs.
    */
   public static SAXRecords discretizeNoSlidingWindow(double[] timeseries, int saxPAASize,
       int saxAlphabetSize, double normalizationThreshold) throws Exception {
 
-    SAXRecords saxFrequencyData = new SAXRecords();
-
-    // Z normalize it
-    double[] normalizedTS = tp.znorm(timeseries, normalizationThreshold);
-
-    // perform PAA conversion if needed
-    double[] paa = tp.paa(normalizedTS, saxPAASize);
-
-    // Convert the PAA to a string.
-    char[] currentString = tp.ts2String(paa, normalA.getCuts(saxAlphabetSize));
-
-    // create the datastructure
-    for (int i = 0; i < currentString.length; i++) {
-      char c = currentString[i];
-      saxFrequencyData.add(String.valueOf(c).toCharArray(), i);
-    }
+    SAXRecords saxFrequencyData = sp.ts2saxByChunking(timeseries, saxPAASize,
+        normalA.getCuts(saxAlphabetSize), normalizationThreshold);
 
     return saxFrequencyData;
   }
