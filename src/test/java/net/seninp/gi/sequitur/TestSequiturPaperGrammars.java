@@ -3,9 +3,9 @@ package net.seninp.gi.sequitur;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import org.junit.Test;
 import net.seninp.gi.GrammarRules;
 import net.seninp.util.StackTrace;
-import org.junit.Test;
 
 public class TestSequiturPaperGrammars {
 

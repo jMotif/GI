@@ -1,13 +1,13 @@
 package net.seninp.gi.rulepruner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
  * test the paper's example.

@@ -6,7 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import net.seninp.gi.GrammarRuleRecord;
 import net.seninp.gi.GrammarRules;
 import net.seninp.gi.RuleInterval;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
  * A repair grammar container.

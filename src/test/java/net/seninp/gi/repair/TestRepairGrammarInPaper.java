@@ -2,8 +2,8 @@ package net.seninp.gi.repair;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import net.seninp.gi.GrammarRuleRecord;
 import org.junit.Test;
+import net.seninp.gi.GrammarRuleRecord;
 
 public class TestRepairGrammarInPaper {
 

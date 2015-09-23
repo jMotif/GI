@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
-import net.seninp.jmotif.sax.datastructures.SAXRecord;
-import net.seninp.jmotif.sax.datastructures.SAXRecords;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import net.seninp.jmotif.sax.datastructure.SAXRecord;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
  * Implements RePair.

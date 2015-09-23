@@ -1,7 +1,7 @@
 package net.seninp.gi.repair;
 
 import java.util.Arrays;
-import net.seninp.jmotif.sax.datastructures.SAXRecord;
+import net.seninp.jmotif.sax.datastructure.SAXRecord;
 
 /**
  * The symbol -- which essentially is a token.

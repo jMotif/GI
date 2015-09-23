@@ -8,10 +8,16 @@ package net.seninp.gi;
  * 
  */
 public class RuleInterval implements Comparable<RuleInterval> {
+
+  // the corresponding rule id
+  public int id;
+
+  // interval start/stop
   public int startPos;
   public int endPos;
+
+  // coverage or any other sorting criterion
   public double coverage;
-  public int id;
 
   public RuleInterval() {
     this.startPos = -1;
