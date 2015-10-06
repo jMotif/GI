@@ -78,7 +78,7 @@ which yields:
 Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications is high and my implementation doesn't scale well as suggested by the plot below.
 
 	
-![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling.png)
+![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling/profiling.png)
 
 ## Made with Aloha!
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
