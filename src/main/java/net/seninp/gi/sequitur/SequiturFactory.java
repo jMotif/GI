@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.LoggerFactory;
@@ -115,83 +114,83 @@ public final class SequiturFactory {
     return resRule;
   }
 
-  /**
-   * Digests a string of symbols separated by space.
-   * 
-   * @param string The string to digest. Symbols expected to be separated by space.
-   * @param alphabetSize The alphabet size to use.
-   * @param threshold the merging distance threshold to use.
-   * 
-   * @return The top rule handler.
-   * 
-   * @throws Exception if error occurs.
-   */
-  public static SAXRule runSequiturWithEditDistanceThreshold(String string, Integer alphabetSize,
-      Integer threshold) throws Exception {
-
-    consoleLogger.trace("digesting the string " + string);
-
-    // clear global collections
-    //
-    SAXRule.numRules = new AtomicInteger(0);
-    SAXRule.theRules.clear();
-    SAXSymbol.theDigrams.clear();
-    SAXSymbol.theSubstituteTable.clear();
-
-    // init the top-level rule
-    //
-    SAXRule resRule = new SAXRule();
-
-    // tokenize the input string
-    //
-    StringTokenizer st = new StringTokenizer(string, " ");
-
-    // while there are tokens
-    int currentPosition = 0;
-    while (st.hasMoreTokens()) {
-
-      String token = st.nextToken();
-      // System.out.println(" processing the token " + token);
-
-      if (null != alphabetSize && null != threshold) {
-        //
-        boolean merged = false;
-        for (String str : SAXSymbol.theSubstituteTable.keySet()) {
-          double dist = sp.saxMinDist(str.toCharArray(), token.toCharArray(),
-              normalA.getDistanceMatrix(alphabetSize));
-          if (dist < threshold) {
-            merged = true;
-            SAXSymbol.theSubstituteTable.get(str).put(token.substring(0), currentPosition);
-            token = str;
-          }
-        }
-        if (!(merged)) {
-          SAXSymbol.theSubstituteTable.put(token, new Hashtable<String, Integer>());
-        }
-      }
-
-      // extract next token
-      SAXTerminal symbol = new SAXTerminal(token, currentPosition);
-
-      // append to the end of the current sequitur string
-      // ... As each new input symbol is observed, append it to rule S....
-      resRule.last().insertAfter(symbol);
-
-      // once appended, check if the resulting digram is new or recurrent
-      //
-      // ... Each time a link is made between two symbols if the new digram is repeated elsewhere
-      // and the repetitions do not overlap, if the other occurrence is a complete rule,
-      // replace the new digram with the non-terminal symbol that heads the rule,
-      // otherwise,form a new rule and replace both digrams with the new non-terminal symbol
-      // otherwise, insert the digram into the index...
-      resRule.last().p.check();
-      currentPosition++;
-
-      consoleLogger.trace("Current grammar:\n" + SAXRule.printRules());
-    }
-
-    return resRule;
-  }
+  // /**
+  // * Digests a string of symbols separated by space.
+  // *
+  // * @param string The string to digest. Symbols expected to be separated by space.
+  // * @param alphabetSize The alphabet size to use.
+  // * @param threshold the merging distance threshold to use.
+  // *
+  // * @return The top rule handler.
+  // *
+  // * @throws Exception if error occurs.
+  // */
+  // public static SAXRule runSequiturWithEditDistanceThreshold(String string, Integer alphabetSize,
+  // Integer threshold) throws Exception {
+  //
+  // consoleLogger.trace("digesting the string " + string);
+  //
+  // // clear global collections
+  // //
+  // SAXRule.numRules = new AtomicInteger(0);
+  // SAXRule.theRules.clear();
+  // SAXSymbol.theDigrams.clear();
+  // SAXSymbol.theSubstituteTable.clear();
+  //
+  // // init the top-level rule
+  // //
+  // SAXRule resRule = new SAXRule();
+  //
+  // // tokenize the input string
+  // //
+  // StringTokenizer st = new StringTokenizer(string, " ");
+  //
+  // // while there are tokens
+  // int currentPosition = 0;
+  // while (st.hasMoreTokens()) {
+  //
+  // String token = st.nextToken();
+  // // System.out.println(" processing the token " + token);
+  //
+  // if (null != alphabetSize && null != threshold) {
+  // //
+  // boolean merged = false;
+  // for (String str : SAXSymbol.theSubstituteTable.keySet()) {
+  // double dist = sp.saxMinDist(str.toCharArray(), token.toCharArray(),
+  // normalA.getDistanceMatrix(alphabetSize));
+  // if (dist < threshold) {
+  // merged = true;
+  // SAXSymbol.theSubstituteTable.get(str).put(token.substring(0), currentPosition);
+  // token = str;
+  // }
+  // }
+  // if (!(merged)) {
+  // SAXSymbol.theSubstituteTable.put(token, new Hashtable<String, Integer>());
+  // }
+  // }
+  //
+  // // extract next token
+  // SAXTerminal symbol = new SAXTerminal(token, currentPosition);
+  //
+  // // append to the end of the current sequitur string
+  // // ... As each new input symbol is observed, append it to rule S....
+  // resRule.last().insertAfter(symbol);
+  //
+  // // once appended, check if the resulting digram is new or recurrent
+  // //
+  // // ... Each time a link is made between two symbols if the new digram is repeated elsewhere
+  // // and the repetitions do not overlap, if the other occurrence is a complete rule,
+  // // replace the new digram with the non-terminal symbol that heads the rule,
+  // // otherwise,form a new rule and replace both digrams with the new non-terminal symbol
+  // // otherwise, insert the digram into the index...
+  // resRule.last().p.check();
+  // currentPosition++;
+  //
+  // consoleLogger.trace("Current grammar:\n" + SAXRule.printRules());
+  // }
+  //
+  // return resRule;
+  // }
 
   /**
    * Recovers start and stop coordinates of a rule subsequences.
