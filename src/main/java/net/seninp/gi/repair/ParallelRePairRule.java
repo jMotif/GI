@@ -24,7 +24,7 @@ public class ParallelRePairRule {
   //
   // private int level;
 
-  protected ParallelRePairGuard guard;
+  // protected ParallelRePairGuard guard;
 
   public ParallelRePairRule(ParallelGrammarKeeper grammarHandler) {
 

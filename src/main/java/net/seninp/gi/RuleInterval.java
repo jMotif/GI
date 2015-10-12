@@ -103,7 +103,7 @@ public class RuleInterval implements Comparable<RuleInterval>, Cloneable {
   }
 
   public int compareTo(RuleInterval arg0) {
-    return Integer.valueOf(this.getLength()).compareTo(Integer.valueOf(arg0.getLength()));
+    return Integer.compare(this.getLength(), Integer.valueOf(arg0.getLength()));
   }
 
   @Override

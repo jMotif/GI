@@ -63,9 +63,9 @@ public class EvaluateParallelRePair {
     String str = tokens.getSAXString(" ");
     finish = new Date();
 
-    System.out.println("extracted "
-        + Integer.valueOf(str.length() - str.replaceAll(" ", "").length()).toString()
-        + " tokens in " + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
+    System.out
+        .println("extracted " + Integer.valueOf(str.length() - str.replaceAll(" ", "").length())
+            + " tokens in " + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
     System.out.println("# " + Long.valueOf(finish.getTime() - start.getTime()));
 
     // sequential Re-Pair
@@ -91,8 +91,8 @@ public class EvaluateParallelRePair {
         finish = new Date();
         System.out.println("inferred " + g.getRules().size() + " RePair rules using " + threadsNum
             + " threads in " + SAXProcessor.timeToString(start.getTime(), finish.getTime()));
-        System.out.println("# " + threadsNum + " "
-            + Long.valueOf(finish.getTime() - start.getTime()));
+        System.out
+            .println("# " + threadsNum + " " + Long.valueOf(finish.getTime() - start.getTime()));
         String parallelString = pg.getR0ExpandedString().trim();
         System.out
             .println("String equals test:  " + sequentialStr.equalsIgnoreCase(parallelString));

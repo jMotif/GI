@@ -32,4 +32,30 @@ public class RePairGuard extends RePairSymbol {
     return rule.getLevel();
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = super.hashCode();
+    result = prime * result + ((rule == null) ? 0 : rule.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (!super.equals(obj))
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    RePairGuard other = (RePairGuard) obj;
+    if (rule == null) {
+      if (other.rule != null)
+        return false;
+    }
+    else if (!rule.equals(other.rule))
+      return false;
+    return true;
+  }
+
 }
