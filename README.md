@@ -2,6 +2,7 @@
 [![Build Status](https://travis-ci.org/jMotif/GI.svg?branch=master)](https://travis-ci.org/jMotif/GI)
 [![codecov.io](http://codecov.io/github/jMotif/GI/coverage.svg?branch=master)](http://codecov.io/github/jMotif/GI?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi)
+[![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
 
 
 Implements Sequtur (online) and Re-Pair (off-line) grammar induction algorithms for [Grammarviz 2.0](https://github.com/GrammarViz2/grammarviz2_site) and [SAX-VSM-G](https://github.com/seninp/sax-vsm-g). This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
