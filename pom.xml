@@ -7,7 +7,7 @@
 
   <groupId>net.seninp</groupId>
   <artifactId>jmotif-gi</artifactId>
-  <version>0.8.1</version>
+  <version>0.8.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>jmotif-gi</name>
@@ -32,7 +32,6 @@
     <url>http://github.com/jMotif/gi.git</url>
     <connection>scm:git:git://git@github.com/jMotif/gi.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jMotif/gi.git</developerConnection>
-    <tag>jmotif-gi-0.4.0-SNAPSHOT</tag>
   </scm>
 
 
