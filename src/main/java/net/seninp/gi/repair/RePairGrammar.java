@@ -58,7 +58,8 @@ public class RePairGrammar {
   public void expandRules() {
 
     // iterate over all SAX containers
-    for (int currentPositionIndex = 1; currentPositionIndex <= this.theRules.size(); currentPositionIndex++) {
+    for (int currentPositionIndex = 1; currentPositionIndex <= this.theRules
+        .size(); currentPositionIndex++) {
 
       RePairRule rr = this.theRules.get(currentPositionIndex);
       String resultString = rr.toRuleString();
@@ -141,7 +142,9 @@ public class RePairGrammar {
     r0.setRuleNumber(0);
     r0.setRuleString(this.r0String);
     r0.setExpandedRuleString(this.r0ExpandedString);
-    r0.setOccurrences(new int[1]);
+    r0.setOccurrences(new int[] { 0 });
+    r0.setMeanLength(-1);
+    r0.setMinMaxLength(new int[] { -1 });
     res.addRule(r0);
 
     for (RePairRule rule : theRules.values()) {
@@ -161,6 +164,22 @@ public class RePairGrammar {
       res.addRule(rec);
     }
 
+    // count the rule use
+    for (GrammarRuleRecord r : res) {
+      String str = r.getRuleString();
+      String[] tokens = str.split("\\s+");
+      for (String t : tokens) {
+        if (t.startsWith("R")) {
+          Integer ruleId = Integer.valueOf(t.substring(1));
+          GrammarRuleRecord rr = res.get(ruleId);
+          System.out.print(rr.getRuleUseFrequency() + " ");
+          int newFreq = rr.getRuleUseFrequency() + 1;
+          rr.setRuleUseFrequency(newFreq);
+          System.out.println(rr.getRuleUseFrequency());
+        }
+      }
+    }
+
     return res;
   }
 
@@ -171,25 +190,29 @@ public class RePairGrammar {
    * @param originalTimeSeries the timeseries.
    * @param slidingWindowSize the sliding window size.
    */
-  public void buildIntervals(SAXRecords records, double[] originalTimeSeries, int slidingWindowSize) {
+  public void buildIntervals(SAXRecords records, double[] originalTimeSeries,
+      int slidingWindowSize) {
+
     records.buildIndex();
-    for (int currentPositionIndex = 1; currentPositionIndex < this.theRules.size(); currentPositionIndex++) {
+
+    for (int currentPositionIndex = 1; currentPositionIndex <= this.theRules
+        .size(); currentPositionIndex++) {
       RePairRule rr = this.theRules.get(currentPositionIndex);
-      // System.out.println("R" + rr.ruleNumber + ", " + rr.toRuleString() + ", "
-      // + rr.expandedRuleString);
+
       String[] split = rr.expandedRuleString.split(" ");
       for (int pos : rr.getOccurrences()) {
         Integer p2 = records.mapStringIndexToTSPosition(pos + split.length - 1);
         if (null == p2) {
-          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(pos),
-              originalTimeSeries.length));
+          rr.ruleIntervals.add(
+              new RuleInterval(records.mapStringIndexToTSPosition(pos), originalTimeSeries.length));
         }
         else {
-          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(pos), records
-              .mapStringIndexToTSPosition(pos + split.length - 1) + slidingWindowSize));
+          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(pos),
+              records.mapStringIndexToTSPosition(pos + split.length - 1) + slidingWindowSize));
         }
       }
     }
+
   }
 
   private static int mean(ArrayList<RuleInterval> arrayList) {

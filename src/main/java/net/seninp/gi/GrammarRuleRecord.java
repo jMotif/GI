@@ -77,7 +77,7 @@ public class GrammarRuleRecord {
    * @return frequency of the rule
    */
   public int getRuleUseFrequency() {
-    return ruleUsageFrequency;
+    return this.ruleUsageFrequency;
   }
 
   /**
@@ -201,6 +201,9 @@ public class GrammarRuleRecord {
   }
 
   public ArrayList<RuleInterval> getRuleIntervals() {
+    if (null == this.ruleIntervals) {
+      return new ArrayList<RuleInterval>();
+    }
     return this.ruleIntervals;
   }
 
