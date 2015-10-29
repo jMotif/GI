@@ -172,10 +172,10 @@ public class RePairGrammar {
         if (t.startsWith("R")) {
           Integer ruleId = Integer.valueOf(t.substring(1));
           GrammarRuleRecord rr = res.get(ruleId);
-          System.out.print(rr.getRuleUseFrequency() + " ");
+          // System.out.print(rr.getRuleUseFrequency() + " ");
           int newFreq = rr.getRuleUseFrequency() + 1;
           rr.setRuleUseFrequency(newFreq);
-          System.out.println(rr.getRuleUseFrequency());
+          // System.out.println(rr.getRuleUseFrequency());
         }
       }
     }
