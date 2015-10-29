@@ -12,14 +12,14 @@ import com.beust.jcommander.JCommander;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.seninp.gi.GIAlgorithm;
-import net.seninp.gi.GrammarRuleRecord;
-import net.seninp.gi.GrammarRules;
-import net.seninp.gi.RuleInterval;
+import net.seninp.gi.logic.GIHelper;
+import net.seninp.gi.logic.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.logic.RuleInterval;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
-import net.seninp.gi.util.GIHelper;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
@@ -97,7 +97,7 @@ public class TS2Grammar {
 
     // infer the grammar
     //
-    GrammarRules rules = null;
+    GrammarRules rules = new GrammarRules();
     if (GIAlgorithm.SEQUITUR == TS2GrammarParameters.GI_ALGORITHM_IMPLEMENTATION) {
       consoleLogger.info("Inferring Sequitur grammar ...");
       SAXRule grammar = SequiturFactory.runSequitur(discretizedTS);
@@ -222,16 +222,22 @@ public class TS2Grammar {
     // close the file
     //
     if (fileOpen) {
-      try {
-        bw.write(grammarStats.toString());
-        bw.write("#coverage\t" + minCoverage + "\t" + maxCoverage + "\t" + aveCoverage + "\n");
-        bw.write("#non-covered intervals " + zeros.size() + " " + zerosSize + " points\n");
+      bw.write(grammarStats.toString());
+      bw.write("#coverage\t" + minCoverage + "\t" + maxCoverage + "\t" + aveCoverage + "\n");
+      bw.write("#non-covered intervals " + zeros.size() + " " + zerosSize + " points\n");
+    }
+
+    try {
+      if (fileOpen) {
         bw.close();
       }
-      catch (IOException e) {
-        System.err.print(
-            "Encountered an error while writing stats file: \n" + StackTrace.toString(e) + "\n");
-      }
+    }
+    catch (IOException e) {
+      System.err.print(
+          "Encountered an error while writing stats file: \n" + StackTrace.toString(e) + "\n");
+    }
+    finally {
+      bw.close();
     }
 
   }

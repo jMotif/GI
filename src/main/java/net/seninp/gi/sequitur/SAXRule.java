@@ -25,8 +25,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.seninp.gi.GrammarRuleRecord;
-import net.seninp.gi.GrammarRules;
+import net.seninp.gi.logic.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRules;
 
 /**
  * The Rule. Adaption of Eibe Frank code for JMotif API.

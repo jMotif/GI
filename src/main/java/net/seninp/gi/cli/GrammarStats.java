@@ -1,7 +1,7 @@
 package net.seninp.gi.cli;
 
 import java.util.ArrayList;
-import net.seninp.gi.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRuleRecord;
 
 public class GrammarStats {
 

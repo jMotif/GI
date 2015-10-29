@@ -1,5 +1,6 @@
 package net.seninp.gi;
 
+import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;

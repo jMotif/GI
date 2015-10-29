@@ -3,9 +3,9 @@ package net.seninp.gi.repair;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.concurrent.atomic.AtomicInteger;
-import net.seninp.gi.GrammarRuleRecord;
-import net.seninp.gi.GrammarRules;
-import net.seninp.gi.RuleInterval;
+import net.seninp.gi.logic.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.logic.RuleInterval;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**

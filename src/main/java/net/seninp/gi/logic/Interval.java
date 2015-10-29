@@ -1,4 +1,4 @@
-package net.seninp.gi;
+package net.seninp.gi.logic;
 
 /**
  * Implements an interval. Start inclusive, end exclusive.

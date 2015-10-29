@@ -3,9 +3,9 @@ package net.seninp.gi.rulepruner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import net.seninp.gi.GrammarRuleRecord;
-import net.seninp.gi.GrammarRules;
-import net.seninp.gi.RuleInterval;
+import net.seninp.gi.logic.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.logic.RuleInterval;
 
 /**
  * Pruner methods implementation.

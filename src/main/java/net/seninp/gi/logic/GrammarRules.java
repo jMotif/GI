@@ -1,4 +1,4 @@
-package net.seninp.gi;
+package net.seninp.gi.logic;
 
 import java.util.Iterator;
 import java.util.SortedMap;

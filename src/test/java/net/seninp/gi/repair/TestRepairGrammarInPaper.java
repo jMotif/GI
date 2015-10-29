@@ -3,7 +3,7 @@ package net.seninp.gi.repair;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import net.seninp.gi.GrammarRuleRecord;
+import net.seninp.gi.logic.GrammarRuleRecord;
 
 public class TestRepairGrammarInPaper {
 

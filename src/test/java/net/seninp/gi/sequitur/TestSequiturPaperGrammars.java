@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
-import net.seninp.gi.GrammarRules;
+import net.seninp.gi.logic.GrammarRules;
 import net.seninp.util.StackTrace;
 
 public class TestSequiturPaperGrammars {

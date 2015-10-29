@@ -1,8 +1,7 @@
-package net.seninp.gi.util;
+package net.seninp.gi.logic;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.seninp.gi.RuleInterval;
 
 /**
  * I use this for temporal fixtures.

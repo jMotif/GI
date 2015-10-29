@@ -1,4 +1,4 @@
-package net.seninp.gi;
+package net.seninp.gi.logic;
 
 /**
  * 
@@ -140,8 +140,8 @@ public class RuleInterval implements Comparable<RuleInterval>, Cloneable {
   }
 
   @Override
-  public RuleInterval clone() {
-    RuleInterval clone = new RuleInterval();
+  public Object clone() throws CloneNotSupportedException {
+    RuleInterval clone = (RuleInterval) super.clone();
     clone.id = this.id;
     clone.startPos = this.startPos;
     clone.endPos = this.endPos;

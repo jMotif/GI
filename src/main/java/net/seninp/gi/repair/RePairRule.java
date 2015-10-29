@@ -1,7 +1,7 @@
 package net.seninp.gi.repair;
 
 import java.util.ArrayList;
-import net.seninp.gi.RuleInterval;
+import net.seninp.gi.logic.RuleInterval;
 
 /**
  * The grammar rule.
