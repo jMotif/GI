@@ -200,7 +200,6 @@ public class TS2Grammar {
     int minCoverage = Integer.MAX_VALUE;
     int maxCoverage = Integer.MIN_VALUE;
     int coverageSum = 0;
-    int ctr = 0;
     for (int i : coverageArray) {
       coverageSum += i;
       if (i < minCoverage) {
@@ -209,10 +208,6 @@ public class TS2Grammar {
       if (i > maxCoverage) {
         maxCoverage = i;
       }
-      if (i == 0) {
-        System.out.println("Gotcha!");
-      }
-      ctr++;
     }
     double aveCoverage = (double) coverageSum / (double) series.length;
 
@@ -229,7 +224,8 @@ public class TS2Grammar {
     if (fileOpen) {
       bw.write(grammarStats.toString());
       bw.write("# coverage\t" + minCoverage + "\t" + maxCoverage + "\t" + aveCoverage + "\n");
-      bw.write("# non-covered intervals " + zeros.size() + ", of total " + zerosSize + " point(s)\n");
+      bw.write(
+          "# non-covered intervals " + zeros.size() + ", of total " + zerosSize + " point(s)\n");
     }
 
     try {
