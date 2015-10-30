@@ -76,6 +76,8 @@
         <configuration>
           <excludes>
             <exclude>**/rulepruner/**</exclude>
+            <exclude>**/tinker/**</exclude>
+            <exclude>**/cli/**</exclude>
           </excludes>
         </configuration>
         <executions>
