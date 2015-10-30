@@ -1,4 +1,4 @@
-package net.seninp.gi;
+package net.seninp.gi.tinker;
 
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.sequitur.SequiturFactory;

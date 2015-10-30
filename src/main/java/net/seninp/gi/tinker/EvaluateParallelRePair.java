@@ -1,4 +1,4 @@
-package net.seninp.gi.performance;
+package net.seninp.gi.tinker;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
