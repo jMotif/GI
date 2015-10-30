@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import net.seninp.gi.logic.GIHelper;
+import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.RuleInterval;
@@ -545,7 +545,7 @@ public final class SequiturFactory {
         lengths[0] = originalTimeSeries.length;
       }
       ruleContainer.setRuleIntervals(resultIntervals);
-      ruleContainer.setMeanLength((int) GIHelper.mean(lengths));
+      ruleContainer.setMeanLength((int) GIUtils.mean(lengths));
       ruleContainer.setMinMaxLength(lengths);
     }
 

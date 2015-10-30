@@ -9,12 +9,12 @@ import java.util.List;
  * @author psenin
  * 
  */
-public class GIHelper {
+public class GIUtils {
 
   /**
    * Constructor.
    */
-  public GIHelper() {
+  public GIUtils() {
     assert true;
   }
 

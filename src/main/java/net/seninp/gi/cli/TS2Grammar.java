@@ -12,7 +12,7 @@ import com.beust.jcommander.JCommander;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import net.seninp.gi.GIAlgorithm;
-import net.seninp.gi.logic.GIHelper;
+import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.RuleInterval;
@@ -218,7 +218,7 @@ public class TS2Grammar {
 
     // look for zero-covered intervals and add those to the list
     //
-    List<RuleInterval> zeros = GIHelper.getZeroIntervals(coverageArray);
+    List<RuleInterval> zeros = GIUtils.getZeroIntervals(coverageArray);
     int zerosSize = 0;
     for (RuleInterval i : zeros) {
       zerosSize += i.getLength();
