@@ -67,20 +67,20 @@ public class GrammarStats {
   public String toString() {
 
     StringBuilder builder = new StringBuilder();
-    builder.append("#GrammarStats:").append(CR);
+    builder.append("# GrammarStats:").append(CR);
 
-    builder.append("#rules: ").append(this.ruleCounter).append(CR);
-    builder.append("#intervals: ").append(this.intervalCounter).append(CR);
+    builder.append("# rules: ").append(this.ruleCounter).append(CR);
+    builder.append("# intervals: ").append(this.intervalCounter).append(CR);
 
-    builder.append("#factor\tmin\tmax\tmean:").append(CR);
+    builder.append("# factor\tmin\tmax\tmean:").append(CR);
 
-    builder.append("#length").append(TAB).append(this.minLength).append(TAB);
+    builder.append("# length").append(TAB).append(this.minLength).append(TAB);
     builder.append(this.maxLength).append(TAB).append(mean(this.ruleLength)).append(CR);
 
-    builder.append("#use").append(TAB).append(this.minUse).append(TAB);
+    builder.append("# ruleuse").append(TAB).append(this.minUse).append(TAB);
     builder.append(this.maxUse).append(TAB).append(mean(this.ruleUse)).append(CR);
 
-    builder.append("#occurrence").append(TAB).append(this.minFrequency).append(TAB);
+    builder.append("# occurrence").append(TAB).append(this.minFrequency).append(TAB);
     builder.append(this.maxFrequency).append(TAB).append(mean(this.ruleFrequency)).append(CR);
 
     return builder.toString();

@@ -195,20 +195,20 @@ public class RePairGrammar {
 
     records.buildIndex();
 
-    for (int currentPositionIndex = 1; currentPositionIndex <= this.theRules
-        .size(); currentPositionIndex++) {
-      RePairRule rr = this.theRules.get(currentPositionIndex);
+    for (int ruleIdx = 1; ruleIdx <= this.theRules.size(); ruleIdx++) {
+
+      RePairRule rr = this.theRules.get(ruleIdx);
 
       String[] split = rr.expandedRuleString.split(" ");
-      for (int pos : rr.getOccurrences()) {
-        Integer p2 = records.mapStringIndexToTSPosition(pos + split.length - 1);
-        if (null == p2) {
-          rr.ruleIntervals.add(
-              new RuleInterval(records.mapStringIndexToTSPosition(pos), originalTimeSeries.length));
+      for (int strPos : rr.getOccurrences()) {
+        Integer tsPos = records.mapStringIndexToTSPosition(strPos + split.length - 1);
+        if (null == tsPos) {
+          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(strPos),
+              originalTimeSeries.length + 1)); // +1 cause right point is excluded
         }
         else {
-          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(pos),
-              records.mapStringIndexToTSPosition(pos + split.length - 1) + slidingWindowSize));
+          rr.ruleIntervals.add(new RuleInterval(records.mapStringIndexToTSPosition(strPos),
+              records.mapStringIndexToTSPosition(strPos + split.length - 1) + slidingWindowSize));
         }
       }
     }
