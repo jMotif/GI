@@ -14,7 +14,7 @@ public class GIUtils {
   /**
    * Constructor.
    */
-  public GIUtils() {
+  private GIUtils() {
     assert true;
   }
 

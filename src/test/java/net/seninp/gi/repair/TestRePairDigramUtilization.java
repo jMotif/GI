@@ -14,7 +14,7 @@ import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 
 public class TestRePairDigramUtilization {
 
-  private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606_1.csv";
+  private static final String TEST_DATASET_NAME = "src/resources/test-data/ecg0606.txt";
 
   private static final Integer WINDOW_SIZE = 100;
   private static final Integer PAA_SIZE = 3;

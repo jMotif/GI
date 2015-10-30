@@ -522,7 +522,7 @@ public final class SequiturFactory {
         int startPos = saxWordsIndexes.get(currentIndex);
         int endPos = -1;
         if ((currentIndex + expandedRuleLength) >= saxWordsIndexes.size()) {
-          endPos = originalTimeSeries.length - 1;
+          endPos = originalTimeSeries.length;
         }
         else {
           if (slidingWindowOn) {
