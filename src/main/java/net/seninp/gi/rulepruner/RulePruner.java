@@ -78,8 +78,8 @@ public class RulePruner {
 
     // compute SAX approximation distance
     //
-    double approximationDistance = sp.approximationDistance(ts, windowSize, paaSize, alphabetSize,
-        RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
+    double approximationDistance = sp.approximationDistance(ts, windowSize, paaSize,
+        RulePrunerParameters.SAX_NORM_THRESHOLD);
     logStr.append(dfSize.format(approximationDistance)).append(COMMA);
     res.setApproxDist(approximationDistance);
 
