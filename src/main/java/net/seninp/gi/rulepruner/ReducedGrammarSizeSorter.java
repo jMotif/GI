@@ -2,6 +2,12 @@ package net.seninp.gi.rulepruner;
 
 import java.util.Comparator;
 
+/**
+ * Sorts sampled points according to the reduction in the Grammar size.
+ * 
+ * @author psenin
+ *
+ */
 public class ReducedGrammarSizeSorter implements Comparator<SampledPoint> {
 
   @Override

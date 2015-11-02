@@ -52,6 +52,17 @@ public class RulePruner {
     this.sp = new SAXProcessor();
   }
 
+  /**
+   * Samples the specified point.
+   * 
+   * @param windowSize
+   * @param paaSize
+   * @param alphabetSize
+   * @param nrStrategy
+   * @param nThreshold
+   * @return
+   * @throws Exception
+   */
   public SampledPoint sample(int windowSize, int paaSize, int alphabetSize,
       NumerosityReductionStrategy nrStrategy, double nThreshold) throws Exception {
 
@@ -85,7 +96,7 @@ public class RulePruner {
 
     // build a grammar
     //
-    GrammarRules rules = null;
+    GrammarRules rules = new GrammarRules();
     if (GIAlgorithm.SEQUITUR.equals(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION)) {
       SAXRule r = SequiturFactory.runSequitur(saxData.getSAXString(" "));
       rules = r.toGrammarRulesData();
@@ -96,7 +107,9 @@ public class RulePruner {
       rules = grammar.toGrammarRulesData();
     }
 
-    Integer grammarSize = RulePrunerFactory.computeValidGrammarSize(ts, rules, paaSize);
+    // compute the grammar size
+    //
+    Integer grammarSize = RulePrunerFactory.computeGrammarSize(rules, paaSize);
     logStr.append(grammarSize).append(COMMA);
     logStr.append(rules.size()).append(COMMA);
     res.setGrammarSize(grammarSize);

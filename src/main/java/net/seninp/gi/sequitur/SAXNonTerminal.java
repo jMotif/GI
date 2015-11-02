@@ -35,11 +35,11 @@ public class SAXNonTerminal extends SAXSymbol implements Cloneable {
    * @param theRule the rule.
    */
   public SAXNonTerminal(SAXRule theRule) {
-    r = theRule;
-    r.count++;
-    value = String.valueOf(numTerminals + r.ruleIndex);
-    p = null;
-    n = null;
+    this.r = theRule;
+    this.r.count++;
+    this.value = String.valueOf(numTerminals + r.ruleIndex);
+    this.p = null;
+    this.n = null;
   }
 
   /**

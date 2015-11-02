@@ -5,15 +5,20 @@ public class SampledPoint {
   int window;
   int paa;
   int alphabet;
+  
   double approxDist;
+  
   int grammarSize;
   int grammarRules;
+  
   int compressedGrammarSize;
   int prunedRules;
+  
   boolean isCovered;
   double coverage;
   double reduction;
-  private int maxFrequency;
+  
+  private int mqxRuleFrequency;
 
   public int getWindow() {
     return window;
@@ -117,7 +122,7 @@ public class SampledPoint {
     result = prime * result + grammarRules;
     result = prime * result + grammarSize;
     result = prime * result + (isCovered ? 1231 : 1237);
-    result = prime * result + maxFrequency;
+    result = prime * result + mqxRuleFrequency;
     result = prime * result + paa;
     result = prime * result + prunedRules;
     temp = Double.doubleToLongBits(reduction);
@@ -127,7 +132,7 @@ public class SampledPoint {
   }
 
   public void setMaxFrequency(int maxFreq) {
-    this.maxFrequency = maxFreq;
+    this.mqxRuleFrequency = maxFreq;
   }
 
   public int getPaa() {
@@ -139,7 +144,7 @@ public class SampledPoint {
   }
 
   public int getMaxFrequency() {
-    return maxFrequency;
+    return mqxRuleFrequency;
   }
 
   @Override
@@ -165,7 +170,7 @@ public class SampledPoint {
       return false;
     if (isCovered != other.isCovered)
       return false;
-    if (maxFrequency != other.maxFrequency)
+    if (mqxRuleFrequency != other.mqxRuleFrequency)
       return false;
     if (paa != other.paa)
       return false;
@@ -187,7 +192,7 @@ public class SampledPoint {
         .append(", compressedGrammarSize=").append(compressedGrammarSize).append(", prunedRules=")
         .append(prunedRules).append(", isCovered=").append(isCovered).append(", coverage=")
         .append(coverage).append(", reduction=").append(reduction).append(", maxFrequency=")
-        .append(maxFrequency).append("]");
+        .append(mqxRuleFrequency).append("]");
     return builder.toString();
   }
 

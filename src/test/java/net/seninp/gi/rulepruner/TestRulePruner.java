@@ -17,8 +17,6 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
  */
 public class TestRulePruner {
 
-  private static double[] ts = { 1., 1., 1., 1., 1., 1., 1. };
-
   private static SAXRecords recs = new SAXRecords();
 
   private static GrammarRules grammar = new GrammarRules();
@@ -90,11 +88,13 @@ public class TestRulePruner {
   @Test
   public void test() {
 
-    assertEquals(new Integer(32), RulePrunerFactory.computeValidGrammarSize(ts, grammar, 3));
+    assertEquals(new Integer(24), RulePrunerFactory.computeGrammarSize(grammar, 3));
+    
+    System.out.println(grammar.get(0));
 
-    GrammarRules prunedGrammar = RulePrunerFactory.performPruning(ts, grammar);
-
-    assertEquals(new Integer(22), RulePrunerFactory.computePrunedGrammarSize(ts, prunedGrammar, 3));
+    // GrammarRules prunedGrammar = RulePrunerFactory.performPruning(grammar);
+    //
+    // assertEquals(new Integer(22), RulePrunerFactory.computePrunedGrammarSize(prunedGrammar, 3));
   }
 
 }

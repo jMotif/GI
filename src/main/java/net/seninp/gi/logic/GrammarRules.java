@@ -4,6 +4,12 @@ import java.util.Iterator;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+/**
+ * Collection of rules, based on the TreeMap to guarantee the iteration order.
+ * 
+ * @author psenin
+ *
+ */
 public class GrammarRules implements Iterable<GrammarRuleRecord> {
 
   private SortedMap<Integer, GrammarRuleRecord> rules;

@@ -100,6 +100,101 @@ public class SAXRule {
   }
 
   /**
+   * Original getRules() method. Prints out rules. Killing it will brake tests.
+   *
+   * @return the formatted rules string.
+   */
+  public static String printRules() {
+
+    theRules.get(0).getSAXRules();
+    expandRules();
+
+    Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
+    SAXRule currentRule;
+    SAXRule referedTo;
+    SAXSymbol sym;
+    int index;
+    int processedRules = 0;
+    StringBuilder text = new StringBuilder();
+
+    text.append("Number\tName\tLevel\tOccurr.\tUsage\tYield\tRule str\tExpaneded\tIndexes\n");
+    rules.addElement(theRules.get(0));
+
+    // add-on - keeping the rule string, will be used in order to expand rules
+    StringBuilder currentRuleString = new StringBuilder();
+
+    while (processedRules < rules.size()) {
+
+      currentRule = rules.elementAt(processedRules);
+
+      // seninp: adding to original output rule occurrence indexes
+      //
+      text.append(SPACE);
+      text.append(arrRuleRecords.get(processedRules).getRuleNumber()).append(TAB);
+      text.append(arrRuleRecords.get(processedRules).getRuleName()).append(TAB);
+      text.append(arrRuleRecords.get(processedRules).getRuleLevel()).append(TAB);
+      text.append(arrRuleRecords.get(processedRules).getOccurrences().size()).append(TAB);
+      text.append(arrRuleRecords.get(processedRules).getRuleUseFrequency()).append(TAB);
+      text.append(arrRuleRecords.get(processedRules).getRuleYield()).append(TAB);
+
+      for (sym = currentRule.first(); (!sym.isGuard()); sym = sym.n) {
+        if (sym.isNonTerminal()) {
+          referedTo = ((SAXNonTerminal) sym).r;
+          if ((rules.size() > referedTo.index) && (rules.elementAt(referedTo.index) == referedTo)) {
+            index = referedTo.index;
+          }
+          else {
+            index = rules.size();
+            referedTo.index = index;
+            rules.addElement(referedTo);
+          }
+          text.append('R');
+          text.append(index);
+
+          currentRuleString.append('R');
+          currentRuleString.append(index);
+        }
+        else {
+          if (sym.value.equals(" ")) {
+            text.append('_');
+            currentRuleString.append('_');
+          }
+          else {
+            if (sym.value.equals("\n")) {
+              text.append("\\n");
+              currentRuleString.append("\\n");
+            }
+            else {
+              text.append(sym.value);
+              currentRuleString.append(sym.value);
+            }
+          }
+        }
+        text.append(' ');
+        currentRuleString.append(' ');
+      }
+      text.append(TAB).append(arrRuleRecords.get(processedRules).getExpandedRuleString())
+          .append(TAB);
+      text.append(Arrays.toString(currentRule.getIndexes())).append(CR);
+
+      processedRules++;
+
+      currentRuleString = new StringBuilder();
+    }
+    return text.toString();
+  }
+
+  /**
+   * Cleans up data structures.
+   */
+  public static void reset() {
+    SAXRule.numRules = new AtomicInteger(0);
+    SAXSymbol.theDigrams.clear();
+    SAXSymbol.theSubstituteTable.clear();
+    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
+  }
+
+  /**
    * Report the FIRST symbol of the rule.
    * 
    * @return the FIRST rule's symbol.
@@ -339,7 +434,7 @@ public class SAXRule {
    */
   protected void getSAXRules() {
 
-    arrRuleRecords = new ArrayList<GrammarRuleRecord>();
+    arrRuleRecords.clear();
 
     Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
     rules.addElement(this);
@@ -402,98 +497,89 @@ public class SAXRule {
     return res;
   }
 
-  /**
-   * Original getRules() method. Prints out rules. Killing it will brake tests.
-   * 
-   * @return the formatted rules string.
-   */
-  public static String printRules() {
+  // /**
+  // * Original getRules() method. Prints out rules. Killing it will brake tests.
+  // *
+  // * @return the formatted rules string.
+  // */
+  // public static String printRules() {
+  //
+  // theRules.get(0).getSAXRules();
+  // expandRules();
+  //
+  // Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
+  // SAXRule currentRule;
+  // SAXRule referedTo;
+  // SAXSymbol sym;
+  // int index;
+  // int processedRules = 0;
+  // StringBuilder text = new StringBuilder();
+  //
+  // text.append("Number\tName\tLevel\tOccurr.\tUsage\tYield\tRule str\tExpaneded\tIndexes\n");
+  // rules.addElement(theRules.get(0));
+  //
+  // // add-on - keeping the rule string, will be used in order to expand rules
+  // StringBuilder currentRuleString = new StringBuilder();
+  //
+  // while (processedRules < rules.size()) {
+  //
+  // currentRule = rules.elementAt(processedRules);
+  //
+  // // seninp: adding to original output rule occurrence indexes
+  // //
+  // text.append(SPACE);
+  // text.append(arrRuleRecords.get(processedRules).getRuleNumber()).append(TAB);
+  // text.append(arrRuleRecords.get(processedRules).getRuleName()).append(TAB);
+  // text.append(arrRuleRecords.get(processedRules).getRuleLevel()).append(TAB);
+  // text.append(arrRuleRecords.get(processedRules).getOccurrences().size()).append(TAB);
+  // text.append(arrRuleRecords.get(processedRules).getRuleUseFrequency()).append(TAB);
+  // text.append(arrRuleRecords.get(processedRules).getRuleYield()).append(TAB);
+  //
+  // for (sym = currentRule.first(); (!sym.isGuard()); sym = sym.n) {
+  // if (sym.isNonTerminal()) {
+  // referedTo = ((SAXNonTerminal) sym).r;
+  // if ((rules.size() > referedTo.index) && (rules.elementAt(referedTo.index) == referedTo)) {
+  // index = referedTo.index;
+  // }
+  // else {
+  // index = rules.size();
+  // referedTo.index = index;
+  // rules.addElement(referedTo);
+  // }
+  // text.append('R');
+  // text.append(index);
+  //
+  // currentRuleString.append('R');
+  // currentRuleString.append(index);
+  // }
+  // else {
+  // if (sym.value.equals(" ")) {
+  // text.append('_');
+  // currentRuleString.append('_');
+  // }
+  // else {
+  // if (sym.value.equals("\n")) {
+  // text.append("\\n");
+  // currentRuleString.append("\\n");
+  // }
+  // else {
+  // text.append(sym.value);
+  // currentRuleString.append(sym.value);
+  // }
+  // }
+  // }
+  // text.append(' ');
+  // currentRuleString.append(' ');
+  // }
+  // text.append(TAB).append(arrRuleRecords.get(processedRules).getExpandedRuleString())
+  // .append(TAB);
+  // text.append(Arrays.toString(currentRule.getIndexes())).append(CR);
+  //
+  // processedRules++;
+  //
+  // currentRuleString = new StringBuilder();
+  // }
+  // return text.toString();
+  // }
 
-    theRules.get(0).getSAXRules();
-    expandRules();
-
-    Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
-    SAXRule currentRule;
-    SAXRule referedTo;
-    SAXSymbol sym;
-    int index;
-    int processedRules = 0;
-    StringBuilder text = new StringBuilder();
-
-    text.append("Number\tName\tLevel\tOccurr.\tUsage\tYield\tRule str\tExpaneded\tIndexes\n");
-    rules.addElement(theRules.get(0));
-
-    // add-on - keeping the rule string, will be used in order to expand rules
-    StringBuilder currentRuleString = new StringBuilder();
-
-    while (processedRules < rules.size()) {
-
-      currentRule = rules.elementAt(processedRules);
-
-      // seninp: adding to original output rule occurrence indexes
-      //
-      text.append(SPACE);
-      text.append(arrRuleRecords.get(processedRules).getRuleNumber()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleName()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleLevel()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getOccurrences().size()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleUseFrequency()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleYield()).append(TAB);
-
-      for (sym = currentRule.first(); (!sym.isGuard()); sym = sym.n) {
-        if (sym.isNonTerminal()) {
-          referedTo = ((SAXNonTerminal) sym).r;
-          if ((rules.size() > referedTo.index) && (rules.elementAt(referedTo.index) == referedTo)) {
-            index = referedTo.index;
-          }
-          else {
-            index = rules.size();
-            referedTo.index = index;
-            rules.addElement(referedTo);
-          }
-          text.append('R');
-          text.append(index);
-
-          currentRuleString.append('R');
-          currentRuleString.append(index);
-        }
-        else {
-          if (sym.value.equals(" ")) {
-            text.append('_');
-            currentRuleString.append('_');
-          }
-          else {
-            if (sym.value.equals("\n")) {
-              text.append("\\n");
-              currentRuleString.append("\\n");
-            }
-            else {
-              text.append(sym.value);
-              currentRuleString.append(sym.value);
-            }
-          }
-        }
-        text.append(' ');
-        currentRuleString.append(' ');
-      }
-      text.append(TAB).append(arrRuleRecords.get(processedRules).getExpandedRuleString())
-          .append(TAB);
-      text.append(Arrays.toString(currentRule.getIndexes())).append(CR);
-
-      processedRules++;
-
-      currentRuleString = new StringBuilder();
-    }
-    return text.toString();
-  }
-
-  /**
-   * Cleans up data structures.
-   */
-  public static void reset() {
-    SAXRule.numRules = new AtomicInteger(0);
-    SAXSymbol.theDigrams.clear();
-    SAXSymbol.theSubstituteTable.clear();
-    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
-  }
 }
