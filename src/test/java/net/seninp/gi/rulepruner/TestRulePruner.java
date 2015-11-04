@@ -63,10 +63,10 @@ public class TestRulePruner {
       r0.setRuleNumber(0);
 
       r0.setExpandedRuleString("abc abc cba xxx abc abc cba");
-      r0.setRuleString("R1 abc R1");
+      r0.setRuleString("R1 xxx R1");
 
       ArrayList<RuleInterval> intervals0 = new ArrayList<RuleInterval>();
-      intervals0.add(new RuleInterval(0, 6));
+      intervals0.add(new RuleInterval(0, 7));
       r0.setRuleIntervals(intervals0);
 
       grammar.addRule(r0);
@@ -89,12 +89,15 @@ public class TestRulePruner {
   public void test() {
 
     assertEquals(new Integer(24), RulePrunerFactory.computeGrammarSize(grammar, 3));
-    
-    System.out.println(grammar.get(0));
+    System.out.println("Raw grammar of size " + RulePrunerFactory.computeGrammarSize(grammar, 3));
+    System.out.println(grammar.toString());
 
-    // GrammarRules prunedGrammar = RulePrunerFactory.performPruning(grammar);
-    //
-    // assertEquals(new Integer(22), RulePrunerFactory.computePrunedGrammarSize(prunedGrammar, 3));
+    GrammarRules prunedGrammar = RulePrunerFactory.performPruning(new double[7], grammar);
+    System.out.println(
+        "Pruned grammar of size " + RulePrunerFactory.computeGrammarSize(prunedGrammar, 3));
+    System.out.println(prunedGrammar.toString());
+
+    assertEquals(new Integer(20), RulePrunerFactory.computeGrammarSize(prunedGrammar, 3));
   }
 
 }

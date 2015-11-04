@@ -1,6 +1,7 @@
 package net.seninp.gi.logic;
 
 import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -40,4 +41,14 @@ public class GrammarRules implements Iterable<GrammarRuleRecord> {
     return this.rules.size();
   }
 
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    for (Entry<Integer, GrammarRuleRecord> rr : rules.entrySet()) {
+      sb.append(rr.getValue().getRuleName());
+      sb.append(" -> ").append(rr.getValue().getRuleString());
+      sb.append(" -> ").append(rr.getValue().getExpandedRuleString());
+      sb.append("\n");
+    }
+    return sb.toString();
+  }
 }

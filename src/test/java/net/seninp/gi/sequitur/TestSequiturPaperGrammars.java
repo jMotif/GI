@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import org.junit.Test;
+import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 import net.seninp.util.StackTrace;
 
 public class TestSequiturPaperGrammars {
@@ -62,6 +64,57 @@ public class TestSequiturPaperGrammars {
 
       assertTrue("test r0", TEST1_R0.equals(rules.get(0).getRuleString().trim()));
       assertTrue("test r1", TEST1_R1.equals(rules.get(1).getRuleString().trim()));
+    }
+    catch (Exception e) {
+      fail("Exception shouldnt be thrown: " + StackTrace.toString(e));
+    }
+
+  }
+
+  @Test
+  public void test1Full() {
+
+    try {
+
+      final double[] originalTimeSeries = { 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., 1. };
+      SAXRecords saxData = new SAXRecords();
+      int idx = 0;
+      for (String s : TEST1_STRING.split("\\s+")) {
+        saxData.add(s.toCharArray(), idx);
+        idx += 2;
+      }
+      SAXRule grammar = SequiturFactory.runSequitur(saxData.getSAXString(" "));
+      GrammarRules rules = grammar.toGrammarRulesData();
+      SequiturFactory.updateRuleIntervals(rules, saxData, true, originalTimeSeries, 1, 1);
+
+      for (GrammarRuleRecord rec : grammar.getRuleRecords()) {
+        System.out.println(rec.getRuleIntervals());
+      }
+
+    }
+    catch (Exception e) {
+      fail("Exception shouldnt be thrown: " + StackTrace.toString(e));
+    }
+
+    try {
+
+      final double[] originalTimeSeries = new double[6*5];
+      
+      SAXRecords saxData = new SAXRecords();
+      int idx = 0;
+      for (String s : TEST1_STRING.split("\\s+")) {
+        saxData.add(s.toCharArray(), idx);
+        idx += 5;
+      }
+      
+      SAXRule grammar = SequiturFactory.runSequitur(saxData.getSAXString(" "));
+      GrammarRules rules = grammar.toGrammarRulesData();
+      SequiturFactory.updateRuleIntervals(rules, saxData, true, originalTimeSeries, 1, 1);
+
+      for (GrammarRuleRecord rec : grammar.getRuleRecords()) {
+        System.out.println(rec.getRuleIntervals());
+      }
+
     }
     catch (Exception e) {
       fail("Exception shouldnt be thrown: " + StackTrace.toString(e));

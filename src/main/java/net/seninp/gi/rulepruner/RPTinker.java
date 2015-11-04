@@ -12,5 +12,6 @@ public class RPTinker {
     RulePruner rp = new RulePruner(ts);
     SampledPoint p = rp.sample(100, 6, 6, NumerosityReductionStrategy.EXACT, 0.01);
     System.out.println(p);
+    
   }
 }

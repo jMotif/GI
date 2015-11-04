@@ -118,8 +118,7 @@ public class RulePruner {
     // prune grammar' rules
     //
     GrammarRules prunedRulesSet = RulePrunerFactory.performPruning(ts, rules);
-    Integer compressedSize = RulePrunerFactory.computePrunedGrammarSize(ts, prunedRulesSet,
-        paaSize);
+    Integer compressedSize = RulePrunerFactory.computeGrammarSize(prunedRulesSet, paaSize);
     logStr.append(compressedSize).append(COMMA);
     logStr.append(prunedRulesSet.size()).append(COMMA);
     res.setCompressedGrammarSize(compressedSize);

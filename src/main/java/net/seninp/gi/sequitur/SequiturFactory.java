@@ -306,7 +306,7 @@ public final class SequiturFactory {
         lengthCounter++;
       }
       if (0 == ruleContainer.getRuleNumber()) {
-        resultIntervals.add(new RuleInterval(0, originalTimeSeries.length - 1));
+        resultIntervals.add(new RuleInterval(0, originalTimeSeries.length));
         lengths = new int[1];
         lengths[0] = originalTimeSeries.length;
       }
