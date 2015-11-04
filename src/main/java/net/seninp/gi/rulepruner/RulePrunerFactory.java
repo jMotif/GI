@@ -95,15 +95,17 @@ public class RulePrunerFactory {
    */
   public static GrammarRules performPruning(double[] ts, GrammarRules grammarRules) {
 
-    // this is where we keep range coverage
+    // this is where we keep the range coverage
     boolean[] range = new boolean[ts.length];
 
-    // these are rules used in current cover
+    // these are the rules used in the current cover
     HashSet<Integer> usedRules = new HashSet<Integer>();
     usedRules.add(0);
+
+    // these are the rules thet were excluded as not contributing anymore
     HashSet<Integer> removedRules = new HashSet<Integer>();
 
-    // do until all ranges are covered
+    // do until all ranges are covered BUT break if no more coverage left
     while (hasEmptyRanges(range)) {
 
       // iterate over rules set finding new optimal cover
@@ -126,12 +128,11 @@ public class RulePrunerFactory {
       }
 
       if (bestDelta < 0) {
+        // i.e. no delta found and the value stayed Integer.MIN_VALUE
         break;
       }
 
-      // System.out.println("Adding the best rule: " + bestRule.getRuleNumber());
       usedRules.add(bestRule.getRuleNumber());
-      // System.out.println("Pruning set by overlaps...");
 
       // check for overlap artifacts
       //
@@ -141,32 +142,37 @@ public class RulePrunerFactory {
 
         continueSearch = false;
 
-        for (int rid : usedRules) {
+        for (int currentRule : usedRules) { // used rules are those in the current cover
 
-          if (0 == rid) {
+          if (0 == currentRule) {
             continue;
           }
 
-          ArrayList<RuleInterval> intervalsA = grammarRules.get(rid).getRuleIntervals();
+          // a set of intervals in consideration
+          ArrayList<RuleInterval> intervalsA = grammarRules.get(currentRule).getRuleIntervals();
 
+          // a set of intervals we are going to compare with
           ArrayList<RuleInterval> intervalsB = new ArrayList<RuleInterval>();
 
-          for (int ridB : usedRules) {
-            if (0 == ridB || rid == ridB) {
+          for (int ridB : usedRules) { // used rules are those in the current cover
+            if (0 == ridB || currentRule == ridB) {
               continue;
             }
             intervalsB.addAll(grammarRules.get(ridB).getRuleIntervals());
           }
 
           if (intervalsB.isEmpty()) {
-            break;
+            break; // this only happens with a single rule, when nothing to compare with
           }
           else if (isCompletlyCoveredBy(intervalsB, intervalsA)) {
-            // System.out.println("Going to remove rule: " + grammarRules.get(rid).getRuleName());
-            usedRules.remove(rid);
-            removedRules.add(rid);
+            usedRules.remove(currentRule);
+            removedRules.add(currentRule); // we would not consider it later on
             continueSearch = true;
             break;
+          }
+          else {
+            System.out.println(
+                "rule " + grammarRules.get(currentRule).getRuleName() + " can't be removed");
           }
 
         }
@@ -383,10 +389,10 @@ public class RulePrunerFactory {
         max = i.getEnd();
       }
     }
-    boolean[] intervalsRange = new boolean[max - min];
+    boolean[] isNotCovered = new boolean[max - min]; // all a false on the init
     for (RuleInterval i : intervals) {
       for (int j = i.getStart(); j < i.getEnd(); j++) {
-        intervalsRange[j - min] = true;
+        isNotCovered[j - min] = true; // this is covered by the selection BUTnot by cover yet
       }
     }
 
@@ -403,16 +409,16 @@ public class RulePrunerFactory {
         if (j < min || j >= max) {
           continue;
         }
-        else {
-          intervalsRange[j - min] = false;
+        else if (isNotCovered[j - min]) {
+          isNotCovered[j - min] = false;
         }
 
       }
 
     }
 
-    for (boolean b : intervalsRange) {
-      if (true == b) {
+    for (boolean b : isNotCovered) {
+      if (b) {
         return false;
       }
     }
