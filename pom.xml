@@ -275,7 +275,6 @@
     <dependency>
       <groupId>net.seninp</groupId>
       <artifactId>jmotif-sax</artifactId>
-
       <version>1.0.5</version>
     </dependency>
   </dependencies>
