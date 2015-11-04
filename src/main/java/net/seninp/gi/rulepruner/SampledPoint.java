@@ -2,22 +2,23 @@ package net.seninp.gi.rulepruner;
 
 public class SampledPoint {
 
+  private static final String COMMA = ",";
   int window;
   int paa;
   int alphabet;
-  
+
   double approxDist;
-  
+
   int grammarSize;
   int grammarRules;
-  
+
   int compressedGrammarSize;
   int prunedRules;
-  
+
   boolean isCovered;
   double coverage;
   double reduction;
-  
+
   private int mqxRuleFrequency;
 
   public int getWindow() {
@@ -193,6 +194,22 @@ public class SampledPoint {
         .append(prunedRules).append(", isCovered=").append(isCovered).append(", coverage=")
         .append(coverage).append(", reduction=").append(reduction).append(", maxFrequency=")
         .append(mqxRuleFrequency).append("]");
+    return builder.toString();
+  }
+
+  public String toLogString() {
+    // window,paa,alphabet,approxDist,grammarSize,grammarRules,compressedGrammarSize,prunedRules,isCovered,coverage
+    StringBuilder builder = new StringBuilder();
+    builder.append(window).append(COMMA);
+    builder.append(paa).append(COMMA);
+    builder.append(alphabet).append(COMMA);
+    builder.append(approxDist).append(COMMA);
+    builder.append(grammarSize).append(COMMA);
+    builder.append(grammarRules).append(COMMA);
+    builder.append(compressedGrammarSize).append(COMMA);
+    builder.append(prunedRules).append(COMMA);
+    builder.append(isCovered).append(COMMA);
+    builder.append(coverage);
     return builder.toString();
   }
 

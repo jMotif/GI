@@ -1,5 +1,8 @@
 package net.seninp.gi.rulepruner;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -36,9 +39,8 @@ public class RulePrunerPrinter {
   private static final DecimalFormat dfPercent = (new DecimalFormat("0.00"));
   private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
 
-  // private static final String OUTPUT_HEADER =
-  // "window,paa,alphabet,approxDist,grammarSize,grammarRules,"
-  // + "compressedGrammarSize,prunedRules,isCovered,coverage\n";
+  private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,grammarRules,"
+      + "compressedGrammarSize,prunedRules,isCovered,coverage\n";
 
   // logging stuff
   //
@@ -110,9 +112,9 @@ public class RulePrunerPrinter {
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
         // create the output file
-        // BufferedWriter bw = new BufferedWriter(
-        // new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
-        // bw.write(OUTPUT_HEADER);
+        BufferedWriter bw = new BufferedWriter(
+            new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
+        bw.write(OUTPUT_HEADER);
 
         ArrayList<SampledPoint> res = new ArrayList<SampledPoint>();
 
@@ -133,18 +135,15 @@ public class RulePrunerPrinter {
 
               SampledPoint p = rp.sample(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
                   RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
-              if (Thread.currentThread().isInterrupted() && null == p) {
-                System.err.println("Seen null sampled point, I guess we were interrupted!");
-                Collections.sort(res, new ReductionSorter());
-                System.out.println(
-                    "\nApparently, the best parameters so far are " + res.get(0).toString());
-                return;
-              }
+
+              bw.write(p.toLogString() + "\n");
+
               res.add(p);
             }
           }
         }
-        // bw.close();
+
+        bw.close();
 
         Collections.sort(res, new ReductionSorter());
 

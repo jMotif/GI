@@ -432,7 +432,7 @@ public class RulePrunerFactory {
     for (RuleInterval i : ruleIntervals) {
       int start = i.getStart();
       int end = i.getEnd();
-      for (int j = start; j <= end; j++) {
+      for (int j = start; j < end; j++) {
         res[j] = true;
       }
     }
@@ -478,7 +478,7 @@ public class RulePrunerFactory {
     for (RuleInterval i : rule.getRuleIntervals()) {
       int start = i.getStart();
       int end = i.getEnd();
-      for (int j = start; j <= end; j++) {
+      for (int j = start; j < end; j++) {
         if (range[j]) {
           overlapping_cover++;
         }

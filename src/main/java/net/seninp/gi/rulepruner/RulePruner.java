@@ -140,7 +140,7 @@ public class RulePruner {
     // compute the coverage in percent
     //
     double coverage = RulePrunerFactory.computeCover(compressedCover);
-    logStr.append(dfPercent.format(coverage));
+    logStr.append(coverage);
     res.setCoverage(coverage);
 
     res.setReduction((double) compressedSize / (double) grammarSize);

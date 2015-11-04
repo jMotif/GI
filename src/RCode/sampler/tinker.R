@@ -102,3 +102,12 @@ tek16p=ggplot(filter(tek16, isCovered==1),
   geom_point(alpha=0.5,size=5) + guides(color=guide_legend(ncol=2,override.aes=list(size=5,alpha=1)))+
   theme_bw()
 tek16p
+
+#
+#
+#
+#
+dat = read.table("/media/Stock/tmp/test.out", as.is=T, sep=",",header=T)
+library(plyr)
+library(dplyr)
+head(arrange(dat, prunedRules/grammarRules))

@@ -10,7 +10,7 @@ public class RPTinker {
     double[] ts = TSProcessor.readFileColumn("src/resources/test-data/ecg0606.txt", 0, 0);
 
     RulePruner rp = new RulePruner(ts);
-    SampledPoint p = rp.sample(100, 6, 6, NumerosityReductionStrategy.EXACT, 0.01);
+    SampledPoint p = rp.sample(50, 9, 9, NumerosityReductionStrategy.EXACT, 0.01);
     System.out.println(p);
     
   }
