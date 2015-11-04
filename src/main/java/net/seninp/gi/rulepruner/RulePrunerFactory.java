@@ -170,10 +170,10 @@ public class RulePrunerFactory {
             continueSearch = true;
             break;
           }
-          else {
-            System.out.println(
-                "rule " + grammarRules.get(currentRule).getRuleName() + " can't be removed");
-          }
+          // else {
+          // System.out.println(
+          // "rule " + grammarRules.get(currentRule).getRuleName() + " can't be removed");
+          // }
 
         }
       }
@@ -417,10 +417,13 @@ public class RulePrunerFactory {
 
     }
 
+    // int ctr = 0;
     for (boolean b : isNotCovered) {
       if (b) {
+        // System.out.println("not covered: " + (min + ctr));
         return false;
       }
+      // ctr++;
     }
 
     return true;
