@@ -110,4 +110,5 @@ tek16p
 dat = read.table("/media/Stock/tmp/test.out", as.is=T, sep=",",header=T)
 library(plyr)
 library(dplyr)
-head(arrange(dat, prunedRules/grammarRules))
+dat$dd=dat$prunedRules/dat$grammarRules
+head(arrange(dat, dd))
