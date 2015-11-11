@@ -86,6 +86,28 @@ public class GrammarStats {
     return builder.toString();
   }
 
+  public String toSingleLine() {
+
+    StringBuilder builder = new StringBuilder();
+
+    builder.append(this.ruleCounter).append(TAB);
+    builder.append(this.intervalCounter).append(TAB);
+
+    builder.append(this.minLength).append(TAB);
+    builder.append(this.maxLength).append(TAB);
+    builder.append(mean(this.ruleLength)).append(TAB);
+
+    builder.append(this.minUse).append(TAB);
+    builder.append(this.maxUse).append(TAB);
+    builder.append(mean(this.ruleUse)).append(TAB);
+
+    builder.append(this.minFrequency).append(TAB);
+    builder.append(this.maxFrequency).append(TAB);
+    builder.append(mean(this.ruleFrequency));
+
+    return builder.toString();
+  }
+
   private double mean(ArrayList<Integer> arr) {
     int sum = 0;
     for (int i : arr) {

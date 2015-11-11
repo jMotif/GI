@@ -226,6 +226,8 @@ public class TS2Grammar {
       bw.write("# coverage\t" + minCoverage + "\t" + maxCoverage + "\t" + aveCoverage + "\n");
       bw.write(
           "# non-covered intervals " + zeros.size() + ", of total " + zerosSize + " point(s)\n");
+      bw.write("#\n# " + grammarStats.toSingleLine() + minCoverage + "\t" + maxCoverage + "\t"
+          + aveCoverage + "\n");
     }
 
     try {
