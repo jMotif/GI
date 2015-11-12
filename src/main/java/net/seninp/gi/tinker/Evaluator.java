@@ -3,6 +3,8 @@ package net.seninp.gi.tinker;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
+import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
 import net.seninp.gi.sequitur.SAXRule;
@@ -15,10 +17,10 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 public class Evaluator {
 
-  private static final String[] DATASETS = { "300_signal1.txt", "318_signal1.txt",
-      "ann_gun_CentroidA1.txt", "asys40.txt", "chfdbchf15.txt", "dutch_power_demand.txt",
-      "ecg0606.txt", "gps_track.txt", "insect.txt", "mitdbx_108.txt", "nprs43.txt", "nprs44.txt",
-      "stdb_308.txt", "TEK14.txt", "TEK16.txt", "TEK17.txt", "winding_col.txt"
+  private static final String[] DATASETS = { "ann_gun_CentroidA1.txt", "chfdbchf15.txt",
+      "dutch_power_demand.txt", "ecg0606.txt", "gps_track.txt", "insect.txt", "mitdbx_108.txt",
+      "nprs43.txt", "nprs44.txt", "stdb_308.txt", "TEK14.txt", "TEK16.txt", "TEK17.txt",
+      "winding_col.txt", "300_signal1.txt", "318_signal1.txt"
 
   };
 
@@ -44,6 +46,10 @@ public class Evaluator {
           for (int a : ALPHABETS) {
 
             double[] series = tp.readTS("src/resources/test-data/" + dataset, 0);
+            if ("300_signal1.txt".equalsIgnoreCase(dataset)
+                || "318_signal1.txt".equalsIgnoreCase(dataset)) {
+              series = Arrays.copyOfRange(series, 0, 100000);
+            }
 
             SAXRecords saxData = sp.ts2saxViaWindow(series, w, p, na.getCuts(a),
                 NumerosityReductionStrategy.EXACT, 0.01);
@@ -66,9 +72,11 @@ public class Evaluator {
 
             sb.append(rules.size()).append(TAB);
             sb.append(rules.getHighestFrequency()).append(TAB);
+            sb.append(GIUtils.getCoverAsFraction(series.length, rules)).append(TAB);
 
             sb.append(prunedRules.size()).append(TAB);
-            sb.append(prunedRules.getHighestFrequency()).append(CR);
+            sb.append(prunedRules.getHighestFrequency()).append(TAB);
+            sb.append(GIUtils.getCoverAsFraction(series.length, prunedRules)).append(CR);
 
             System.out.print(sb.toString());
             bw.write(sb.toString());

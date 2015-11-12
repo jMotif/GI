@@ -73,4 +73,38 @@ public class GIUtils {
     return res;
   }
 
+  /**
+   * Computes which fraction of the time series is covered by the rules set.
+   * 
+   * @param seriesLength the time series length.
+   * @param rules the grammar rules set.
+   * @return a fraction covered by the rules.
+   */
+  public static double getCoverAsFraction(int seriesLength, GrammarRules rules) {
+
+    boolean[] coverageArray = new boolean[seriesLength];
+
+    for (GrammarRuleRecord rule : rules) {
+      if (0 == rule.ruleNumber()) {
+        continue;
+      }
+      ArrayList<RuleInterval> arrPos = rule.getRuleIntervals();
+      for (RuleInterval saxPos : arrPos) {
+        int startPos = saxPos.getStart();
+        int endPos = saxPos.getEnd();
+        for (int j = startPos; j < endPos; j++) {
+          coverageArray[j] = true;
+        }
+      }
+    }
+
+    int coverSum = 0;
+    for (int i = 0; i < seriesLength; i++) {
+      if (coverageArray[i]) {
+        coverSum++;
+      }
+    }
+    return (double) coverSum / (double) seriesLength;
+  }
+
 }
