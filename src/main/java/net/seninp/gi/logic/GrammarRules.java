@@ -51,4 +51,16 @@ public class GrammarRules implements Iterable<GrammarRuleRecord> {
     }
     return sb.toString();
   }
+
+  public int getHighestFrequency() {
+    int res = Integer.MIN_VALUE;
+    for (GrammarRuleRecord r : this.rules.values()) {
+      if (0 != r.getRuleNumber()) {
+        if (r.getOccurrences().size() > res) {
+          res = r.getOccurrences().size();
+        }
+      }
+    }
+    return res;
+  }
 }
