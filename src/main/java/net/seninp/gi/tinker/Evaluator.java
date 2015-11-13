@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
-import net.seninp.gi.rulepruner.RulePruner;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
@@ -18,7 +17,11 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 public class Evaluator {
 
-  private static final String[] DATASETS = { "ann_gun_CentroidA1.txt" };
+  private static final String[] DATASETS = { "ann_gun_CentroidA1.txt", "chfdbchf15.txt",
+      "dutch_power_demand.txt", "ecg0606.txt", "gps_track.txt", "insect.txt", "mitdbx_108.txt",
+      "nprs43.txt", "nprs44.txt", "stdb_308.txt", "TEK14.txt", "TEK16.txt", "TEK17.txt",
+      "winding_col.txt", "300_signal1.txt", "318_signal1.txt"
+  };
 
   private static final int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320,
       340, 360, 380, 400, 420 };
@@ -35,7 +38,7 @@ public class Evaluator {
 
   public static void main(String[] args) throws Exception {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_video.txt")));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler.txt")));
     bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
     bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
     bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
