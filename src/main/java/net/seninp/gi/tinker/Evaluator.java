@@ -21,9 +21,9 @@ public class Evaluator {
   private static final String[] DATASETS = { "ann_gun_CentroidA1.txt" };
 
   private static final int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320,
-      340, 360, 380, 400 };
+      340, 360, 380, 400, 420 };
   private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
-  private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+  private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
 
   private static final Object TAB = "\t";
 
