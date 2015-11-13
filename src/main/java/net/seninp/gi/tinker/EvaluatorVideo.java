@@ -15,14 +15,18 @@ import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
-public class Evaluator {
+public class EvaluatorVideo {
 
-  private static final String[] DATASETS = { "ann_gun_CentroidA1.txt" };
+  private static final String[] DATASETS = { "ann_gun_CentroidA1.txt", "chfdbchf15.txt",
+      "dutch_power_demand.txt", "ecg0606.txt", "gps_track.txt", "insect.txt", "mitdbx_108.txt",
+      "nprs43.txt", "nprs44.txt", "stdb_308.txt", "TEK14.txt", "TEK16.txt", "TEK17.txt",
+      "winding_col.txt", "300_signal1.txt", "318_signal1.txt"
 
-  private static final int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320,
-      340, 360, 380, 400 };
-  private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
-  private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+  };
+
+  private static final int[] WINDOWS = { 120, 180, 240, 300 };
+  private static final int[] PAAS = { 4, 8, 12, 16, 20, 24 };
+  private static final int[] ALPHABETS = { 2, 4, 6, 8, 10 };
 
   private static final Object TAB = "\t";
 
@@ -34,9 +38,9 @@ public class Evaluator {
 
   public static void main(String[] args) throws Exception {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_video.txt")));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_approx.txt")));
     bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
-    bw.write("rules\tfrequency\tcover\tcoverage\t");
+    bw.write("rules\tfrequency\tcover\tcoverage");
     bw.write("pruned_rules\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
     for (String dataset : DATASETS) {

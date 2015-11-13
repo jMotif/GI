@@ -10,28 +10,77 @@ library(dplyr)
 library(stringr)
 #
 #
-data <- read.table("../../grammarsampler_approx.txt", skip=1, as.is=T)
-data[1,]
-names(data) <-
-  c("dataset", "W", "P", "A", "approx", "rules", "max_freq", "cover", "coverage", 
-    "pr_rules", "pr_max_freq", "pr_cover", "pr_coverage")
+data <- read.table("../../grammarsampler_video.txt", as.is=T, header=T)
 str(data)
 head(data)
 unique(data$dataset)
-dd = data[data$dataset == "ann_gun_CentroidA1.txt" & data$cover > 0.98,]
-dd$rule_reduction <- dd$pr_rules/dd$rules
+range(data$w)
+dd = data[data$cover > 0.95,]
+dd$rule_reduction <- dd$pruned_rules/dd$rules
+data$rule_reduction <- data$pruned_rules/data$rules
 head(arrange(dd, rule_reduction))
 
-pi_cover <- ggplot(dd, aes(x = P, y = A)) + 
+qqplot(data$rule_reduction, data$approximation)
+
+pi_cover1 <- ggplot(data, aes(x = paa, y = alphabet)) + 
   geom_tile(aes(fill=cover), colour="grey") + scale_fill_gradientn(colours = rev(terrain.colors(100)), limits=c(0.0, 1.0)) +
-  scale_x_continuous("PAA size", limits = c(6, 26), breaks=c(4, 8, 12, 16, 20, 24)) + 
-  scale_y_continuous("SAX alphabet size", limits = c(3, 11), breaks=c(2, 4, 6, 8, 10)) + 
-  theme_bw() + ggtitle("Time series cover by grammar rules") +
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  theme_bw() + ggtitle("Time series span cover by grammar rules") +
+  theme(legend.position="bottom") 
+pi_cover1
+
+
+pi_cover2 <- ggplot(dd, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=cover), colour="grey") + scale_fill_gradientn(colours = rev(terrain.colors(100)), limits=c(0.0, 1.0)) +
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  theme_bw() + ggtitle("Time series span cover by grammar rules, threshold>0.95") +
+  theme(legend.position="bottom") 
+pi_cover2
+
+CairoPDF(width = 12, height = 6, file = "video_span_cover.pdf", bg = "transparent")
+print(grid.arrange(pi_cover1, pi_cover2, layout_matrix = cbind(c(1,1), c(2,2))))
+dev.off()
+#
+#
+#
+#
+pi_approx1 <- ggplot(data, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=approximation), colour="grey") + 
+  scale_fill_gradientn(colours = terrain.colors(100), limits=range(data$approximation)) +
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  theme_bw() + ggtitle("Time series approximation precision") +
+  theme(legend.position="bottom") 
+pi_approx1
+
+pi_approx2 <- ggplot(dd, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=approximation), colour="grey") + 
+  scale_fill_gradientn(colours = terrain.colors(100), limits=range(dd$approximation)) +
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  theme_bw() + ggtitle("Time series approximation precision, cover>0.95") +
+  theme(legend.position="bottom") 
+pi_approx2
+
+CairoPDF(width = 12, height = 6, file = "video_approx_dist.pdf", bg = "transparent")
+print(grid.arrange(pi_approx1, pi_approx2, layout_matrix = cbind(c(1,1), c(2,2))))
+dev.off()
+
+
+
+pi_cover <- ggplot(data, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=rule_reduction), colour="grey") + scale_fill_gradientn(colours = rev(terrain.colors(100)), limits=c(0.0, 1.0)) +
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  theme_bw() + ggtitle("Time series span cover by grammar rules, threshold>0.95") +
   theme(legend.position="bottom") 
 pi_cover
+pi_cover + geom_density2d(data=dd[dd$rule_reduction<0.0275,],aes(x=paa,y=alphabet,color="red"))
 
-pi_cover <- ggplot(dd, aes(x = P, y = A)) + 
-  geom_tile(aes(fill=approx), colour="grey") + 
+pi_cover <- ggplot(dd, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=approximation), colour="grey") + 
   scale_fill_gradientn(colours = rev(terrain.colors(100))) +
   scale_x_continuous("PAA size", limits = c(6, 26), breaks=c(4, 8, 12, 16, 20, 24)) + 
   scale_y_continuous("SAX alphabet size", limits = c(3, 11), breaks=c(2, 4, 6, 8, 10)) + 
@@ -39,14 +88,16 @@ pi_cover <- ggplot(dd, aes(x = P, y = A)) +
   theme(legend.position="bottom") 
 pi_cover
 
-pi_cover <- ggplot(dd, aes(x = P, y = A)) + 
-  geom_tile(aes(fill=pr_rules/rules), colour="grey") + 
+pi_cover <- ggplot(dd, aes(x = paa, y = alphabet)) + 
+  geom_tile(aes(fill=pruned_rules/rules), colour="grey") + 
   scale_fill_gradientn(colours = rev(terrain.colors(100))) +
-  scale_x_continuous("PAA size", limits = c(6, 26), breaks=c(4, 8, 12, 16, 20, 24)) + 
-  scale_y_continuous("SAX alphabet size", limits = c(3, 11), breaks=c(2, 4, 6, 8, 10)) + 
+  scale_x_continuous("PAA size", limits = c(1, 31), breaks = seq(2,30,by=2)) + 
+  scale_y_continuous("SAX alphabet size", limits = c(1, 11), breaks=c(2, 4, 6, 8, 10)) + 
   theme_bw() + ggtitle("Time series cover by grammar rules") +
   theme(legend.position="bottom") 
 pi_cover
+
+pi_cover + geom_point(data=dd[data$cover > 0.98,],aes(x=paa,y=alphabet,color="red"))
 
 pi_cover <- ggplot(dd, aes(x = P, y = A)) + 
   geom_jitter(aes(fill=pr_rules/rules), colour="grey") + 
