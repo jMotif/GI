@@ -143,7 +143,8 @@ public class RulePruner {
     logStr.append(coverage);
     res.setCoverage(coverage);
 
-    res.setReduction((double) compressedSize / (double) grammarSize);
+    // res.setReduction((double) compressedSize / (double) grammarSize);
+    res.setReduction((double) prunedRulesSet.size() / (double) rules.size());
 
     // get the most frequent rule
     //
