@@ -38,7 +38,10 @@ public class Evaluator {
 
   public static void main(String[] args) throws Exception {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler.txt")));
+    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_approx.txt")));
+    bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
+    bw.write("rules\tfrequency\tcover\tcoverage");
+    bw.write("pruned_rules\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
     for (String dataset : DATASETS) {
       for (int w : WINDOWS) {
@@ -69,14 +72,17 @@ public class Evaluator {
             sb.append(w).append(TAB);
             sb.append(p).append(TAB);
             sb.append(a).append(TAB);
+            sb.append(sp.approximationDistance(series, w, p, 0.01)).append(TAB);
 
             sb.append(rules.size()).append(TAB);
             sb.append(rules.getHighestFrequency()).append(TAB);
             sb.append(GIUtils.getCoverAsFraction(series.length, rules)).append(TAB);
+            sb.append(GIUtils.getMeanRuleCoverage(series.length, rules)).append(TAB);
 
             sb.append(prunedRules.size()).append(TAB);
             sb.append(prunedRules.getHighestFrequency()).append(TAB);
-            sb.append(GIUtils.getCoverAsFraction(series.length, prunedRules)).append(CR);
+            sb.append(GIUtils.getCoverAsFraction(series.length, prunedRules)).append(TAB);
+            sb.append(GIUtils.getMeanRuleCoverage(series.length, prunedRules)).append(CR);
 
             System.out.print(sb.toString());
             bw.write(sb.toString());

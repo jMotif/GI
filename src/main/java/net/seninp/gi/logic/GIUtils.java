@@ -107,4 +107,43 @@ public class GIUtils {
     return (double) coverSum / (double) seriesLength;
   }
 
+  /**
+   * Gets the mean rule coverage.
+   * 
+   * @param length the original time-series length.
+   * @param rules the grammar rules set.
+   * @return
+   */
+  public static double getMeanRuleCoverage(int length, GrammarRules rules) {
+    // get the coverage array
+    //
+    int[] coverageArray = new int[length];
+    for (GrammarRuleRecord rule : rules) {
+      if (0 == rule.ruleNumber()) {
+        continue;
+      }
+      ArrayList<RuleInterval> arrPos = rule.getRuleIntervals();
+      for (RuleInterval saxPos : arrPos) {
+        int startPos = saxPos.getStart();
+        int endPos = saxPos.getEnd();
+        for (int j = startPos; j < endPos; j++) {
+          coverageArray[j] = coverageArray[j] + 1;
+        }
+      }
+    }
+    int minCoverage = Integer.MAX_VALUE;
+    int maxCoverage = Integer.MIN_VALUE;
+    int coverageSum = 0;
+    for (int i : coverageArray) {
+      coverageSum += i;
+      if (i < minCoverage) {
+        minCoverage = i;
+      }
+      if (i > maxCoverage) {
+        maxCoverage = i;
+      }
+    }
+    return (double) coverageSum / (double) length;
+  }
+
 }
