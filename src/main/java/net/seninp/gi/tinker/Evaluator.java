@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.util.Arrays;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.rulepruner.RulePruner;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
@@ -36,8 +37,8 @@ public class Evaluator {
 
     BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_video.txt")));
     bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
-    bw.write("rules\tfrequency\tcover\tcoverage\t");
-    bw.write("pruned_rules\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
+    bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
+    bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
     for (String dataset : DATASETS) {
       for (int w : WINDOWS) {
@@ -71,11 +72,13 @@ public class Evaluator {
             sb.append(sp.approximationDistance(series, w, p, 0.01)).append(TAB);
 
             sb.append(rules.size()).append(TAB);
+            sb.append(RulePrunerFactory.computeGrammarSize(rules, p)).append(TAB);
             sb.append(rules.getHighestFrequency()).append(TAB);
             sb.append(GIUtils.getCoverAsFraction(series.length, rules)).append(TAB);
             sb.append(GIUtils.getMeanRuleCoverage(series.length, rules)).append(TAB);
 
             sb.append(prunedRules.size()).append(TAB);
+            sb.append(RulePrunerFactory.computeGrammarSize(prunedRules, p)).append(TAB);
             sb.append(prunedRules.getHighestFrequency()).append(TAB);
             sb.append(GIUtils.getCoverAsFraction(series.length, prunedRules)).append(TAB);
             sb.append(GIUtils.getMeanRuleCoverage(series.length, prunedRules)).append(CR);
