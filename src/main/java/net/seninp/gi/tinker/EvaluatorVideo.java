@@ -68,7 +68,8 @@ public class EvaluatorVideo {
             sb.append(w).append(TAB);
             sb.append(p).append(TAB);
             sb.append(a).append(TAB);
-            sb.append(sp.approximationDistance(series, w, p, 0.01)).append(TAB);
+            sb.append(sp.approximationDistancePAA(series, w, p, 0.01)
+                + sp.approximationDistanceAlphabet(series, w, p, a, 0.01)).append(TAB);
 
             sb.append(rules.size()).append(TAB);
             sb.append(RulePrunerFactory.computeGrammarSize(rules, p)).append(TAB);
