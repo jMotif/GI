@@ -9,7 +9,7 @@ require(gridExtra)
 require(scales)
 require(Cairo)
 #
-data=read.table("../../src/resources/grammars-IDEA/grammarsampler.txt",as.is=T,header=T)
+data=read.table("../../grammarsampler_updated.txt",as.is=T,header=T)
 str(data)
 data=data[complete.cases(data),]
 #
@@ -35,10 +35,11 @@ library(lattice)
 df=data[data$dataset=="ann_gun_CentroidA1.txt",]
 wireframe(approximation ~ paa * alphabet, data = df,
           xlab = "PAA", ylab = "Alphabet",
-          main = "Surface elevation data",
+          zlab = "Approx. error",
+          main = "Approximation error vs PAA and Alphabet size, Video dataset",
           drape = TRUE,
           colorkey = TRUE,
-          screen = list(z = -120, x = -60)
+          screen = list(z = -120, x = -70)
 )
 
 # alphabet shall move the point value so Alphabet size matters 
