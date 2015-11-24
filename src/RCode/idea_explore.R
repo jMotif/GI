@@ -42,11 +42,18 @@ wireframe(approximation ~ paa * alphabet, data = df,
           screen = list(z = -120, x = -70)
 )
 
+df=df[df$cover>0.95,]
+plot(df$approximation,df$rules,main="Approximation error versus grammar rules num")
+plot(df$approximation,df$reduction,main="Approximation error versus reduction")
+cor(df$approximation,df$reduction)
+head(arrange(df,reduction))
+
+
 # alphabet shall move the point value so Alphabet size matters 
 
 df=dd[dd$dataset=="TEK14.txt",]
-qqplot(df$approximation,df$paa*df$alphabet)
-plot(df$approximation,df$alphabet)
+plot(df$approximation,df$rules)
+plot(df$approximation,df$reduction)
 cor(df$approximation,df$reduction)
 plot(df$approximation,df$reduction)
 ct=cor.test(df$approximation,df$reduction)
@@ -65,5 +72,4 @@ df=df[complete.cases(df),]
 qqplot(df$approximation,df$reduction)
 cor(df$approximation,df$reduction)
 plot(df$approximation,df$reduction)
-head(arrange(df,reduction))
 cor.test(df$approximation,df$reduction, method = "kendall", alternative = "greater")

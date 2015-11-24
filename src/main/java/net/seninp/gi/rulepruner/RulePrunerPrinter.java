@@ -169,7 +169,7 @@ public class RulePrunerPrinter {
     int[] res = new int[9];
     String[] split = str.split("\\s+");
     for (int i = 0; i < 9; i++) {
-      res[i] = Integer.valueOf(split[i]);
+      res[i] = Integer.valueOf(split[i]).intValue();
     }
     return res;
   }

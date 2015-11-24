@@ -26,9 +26,9 @@ public class Evaluator {
   private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
   private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
 
-  private static final Object TAB = "\t";
+  private static final String TAB = "\t";
 
-  private static final Object CR = "\n";
+  private static final String CR = "\n";
 
   private static TSProcessor tp = new TSProcessor();
   private static NormalAlphabet na = new NormalAlphabet();
@@ -47,8 +47,9 @@ public class Evaluator {
     bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
     double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
+    
     if ("300_signal1".equalsIgnoreCase(dataset) || "318_signal1".equalsIgnoreCase(dataset)) {
-      series = Arrays.copyOfRange(series, 0, 50000);
+      series = Arrays.copyOfRange(series, 0, 30000);
     }
 
     for (int w : WINDOWS) {
