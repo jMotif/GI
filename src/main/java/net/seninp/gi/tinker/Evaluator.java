@@ -21,8 +21,8 @@ public class Evaluator {
       "dutch_power_demand", "ecg0606", "gps_track", "insect", "mitdbx_108", "nprs43", "nprs44",
       "stdb_308", "TEK14", "TEK16", "TEK17", "winding_col", "300_signal1", "318_signal1" };
 
-  private static int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340,
-      360, 380, 400, 420, 440, 460 };
+  private static int[] WINDOWS = { 30, 50, 70, 90, 100, 110, 120, 130, 140, 160, 180, 200, 220, 240,
+      260, 280, 300, 320, 330, 340, 350, 360, 380, 400, 420, 440, 460 };
 
   private static int[] WINDOWS_PD = { 480, 500, 520, 540, 560, 580, 600, 320, 640, 680, 700, 720,
       740, 760, 780, 800, 820, 840, 860, 880, 900 };
@@ -57,7 +57,14 @@ public class Evaluator {
     }
 
     if ("dutch_power_demand".equalsIgnoreCase(dataset)) {
-      WINDOWS = WINDOWS_PD;
+      int[] TMP = new int[WINDOWS.length + WINDOWS_PD.length];
+      for (int i = 0; i < WINDOWS.length; i++) {
+        TMP[i] = WINDOWS[i];
+      }
+      for (int i = WINDOWS.length; i < WINDOWS.length + WINDOWS_PD.length; i++) {
+        TMP[i] = WINDOWS[i];
+      }
+      WINDOWS = TMP;
     }
 
     for (int w : WINDOWS) {
