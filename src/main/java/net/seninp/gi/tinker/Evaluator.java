@@ -3,6 +3,7 @@ package net.seninp.gi.tinker;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
@@ -21,11 +22,11 @@ public class Evaluator {
       "dutch_power_demand", "ecg0606", "gps_track", "insect", "mitdbx_108", "nprs43", "nprs44",
       "stdb_308", "TEK14", "TEK16", "TEK17", "winding_col", "300_signal1", "318_signal1" };
 
-  private static int[] WINDOWS = { 30, 50, 70, 90, 100, 110, 120, 130, 140, 160, 180, 200, 220, 240,
-      260, 280, 300, 320, 330, 340, 350, 360, 380, 400, 420, 440, 460 };
+  private static final int[] WINDOWS = { 30, 50, 70, 90, 100, 110, 120, 130, 140, 160, 180, 200,
+      220, 240, 260, 280, 300, 320, 330, 340, 350, 360, 380, 400, 420, 440, 460 };
 
-  private static int[] WINDOWS_PD = { 480, 500, 520, 540, 560, 580, 600, 320, 640, 680, 700, 720,
-      740, 760, 780, 800, 820, 840, 860, 880, 900 };
+  private static final int[] WINDOWS_PD = { 480, 500, 520, 540, 560, 580, 600, 320, 640, 680, 700,
+      720, 740, 760, 780, 800, 820, 840, 860, 880, 900 };
 
   private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
   private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
@@ -56,18 +57,17 @@ public class Evaluator {
       series = Arrays.copyOfRange(series, 0, 30000);
     }
 
+    ArrayList<Integer> wins = new ArrayList<Integer>();
+    for (int i : WINDOWS) {
+      wins.add(i);
+    }
     if ("dutch_power_demand".equalsIgnoreCase(dataset)) {
-      int[] TMP = new int[WINDOWS.length + WINDOWS_PD.length];
-      for (int i = 0; i < WINDOWS.length; i++) {
-        TMP[i] = WINDOWS[i];
+      for (int i : WINDOWS_PD) {
+        wins.add(i);
       }
-      for (int i = WINDOWS.length; i < WINDOWS.length + WINDOWS_PD.length; i++) {
-        TMP[i] = WINDOWS[i];
-      }
-      WINDOWS = TMP;
     }
 
-    for (int w : WINDOWS) {
+    for (int w : wins) {
       for (int p : PAAS) {
         for (int a : ALPHABETS) {
 
