@@ -21,8 +21,12 @@ public class Evaluator {
       "dutch_power_demand", "ecg0606", "gps_track", "insect", "mitdbx_108", "nprs43", "nprs44",
       "stdb_308", "TEK14", "TEK16", "TEK17", "winding_col", "300_signal1", "318_signal1" };
 
-  private static final int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320,
-      340, 360, 380, 400, 420, 440, 460 };
+  private static int[] WINDOWS = { 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340,
+      360, 380, 400, 420, 440, 460 };
+
+  private static int[] WINDOWS_PD = { 480, 500, 520, 540, 560, 580, 600, 320, 640, 680, 700, 720,
+      740, 760, 780, 800, 820, 840, 860, 880, 900 };
+
   private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
   private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
 
@@ -47,9 +51,13 @@ public class Evaluator {
     bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
     double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
-    
+
     if ("300_signal1".equalsIgnoreCase(dataset) || "318_signal1".equalsIgnoreCase(dataset)) {
       series = Arrays.copyOfRange(series, 0, 30000);
+    }
+
+    if ("dutch_power_demand".equalsIgnoreCase(dataset)) {
+      WINDOWS = WINDOWS_PD;
     }
 
     for (int w : WINDOWS) {
