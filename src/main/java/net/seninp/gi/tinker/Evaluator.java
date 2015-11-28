@@ -75,8 +75,9 @@ public class Evaluator {
               NumerosityReductionStrategy.EXACT, 0.01);
 
           RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
-          GrammarRules rules = grammar.toGrammarRulesData();
+          grammar.expandRules();
           grammar.buildIntervals(saxData, series, w);
+          GrammarRules rules = grammar.toGrammarRulesData();
 
           GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
 
