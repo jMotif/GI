@@ -29,22 +29,25 @@ hist(data$approximation)
 #
 head(arrange(data, reduction))
 datasets = unique(data$dataset)
+#data=filter(data,paa>3,paa<=15,alphabet>=3,alphabet<=10)
 summary = ddply(data, .(dataset), function(x){
   mv = min(x$reduction)
   x[x$reduction==mv,]
 })
 write.table(summary, "tmp.csv",col.names=T,quote=T,row.names=F,sep=",")
-
-
-dd=read.table("../resources/test-data/stdb_308.txt")
-plot(dd$V1,type="l")
 #
-str(data)
-range(data[data$dataset=="dutch_power_demand",]$window)
-
+#
+#
+#
+#
+#
 dfp = data[!(data$dataset %in% c("gps_track")),]
 dfp = rbind(dfp, data[(data$dataset %in% c("gps_track")) & data$window<700 & data$window>60,])
 pl = dlply(data, .(dataset), function(x){
+  show=FALSE
+  #if(unique(x$dataset)=="gps_track" | unique(x$dataset)=="nprs43"){
+  #  show=TRUE
+  #}
  wireframe(approximation ~ paa * alphabet, data = x,
           xlab = "PAA", 
           ylab = "Alphabet",
@@ -54,7 +57,7 @@ pl = dlply(data, .(dataset), function(x){
           #axis.line = list(col = "transparent"),
           par.settings = list(clip=list(panel=FALSE)),
           drape = TRUE,
-          colorkey = TRUE,
+          colorkey = show,
           col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = 1),
           screen = list(z = -120, x = -70)
 )})
@@ -65,7 +68,12 @@ grid.arrange(pl[[1]], pl[[5]], pl[[7]],
              pl[[3]], pl[[8]], pl[[10]], 
              ncol=3, nrow=2)
 dev.off()
-
+#
+#
+#
+#
+#
+#
 # correlation between approximation and the rules total
 pl = dlply(data, .(dataset), function(x){
   cor <- round(cor(x$approximation, x$rules), 4)
@@ -73,6 +81,7 @@ pl = dlply(data, .(dataset), function(x){
   ll <- paste("r=", cor, "\npval=", pv, sep = "")
   mr <- min(x$reduction)
   dd <- data.frame(x=x[x$approximation==mr,]$rules[1],y=mr)
+  #df = x[!duplicated(x[,c(5,6)]), ]
   p <- ggplot(x, aes(approximation, rules)) + geom_smooth(method = "lm") + 
     geom_jitter(alpha = 0.4, col = cbPalette[4], size = 0.35) + 
     theme_bw() + ggtitle(paste(unique(x$dataset))) +
@@ -84,7 +93,7 @@ pl = dlply(data, .(dataset), function(x){
 #do.call(grid.arrange,  pl)
 
 Cairo(width = 900, height = 450, 
-      file="approximation_size_corr.pdf", type="pdf", pointsize=8, 
+      file="approximation_size_correlation.png", type="png", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 70)
 grid.arrange(pl[[1]], pl[[5]], pl[[7]],
              pl[[3]], pl[[8]], pl[[10]], 
@@ -99,6 +108,7 @@ pl = dlply(data, .(dataset), function(x){
   ll <- paste("r=", cor, "\npval=", pv, sep = "")
   mr <- min(x$reduction)
   dd <- data.frame(x=x[x$reduction==mr,]$pruned_frequency[1],y=mr)
+  #df = x[!duplicated(x[,c(13,16)]), ]
   p <- ggplot(x, aes(pruned_frequency, reduction)) + geom_smooth(method = "lm") + 
     geom_jitter(alpha = 0.4, col = cbPalette[4], size = 0.35) + 
     theme_bw() + ggtitle(paste(unique(x$dataset))) +
@@ -111,7 +121,7 @@ pl = dlply(data, .(dataset), function(x){
 #do.call(grid.arrange,  pl)
 
 Cairo(width = 900, height = 450, 
-      file="reduction_frequency_corr.pdf", type="pdf", pointsize=8, 
+      file="reduction_frequency_correlation.png", type="png", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
 grid.arrange(pl[[1]], pl[[5]], pl[[7]],
              pl[[3]], pl[[8]], pl[[10]], 
@@ -136,8 +146,8 @@ pl = dlply(data, .(dataset), function(x){
 })  
 #do.call(grid.arrange,  pl)
 
-Cairo(width = 900, height = 600, 
-      file="reduction_frequency_corr.pdf", type="pdf", pointsize=8, 
+Cairo(width = 900, height = 500, 
+      file="reduction_frequency_correlation.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
 grid.arrange(pl[[1]], pl[[5]], pl[[7]],
              pl[[3]], pl[[8]], pl[[10]], 
@@ -166,7 +176,7 @@ pl = dlply(data, .(dataset), function(x){
 #do.call(grid.arrange,  pl)
 
 Cairo(width = 900, height = 500, 
-      file="approximation_frequency_corr.pdf", type="pdf", pointsize=8, 
+      file="approximation_frequency_correlation.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
 grid.arrange(pl[[1]], pl[[5]], pl[[7]],
              pl[[3]], pl[[8]], pl[[10]], 
@@ -184,6 +194,9 @@ pl = dlply(data, .(dataset), function(x){
   pv <- round(cor.test(x$approximation, x$reduction)$"p.value", 4)
   ll <- paste("r=", cor, "\npval=", pv, sep = "")
   print(ll)
+  mr <- min(x$reduction)
+  dd <- data.frame(xv=x[x$reduction==mr,]$approximation[1],yv=mr)
+  print(paste(dd))
   p <- ggplot(x, aes(approximation, reduction)) + geom_smooth(method = "lm") + 
     geom_jitter(alpha = 0.4, col = cbPalette[4], size = 0.35) + 
     theme_bw() + ggtitle(paste(unique(x$dataset))) +
@@ -191,13 +204,15 @@ pl = dlply(data, .(dataset), function(x){
     scale_y_continuous(limits = c(0,1), breaks = c(0, 0.25, 0.5, 0.75, 1.0)) + 
     geom_text(data = NULL, label = ll, x = 0.25, y = 0.64, col = cbPalette[6], 
               hjust = 0, vjust = 0)
-  p
+  p + geom_point(data=dd, aes(x=xv, y=yv), color="red", size=3.5)
 })  
-do.call(grid.arrange,  pl)
+#do.call(grid.arrange,  pl)
 
-Cairo(width = 900, height = 600, 
-      file="approx_reduction_corr.pdf", type="pdf", pointsize=8, 
+Cairo(width = 900, height = 500, 
+      file="approximation_reduction_correlation.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
-do.call(grid.arrange,  pl)
+grid.arrange(pl[[1]], pl[[5]], pl[[7]],
+             pl[[3]], pl[[8]], pl[[10]], 
+             ncol=3, nrow=2)
 dev.off()
 

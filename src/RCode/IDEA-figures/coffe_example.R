@@ -17,7 +17,7 @@ cd <- read.table("../resources/Coffee/Coffee_TEST",as.is=T)[12,-1]
 dd <- data.frame(x = 1:length(unlist(cd)), y = unlist(cd))
 p = ggplot(dd, aes(x = x, y = y)) + geom_line(color = "cornflowerblue", lwd=0.7) + 
   scale_y_continuous(limits=c(-1,35)) +
-  theme_bw() + ggtitle(paste("An illustration of time series subsequence extraction\n",
+  theme_bw() + ggtitle(paste("An illustration of the time series subsequence extraction\n",
                       "via sliding window")) +
   theme(axis.title=element_blank(), legend.position="none")
 p
@@ -60,8 +60,8 @@ p
 cd <- read.table("../resources/Coffee/Coffee_TEST",as.is=T)[12,-1][70:170]
 dd <- data.frame(x = 1:length(unlist(cd)), y = znorm(unlist(cd)))
 p2 = ggplot(dd, aes(x = x, y = y)) + geom_line(color = "cornflowerblue", lwd=0.7) + 
-  theme_bw() + ggtitle(paste("An example of SAX transform: a time series of 100 points\n",
-                "converted into 5 letters, 'cabbc'")) +
+  theme_bw() + ggtitle(paste("An example of the SAX transform: a time series of 100 points\n",
+                "converted into a 5 letters word 'cabbc'")) +
   scale_x_continuous(limits=c(-40,105)) + scale_y_continuous(limits=c(-2,2)) +
   theme(axis.title=element_blank(), legend.position="none")
 p2
@@ -180,13 +180,13 @@ dseg = data.frame(x=paa_points$paa_centers,xend=paa_points$paa_centers,
                   y=c(cuts_c$y[3],cuts_c$y[1],cuts_c$y[2],cuts_c$y[2],cuts_c$y[3]), 
                   yend=paa_points$paa)
 p4 = p4 + geom_hline(data=cuts,aes(yintercept=y), lty=5, lwd=0.8, col="magenta") +
-  geom_hline(data=cuts_c,aes(yintercept=y), lty=2, lwd=0.6, col="magenta") +
-  geom_segment(data=dseg,aes(x=x,y=y,xend=xend,yend=yend),col="cyan",lwd=1.5)
+  geom_hline(data=cuts_c,aes(yintercept=y), lty=2, lwd=0.6, col="brown3") +
+  geom_segment(data=dseg,aes(x=x,y=y,xend=xend,yend=yend),col="cyan",lwd=2.5)
 p4
 
 
 Cairo(width = 900, height = 500, 
       file="sax.pdf", type="pdf", pointsize=8, 
-      bg = "transparent", canvas = "white", units = "px", dpi = 70)
+      bg = "transparent", canvas = "white", units = "px", dpi = 72)
 grid.arrange(p,p3,p2,p4,ncol=2)
 dev.off()
