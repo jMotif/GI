@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
-import net.seninp.gi.repair.RePairFactory;
-import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
+import net.seninp.gi.sequitur.SAXRule;
+import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -74,10 +74,23 @@ public class Evaluator {
           SAXRecords saxData = sp.ts2saxViaWindow(series, w, p, na.getCuts(a),
               NumerosityReductionStrategy.EXACT, 0.01);
 
-          RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
-          grammar.expandRules();
-          grammar.buildIntervals(saxData, series, w);
+          // commented out repair section
+          //
+          // RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
+          // grammar.expandRules();
+          // grammar.buildIntervals(saxData, series, w);
+          //
+          // GrammarRules rules = grammar.toGrammarRulesData();
+          //
+          // GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
+
+          // sequitur section
+          //
+          String discretizedTS = saxData.getSAXString(" ");
+
+          SAXRule grammar = SequiturFactory.runSequitur(discretizedTS);
           GrammarRules rules = grammar.toGrammarRulesData();
+          SequiturFactory.updateRuleIntervals(rules, saxData, true, series, w, p);
 
           GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
 
