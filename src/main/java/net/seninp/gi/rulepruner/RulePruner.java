@@ -63,7 +63,7 @@ public class RulePruner {
    * @return
    * @throws Exception
    */
-  public SampledPoint sample(int windowSize, int paaSize, int alphabetSize,
+  public SampledPoint sample(int windowSize, int paaSize, int alphabetSize, GIAlgorithm giAlgorithm,
       NumerosityReductionStrategy nrStrategy, double nThreshold) throws Exception {
 
     SampledPoint res = new SampledPoint();
@@ -79,8 +79,8 @@ public class RulePruner {
     // convert to SAX
     //
     ParallelSAXImplementation ps = new ParallelSAXImplementation();
-    SAXRecords saxData = ps.process(ts, 2, windowSize, paaSize, alphabetSize,
-        RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
+    SAXRecords saxData = ps.process(ts, 2, windowSize, paaSize, alphabetSize, nrStrategy,
+        nThreshold);
     if (Thread.currentThread().isInterrupted() && null == saxData) {
       System.err.println("Sampler being interrupted, returning NULL!");
       return null;
@@ -99,13 +99,15 @@ public class RulePruner {
     // build a grammar
     //
     GrammarRules rules = new GrammarRules();
-    if (GIAlgorithm.SEQUITUR.equals(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION)) {
+    if (GIAlgorithm.SEQUITUR.equals(giAlgorithm)) {
       SAXRule r = SequiturFactory.runSequitur(saxData.getSAXString(" "));
       rules = r.toGrammarRulesData();
       SequiturFactory.updateRuleIntervals(rules, saxData, true, ts, windowSize, paaSize);
     }
-    else if (GIAlgorithm.REPAIR.equals(RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION)) {
+    else if (GIAlgorithm.REPAIR.equals(giAlgorithm)) {
       RePairGrammar grammar = RePairFactory.buildGrammar(saxData.getSAXString(" "));
+      grammar.expandRules();
+      grammar.buildIntervals(saxData, ts, windowSize);
       rules = grammar.toGrammarRulesData();
     }
 

@@ -134,6 +134,7 @@ public class RulePrunerPrinter {
             for (int ALPHABET_SIZE = boundaries[6]; ALPHABET_SIZE < boundaries[7]; ALPHABET_SIZE += boundaries[8]) {
 
               SampledPoint p = rp.sample(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+                  RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION,
                   RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
 
               bw.write(p.toLogString() + "\n");

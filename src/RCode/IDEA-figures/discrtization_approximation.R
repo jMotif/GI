@@ -1,6 +1,7 @@
 require(reshape)
 require(plyr)
 require(dplyr)
+require(data.table)
 #
 require(stringr)
 #
@@ -20,7 +21,20 @@ cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2"
 # To use for line and point colors, add
 # scale_colour_manual(values=cbPalette)
 #
+data_s = fread("../resources/IDEA-sampling/sampler_sequitur.out")
+df_sequitur = data.frame(select(data_s,dataset,window,paa,alphabet,rules,frequency), 
+                    algorithm=rep("sequitur",length(data_s$dataset)), stringsAsFactor = F)
+str(data_s)
+
 data = read.table("../resources/IDEA-sampling/sampler_repair.out", as.is = T, header = T)
+df_repair = as.data.frame(select(data,dataset,window,paa,alphabet,rules,frequency), 
+                  algorithm=rep("repair",length(data$dataset)), stringsAsFactor = F)
+str(df_repair)
+
+df_common = inner_join(df_repair, df_sequitur, by = c("dataset","window","paa","alphabet"))
+df_common[1,]
+
+
 data[data$frequency == -2147483648,]$frequency = NA
 data = data[complete.cases(data),]
 data$reduction = data$pruned_rules / data$rules
