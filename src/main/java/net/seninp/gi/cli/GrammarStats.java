@@ -9,16 +9,16 @@ public class GrammarStats {
   private static final Object TAB = "\t";
 
   ArrayList<Integer> ruleLength = new ArrayList<Integer>();
-  Integer minLength = Integer.MAX_VALUE;
-  Integer maxLength = Integer.MIN_VALUE;
+  Integer minLength = 0;
+  Integer maxLength = 0;
 
   ArrayList<Integer> ruleUse = new ArrayList<Integer>();
-  Integer minUse = Integer.MAX_VALUE;
-  Integer maxUse = Integer.MIN_VALUE;
+  Integer minUse = 0;
+  Integer maxUse = 0;
 
   ArrayList<Integer> ruleFrequency = new ArrayList<Integer>();
-  Integer minFrequency = Integer.MAX_VALUE;
-  Integer maxFrequency = Integer.MIN_VALUE;
+  Integer minFrequency = 0;
+  Integer maxFrequency = 0;
 
   private int ruleCounter = 0;
   private int intervalCounter = 0;

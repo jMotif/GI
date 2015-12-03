@@ -53,7 +53,7 @@ public class GrammarRules implements Iterable<GrammarRuleRecord> {
   }
 
   public int getHighestFrequency() {
-    int res = Integer.MIN_VALUE;
+    int res = 0;
     for (GrammarRuleRecord r : this.rules.values()) {
       if (0 != r.getRuleNumber()) {
         if (r.getOccurrences().size() > res) {

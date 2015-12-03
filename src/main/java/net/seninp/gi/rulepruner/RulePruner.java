@@ -152,7 +152,7 @@ public class RulePruner {
 
     // get the most frequent rule
     //
-    int maxFreq = Integer.MIN_VALUE;
+    int maxFreq = 0;
     for (GrammarRuleRecord r : prunedRulesSet) {
       if (r.getOccurrences().size() > maxFreq) {
         maxFreq = r.getOccurrences().size();

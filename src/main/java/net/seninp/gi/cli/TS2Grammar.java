@@ -197,8 +197,8 @@ public class TS2Grammar {
         }
       }
     }
-    int minCoverage = Integer.MAX_VALUE;
-    int maxCoverage = Integer.MIN_VALUE;
+    int minCoverage = 0;
+    int maxCoverage = 0;
     int coverageSum = 0;
     for (int i : coverageArray) {
       coverageSum += i;
