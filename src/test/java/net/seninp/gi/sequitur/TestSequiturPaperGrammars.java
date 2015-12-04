@@ -6,6 +6,8 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.repair.RePairFactory;
+import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 import net.seninp.util.StackTrace;
 
@@ -29,6 +31,10 @@ public class TestSequiturPaperGrammars {
     try {
       SAXRule r = SequiturFactory.runSequitur(TEST3_STRING);
       GrammarRules rules = r.toGrammarRulesData();
+      System.out.println(SAXRule.printRules() + "\n ---- \n");
+
+      RePairGrammar rr = RePairFactory.buildGrammar(TEST3_STRING);
+      System.out.println(rr.toGrammarRules());
 
       assertEquals("test hierarchy", 5, rules.size());
 
@@ -46,6 +52,10 @@ public class TestSequiturPaperGrammars {
     try {
       SAXRule r = SequiturFactory.runSequitur(TEST2_STRING);
       GrammarRules rules = r.toGrammarRulesData();
+      // System.out.println(SAXRule.printRules());
+
+      RePairGrammar rr = RePairFactory.buildGrammar(TEST2_STRING);
+      // System.out.println(rr.toGrammarRules());
 
       assertTrue("test r0", TEST2_R0.equals(rules.get(0).getRuleString().trim()));
       assertTrue("test r1", TEST2_R1.equals(rules.get(1).getRuleString().trim()));
@@ -98,15 +108,15 @@ public class TestSequiturPaperGrammars {
 
     try {
 
-      final double[] originalTimeSeries = new double[6*5];
-      
+      final double[] originalTimeSeries = new double[6 * 5];
+
       SAXRecords saxData = new SAXRecords();
       int idx = 0;
       for (String s : TEST1_STRING.split("\\s+")) {
         saxData.add(s.toCharArray(), idx);
         idx += 5;
       }
-      
+
       SAXRule grammar = SequiturFactory.runSequitur(saxData.getSAXString(" "));
       GrammarRules rules = grammar.toGrammarRulesData();
       SequiturFactory.updateRuleIntervals(rules, saxData, true, originalTimeSeries, 1, 1);
