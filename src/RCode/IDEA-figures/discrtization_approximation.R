@@ -24,26 +24,48 @@ cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2"
 data_s = fread(input = "zcat ../resources/IDEA-sampling/sampler_sequitur.out.gz")
 data_s[data_s$frequency == -2147483648,]$frequency = 0
 data_s = data_s[complete.cases(data_s),]
+data_s = data_s[data_s$cover>0.98,]
 df_sequitur = data.frame(select(data_s,dataset,window,paa,alphabet,rules,frequency), 
                     algorithm = rep("sequitur",length(data_s$dataset)))
 
 data_r = fread(input = "zcat ../resources/IDEA-sampling/sampler_repair.out.gz")
 data_r[data_r$frequency == -2147483648,]$frequency = 0
 data_r = data_r[complete.cases(data_r),]
-df_repair = data.frame(select(data,dataset,window,paa,alphabet,rules,frequency), 
-                  algorithm = rep("repair",length(data$dataset)))
+data_r = data_r[data_r$cover>0.98,]
+df_repair = data.frame(select(data_r,dataset,window,paa,alphabet,rules,frequency,pruned_rules), 
+                  algorithm = rep("repair",length(data_r$dataset)))
+df_repair$reduction = df_repair$pruned_rules/df_repair$rules
+ggplot(df_repair, aes(x=reduction)) + geom_histogram()
 
 df_common = inner_join(df_repair, df_sequitur, by = c("dataset","window","paa","alphabet"))
 
 unique(df_common$dataset)
 
-df = select(filter(df_common, dataset="300_signal1"), algorithm.x, frequency.x)
+df = select(filter(df_common, dataset=="ecg0606"), algorithm.x, frequency.x)
 setnames(df, c("algorithm.y","frequency.y"))
-
 df = rbind(df, select(df_common,algorithm.y,frequency.y))
 setnames(df, c("algorithm","frequency"))
-ggplot(df, aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
+ggplot(df[df$frequency<50,], aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
 
+
+df = select(filter(df_common, dataset=="stdb_308"), algorithm.x, frequency.x)
+setnames(df, c("algorithm.y","frequency.y"))
+df = rbind(df, select(df_common,algorithm.y,frequency.y))
+setnames(df, c("algorithm","frequency"))
+ggplot(df[df$frequency<50,], aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
+
+
+df = select(filter(df_common, dataset=="ann_gun_CentroidA1"), algorithm.x, frequency.x)
+setnames(df, c("algorithm.y","frequency.y"))
+df = rbind(df, select(df_common,algorithm.y,frequency.y))
+setnames(df, c("algorithm","frequency"))
+ggplot(df[df$frequency<100,], aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
+
+df = select(filter(df_common, dataset=="ann_gun_CentroidA1"), algorithm.x, frequency.x)
+setnames(df, c("algorithm.y","frequency.y"))
+df = rbind(df, select(df_common,algorithm.y,frequency.y))
+setnames(df, c("algorithm","frequency"))
+ggplot(df[df$frequency<100,], aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
 
 
 data[data$frequency == -2147483648,]$frequency = NA
