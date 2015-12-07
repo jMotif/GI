@@ -41,11 +41,14 @@ unique(df_common$dataset)
 #
 df = select(filter(df_common, dataset == "ecg0606"), algorithm.x, frequency.x, cover.x)
 setnames(df, c("algorithm.y","frequency.y","cover.y"))
-df = rbind(df, select(df_common,algorithm.y,frequency.y))
-setnames(df, c("algorithm","frequency"))
-ggplot(df[df$frequency<50,], aes(x = frequency, fill=algorithm)) + geom_density(alpha=0.5)
+df = rbind(df, select(df_common,algorithm.y,frequency.y,cover.y))
+setnames(df, c("algorithm","frequency","cover"))
+ggplot(df[df$cover>0.98 & df$frequency < 100,], aes(x = frequency, fill=algorithm)) + 
+  geom_density(alpha=0.5, binwidth=1) + geom_vline(xintercept=14, col="red") + theme_bw() +
+  ggtitle(paste("Estimated kernel densities for the most frequent rule occurrence\n",
+    "when the total cover above 0.98"))
 
-
+  
 df = select(filter(df_common, dataset=="stdb_308"), algorithm.x, frequency.x)
 setnames(df, c("algorithm.y","frequency.y"))
 df = rbind(df, select(df_common,algorithm.y,frequency.y))
