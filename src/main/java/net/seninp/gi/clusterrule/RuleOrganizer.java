@@ -201,8 +201,6 @@ public class RuleOrganizer {
 			sameLenMotifs.setMaxMotifLen(maxLength);
 		}
 
-		pointsNumberRemoveStrategy = countPointNumberAfterRemoving(ts,
-				allClassifiedMotifs);
 
 		return allClassifiedMotifs;
 	}
@@ -214,7 +212,7 @@ public class RuleOrganizer {
 	 * all points, and write the result into a text file named as
 	 * "PointsNumberAfterRemoving.txt".
 	 */
-	protected SAXPointsNumber[] countPointNumberAfterRemoving(double[] ts,
+	public SAXPointsNumber[] countPointNumberAfterRemoving(double[] ts,
 			ArrayList<SameLengthMotifs> allClassifiedMotifs) {
 
 		// init the data structure and copy the original values

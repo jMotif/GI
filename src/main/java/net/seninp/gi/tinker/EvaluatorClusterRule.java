@@ -7,9 +7,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.seninp.gi.clusterrule.ClusterRuleFactory;
+import net.seninp.gi.clusterrule.RuleOrganizer;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.PackedRuleRecord;
+import net.seninp.gi.logic.SAXPointsNumber;
+import net.seninp.gi.logic.SameLengthMotifs;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
@@ -89,8 +92,14 @@ public class EvaluatorClusterRule {
 	          GrammarRules rules = grammar.toGrammarRulesData();
 	          SequiturFactory.updateRuleIntervals(rules, saxData, true, series, w, p);
 
-	          ArrayList<PackedRuleRecord> packedRules = ClusterRuleFactory.performPruning(series, rules,
+	          ArrayList<SameLengthMotifs> refinedClassifiedMotifs=ClusterRuleFactory.performPruning(series, rules,
 	        		  thresholdLength, thresholdCom, fractionTopDist);
+	          ArrayList<PackedRuleRecord> packedRules = ClusterRuleFactory.getPackedRule(refinedClassifiedMotifs);
+
+	          RuleOrganizer ro = new RuleOrganizer();
+	  		  SAXPointsNumber[] pointsOccurenceInPackedRule = ro.countPointNumberAfterRemoving(series,
+	  				refinedClassifiedMotifs);
+	  		
 
 	          StringBuilder sb = new StringBuilder();
 

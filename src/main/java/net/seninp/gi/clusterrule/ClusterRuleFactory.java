@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.PackedRuleRecord;
+import net.seninp.gi.logic.SAXPointsNumber;
 import net.seninp.gi.logic.SameLengthMotifs;
 
 public class ClusterRuleFactory {
@@ -17,7 +18,7 @@ public class ClusterRuleFactory {
 	 *            the grammar.
 	 * @return pruned ruleset.
 	 */
-	public static ArrayList<PackedRuleRecord> performPruning(double[] ts,
+	public static ArrayList<SameLengthMotifs> performPruning(double[] ts,
 			GrammarRules grammarRules, double thresholdLength,
 			double thresholdCom, double fractionTopDist) {
 
@@ -32,11 +33,11 @@ public class ClusterRuleFactory {
 		ArrayList<SameLengthMotifs> newAllClassifiedMotifs = ro
 				.refinePatternsByClustering(grammarRules, ts,
 						allClassifiedMotifs, fractionTopDist);
-
-		return getPackedRule(newAllClassifiedMotifs);
+		
+		return newAllClassifiedMotifs;				
 	}
 
-	private static ArrayList<PackedRuleRecord> getPackedRule(
+	public static ArrayList<PackedRuleRecord> getPackedRule(
 			ArrayList<SameLengthMotifs> newAllClassifiedMotifs) {
 
 		ArrayList<PackedRuleRecord> arrPackedRuleRecords = new ArrayList<PackedRuleRecord>();
