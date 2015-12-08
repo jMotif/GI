@@ -146,4 +146,72 @@ public class GIUtils {
     return (double) coverageSum / (double) length;
   }
 
+  /**
+   * Computes which fraction of the time series is covered by the rules set.
+   * 
+   * @param seriesLength the time series length.
+   * @param rules the grammar rules set.
+   * @return a fraction covered by the rules.
+   */
+  public static double getCoverAsFraction(int seriesLength, ArrayList<SameLengthMotifs> refinedClassifiedMotifs) {
+
+    boolean[] coverageArray = new boolean[seriesLength];
+
+    for (SameLengthMotifs rule : refinedClassifiedMotifs) {
+      for(SAXMotif motif : rule.getSameLenMotifs()){
+    	  RuleInterval saxPos = motif.getPos();
+    	  int startPos = saxPos.getStart();
+          int endPos = saxPos.getEnd();
+          for (int j = startPos; j < endPos; j++) {
+            coverageArray[j] = true;
+          }
+      }
+    }
+
+    int coverSum = 0;
+    for (int i = 0; i < seriesLength; i++) {
+      if (coverageArray[i]) {
+        coverSum++;
+      }
+    }
+    return (double) coverSum / (double) seriesLength;
+  }
+
+  /**
+   * Gets the mean rule coverage.
+   * 
+   * @param length the original time-series length.
+   * @param rules the grammar rules set.
+   * @return
+   */
+  public static double getMeanRuleCoverage(int length, ArrayList<SameLengthMotifs> refinedClassifiedMotifs) {
+    // get the coverage array
+    //
+    int[] coverageArray = new int[length];
+    for (SameLengthMotifs rule : refinedClassifiedMotifs) {
+	   for(SAXMotif motif : rule.getSameLenMotifs()){
+		   
+       	 RuleInterval saxPos = motif.getPos();
+       	 int startPos = saxPos.getStart();
+         int endPos = saxPos.getEnd();
+         for (int j = startPos; j < endPos; j++) {
+           coverageArray[j] = coverageArray[j] + 1;
+         }
+   	   }
+    }
+    int minCoverage = 0;
+    int maxCoverage = 0;
+    int coverageSum = 0;
+    for (int i : coverageArray) {
+      coverageSum += i;
+      if (i < minCoverage) {
+        minCoverage = i;
+      }
+      if (i > maxCoverage) {
+        maxCoverage = i;
+      }
+    }
+    return (double) coverageSum / (double) length;
+  }
+
 }
