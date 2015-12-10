@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import net.seninp.gi.clusterrule.ClusterRuleFactory;
 import net.seninp.gi.clusterrule.RuleOrganizer;
 import net.seninp.gi.logic.GIUtils;
