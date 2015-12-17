@@ -7,6 +7,7 @@ require(stringr)
 #
 require(lattice)
 require(ggplot2)
+require(grid)
 require(gridExtra)
 require(scales)
 require(Cairo)
@@ -50,16 +51,17 @@ setnames(df, c("algorithm","frequency","cover"))
 ecg0606_density <- ggplot(df[df$cover>0.98 & df$frequency < 100,], aes(x = frequency, fill=algorithm)) + 
   geom_density(alpha=0.5, binwidth=1) + theme_bw() + 
   ggtitle(paste("Estimated kernel densities for the most frequent rule occurrence\n",
-    "in ECG0606 when the total cover is above 0.98")) +
+    "in ECG0606 when the cover is above 0.98")) +
   scale_x_continuous(limits=c(0,50),breaks=seq(0,50,by=10)) +
   scale_fill_discrete(guide_legend(title="GI Algorithm:"),labels=c("RePair","Sequitur")) +
   theme(legend.position="bottom", legend.direction="horizontal", legend.text = element_text(size=12),
-        legend.title = element_text(size=15), legend.key.size = unit(2, "cm"))
+        legend.title = element_text(size=15), legend.key.size = unit(0.7, "cm"))
 ecg0606_density
 #
 dd = read.table("../resources/test-data/ecg0606.txt")
 df_ecg = data.frame(x=c(1:length(dd$V1)), y=dd$V1)
 ecg0606_plot <- ggplot(data=df_ecg, aes(x=x,y=y)) + geom_line(col=cbbPalette[6]) +
+  scale_x_continuous("") + scale_y_continuous("") +
   theme_bw() + ggtitle("Dataset ECG0606 with abnormal heartbeat highlighted") + 
   geom_path(data=df_ecg[411:511,], col="red")
 
@@ -70,20 +72,21 @@ setnames(df, c("algorithm","frequency","cover"))
 video_density <- ggplot(df[df$cover>0.98 & df$frequency < 150,], aes(x = frequency, fill=algorithm)) + 
   geom_density(alpha=0.5, binwidth=1) + theme_bw() +
   ggtitle(paste("Estimated kernel densities for the most frequent rule occurrence\n",
-                "in Video dataset when the total cover is above 0.98")) +
+                "in Video dataset when the cover is above 0.98")) +
   scale_x_continuous(limits=c(0,150),breaks=seq(0,150,by=25)) +
   scale_fill_discrete(guide_legend(title="GI Algorithm:"),labels=c("RePair","Sequitur")) +
   theme(legend.position="bottom", legend.direction="horizontal", legend.text = element_text(size=12),
-        legend.title = element_text(size=15))
+        legend.title = element_text(size=15), legend.key.size = unit(0.7, "cm"))
 #
 dd = read.table("../resources/test-data/ann_gun_CentroidA1.txt")
 df_video = data.frame(x=c(1:length(dd$V1)), y=dd$V1)
 video_plot <- ggplot(data=df_video, aes(x=x,y=y)) + geom_line(col=cbbPalette[6]) +
+  scale_x_continuous("") + scale_y_continuous("") +
   theme_bw() + ggtitle("Video dataset (~70 normal cycles)") +
   scale_y_continuous(limits=c(180,500)) 
 
 Cairo(width = 1100, height = 400, 
-      file="densities.pdf", type="pdf", pointsize=8, 
+      file="fig_12_repair_sequitur_densities.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 76)
 grid.arrange(ecg0606_plot,video_plot,ecg0606_density, video_density,ncol=2,
              heights=c(2/5, 3/5))

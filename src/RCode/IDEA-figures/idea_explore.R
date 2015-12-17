@@ -60,14 +60,14 @@ pl = dlply(data, .(dataset), function(x){
 })  
 
 Cairo(width = 900, height = 450, 
-      file="approximation_size_correlation.png", type="png", pointsize=8, 
+      file="fig_10_error_rules_corr.png", type="png", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 70)
 grid.arrange(pl[[2]], pl[[1]],pl[[3]],
              pl[[6]],pl[[4]],pl[[5]], ncol=3, nrow=2)
 dev.off()
 
 Cairo(width = 900, height = 450, 
-      file="approximation_size_correlation.pdf", type="pdf", pointsize=8, 
+      file="fig_10_error_rules_corr.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
 grid.arrange(pl[[2]], pl[[1]],pl[[3]],
              pl[[6]],pl[[4]],pl[[5]], ncol=3, nrow=2)
@@ -85,8 +85,8 @@ pl = dlply(data, .(dataset), function(x){
   p <- ggplot(x, aes(pruned_frequency, reduction)) + geom_smooth(method = "lm") + 
     geom_jitter(alpha = 0.4, col = cbPalette[4], size = 0.35) + 
     theme_bw() + ggtitle(paste(unique(x$dataset))) +
-    scale_x_continuous("", limits = c(0,max(x$pruned_frequency))) + 
-    scale_y_continuous(limits = c(0,1), breaks = c(0, 0.25, 0.5, 0.75, 1.0)) + 
+    scale_x_continuous("Most frequent rule occurrence", limits = c(0,max(x$pruned_frequency))) + 
+    scale_y_continuous("Reduction",limits = c(0,1), breaks = c(0, 0.25, 0.5, 0.75, 1.0)) + 
     geom_text(data = NULL, label = ll, x = 0.25, y = 0.64, col = cbPalette[6], 
               hjust = 0, vjust = 0)
   p + geom_point(data=dd, aes(x=x, y=y), color="red", size=3.5)
@@ -94,14 +94,14 @@ pl = dlply(data, .(dataset), function(x){
 #do.call(grid.arrange,  pl)
 
 Cairo(width = 900, height = 450, 
-      file="reduction_frequency_correlation.png", type="png", pointsize=8, 
+      file="fig_11_reduction_frequency_corr.png", type="png", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 70)
 grid.arrange(pl[[2]], pl[[1]],pl[[3]],
              pl[[6]],pl[[4]],pl[[5]], ncol=3, nrow=2)
 dev.off()
 
 Cairo(width = 900, height = 450, 
-      file="reduction_frequency_correlation.pdf", type="pdf", pointsize=8, 
+      file="fig_11_reduction_frequency_corr.pdf", type="pdf", pointsize=8, 
       bg = "transparent", canvas = "white", units = "px", dpi = 74)
 grid.arrange(pl[[2]], pl[[1]],pl[[3]],
              pl[[6]],pl[[4]],pl[[5]], ncol=3, nrow=2)
