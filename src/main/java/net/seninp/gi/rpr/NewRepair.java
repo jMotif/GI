@@ -53,7 +53,7 @@ public class NewRepair {
     // 2.0. - the priority queue
     PriorityQueue<RepairDigramRecord> digrams = new PriorityQueue<RepairDigramRecord>();
 
-    // 2.0. - the digrams hashtable
+    // 2.0. - the digrams occurrence hashtable: string -> indexes
     HashMap<String, ArrayList<Integer>> digramsTable = new HashMap<String, ArrayList<Integer>>();
 
     // tokenize the input string
@@ -85,11 +85,11 @@ public class NewRepair {
           ArrayList<Integer> arr = new ArrayList<Integer>();
           arr.add(stringPositionCounter - 1);
           digramsTable.put(digramStr.toString(), arr);
-          consoleLogger.debug("Created a digram entry for: " + digramStr.toString());
+          consoleLogger.debug(" .created a digram entry for: " + digramStr.toString());
         }
         else {
           digramsTable.get(digramStr.toString()).add(stringPositionCounter - 1);
-          consoleLogger.debug("Added a digram entry to: " + digramStr.toString());
+          consoleLogger.debug(" .added a digram entry to: " + digramStr.toString());
         }
       }
 
@@ -118,9 +118,11 @@ public class NewRepair {
       r.setFirst(string.get(occurrences.get(0)));
       r.setSecond(string.get(occurrences.get(0) + 1));
       r.assignLevel();
-
+      consoleLogger.debug(" .created the rule: " + r.toInfoString());
+      
       // substitute each digram entry with a rule
       //
+      consoleLogger.debug(" .substituting digram at locations: " + occurrences.toString());
       for (Integer currentIndex : occurrences) {
 
         // create the new guard to insert

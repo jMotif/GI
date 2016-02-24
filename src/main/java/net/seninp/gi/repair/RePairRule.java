@@ -220,4 +220,8 @@ public class RePairRule {
     return true;
   }
 
+  public String toInfoString() {
+    return this.toString() + " -> " + this.first.toString() + " " + this.second.toString();
+  }
+
 }
