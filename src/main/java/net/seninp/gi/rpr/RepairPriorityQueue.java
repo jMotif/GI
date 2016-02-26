@@ -175,14 +175,11 @@ public class RepairPriorityQueue {
             cp.next = el;
           }
           else { // place element just behind of cp
-            System.out.println("===\n" + this.toString());
             dropElement(el);
-            System.out.println("===\n" + this.toString());
             cp.next.prev = el;
             el.next = cp.next;
             cp.next = el;
             el.prev = cp;
-            System.out.println("===\n" + this.toString());
           }
         }
       }

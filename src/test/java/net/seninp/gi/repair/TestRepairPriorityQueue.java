@@ -146,5 +146,25 @@ public class TestRepairPriorityQueue {
     assertEquals("testing the enqueue & dequeue operations", 4, el.getFrequency());
     System.out.println(pq);
 
+    // move a head element down
+    //
+    el = pq.get(KEY3);
+    pq.updateDigramFrequency(el.getDigram(), 3);
+    arr = pq.toList();
+    el = arr.get(3);
+    assertTrue("testing the enqueue & dequeue operations", KEY3.equalsIgnoreCase(el.getDigram()));
+    assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());
+    System.out.println(pq);
+
+    // move a tail element up
+    //
+    el = pq.get(KEY1);
+    pq.updateDigramFrequency(el.getDigram(), 12);
+    arr = pq.toList();
+    el = arr.get(1);
+    assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
+    assertEquals("testing the enqueue & dequeue operations", 12, el.getFrequency());
+    System.out.println(pq);
   }
+
 }
