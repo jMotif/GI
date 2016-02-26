@@ -9,6 +9,7 @@ package net.seninp.gi.repair;
 public class RePairGuard extends RePairSymbol {
 
   protected RePairRule rule;
+  protected boolean isEmpty = true;
 
   /**
    * Constructor.
@@ -17,7 +18,14 @@ public class RePairGuard extends RePairSymbol {
    */
   public RePairGuard(RePairRule rule) {
     super();
-    this.rule = rule;
+    if (null == rule) {
+       this.rule = null;
+       this.isEmpty = true;
+    }
+    else {
+      this.rule = rule;
+      this.isEmpty = false;
+    }
   }
 
   public String toString() {
