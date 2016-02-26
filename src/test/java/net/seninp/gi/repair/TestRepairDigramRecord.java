@@ -1,6 +1,6 @@
 package net.seninp.gi.repair;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import net.seninp.gi.rpr.RepairDigramRecord;
 
