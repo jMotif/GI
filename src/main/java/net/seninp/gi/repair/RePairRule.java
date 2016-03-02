@@ -116,7 +116,7 @@ public class RePairRule {
    * @param str the expanded rule value.
    * 
    */
-  protected void setExpandedRule(String str) {
+  public void setExpandedRule(String str) {
     this.expandedRuleString = str;
   }
 

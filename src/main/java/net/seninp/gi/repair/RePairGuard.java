@@ -28,6 +28,10 @@ public class RePairGuard extends RePairSymbol {
     }
   }
 
+  public RePairRule getRule() {
+    return this.rule;
+  }
+
   public String toString() {
     if (null == this.rule) {
       return "null";

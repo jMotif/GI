@@ -1,14 +1,33 @@
 package net.seninp.gi.rpr;
 
+/**
+ * The RePair priority queue entry.
+ * 
+ * @author psenin
+ *
+ */
 public class RepairDigramRecord implements Comparable<RepairDigramRecord> {
+
+  // the digram
   protected String str;
+
+  // and its observed frequency
   protected int freq;
 
+  /**
+   * Constructor.
+   * 
+   * @param key the digram string.
+   * @param frequency digram's frequency.
+   */
   public RepairDigramRecord(String key, int frequency) {
     this.str = key;
     this.freq = frequency;
   }
 
+  /**
+   * A comparator built upon occurrence frequency only.
+   */
   @Override
   public int compareTo(RepairDigramRecord o) {
     if (this.freq > o.freq) {

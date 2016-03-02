@@ -56,8 +56,10 @@ public class NewRepair {
     // 2.0. - the priority queue
     RepairPriorityQueue digramsQueue = new RepairPriorityQueue();
 
-    // 3.0. - the digrams occurrence hashtable: <digram string> -> <R0 occurrence indexes>
+    // 3.0. - the R0 digrams occurrence hashtable: <digram string> -> <R0 occurrence indexes>
     HashMap<String, ArrayList<Integer>> digramsTable = new HashMap<String, ArrayList<Integer>>();
+    // 3.1. - all digrams ever seen will be here
+    HashMap<String, ArrayList<Integer>> allDigramsTable = new HashMap<String, ArrayList<Integer>>();
 
     // tokenize the input string
     StringTokenizer st = new StringTokenizer(inputStr, " ");
@@ -105,10 +107,11 @@ public class NewRepair {
       // go on
       stringPositionCounter++;
     }
-    consoleLogger.debug("parsed the input..");
+    consoleLogger.debug("parsed the input string into the doubly linked list of tokens ...");
     consoleLogger.debug("RePair input: " + asString(symbolizedString));
     consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
         "\n                                                                       "));
+    allDigramsTable.putAll(digramsTable);
 
     consoleLogger.debug("populating the priority queue...");
     // populate the priority queue and the index -> digram record map
@@ -149,6 +152,22 @@ public class NewRepair {
       r.setFirst(first.getPayload());
       r.setSecond(second.getPayload());
       r.assignLevel();
+
+      StringBuffer expandedRule = new StringBuffer();
+      if (first.getPayload().isGuard()) {
+        expandedRule.append(((RePairGuard) first.getPayload()).getRule().toExpandedRuleString());
+      }
+      else {
+        expandedRule.append(((RePairSymbol) first.getPayload()).toString());
+      }
+      expandedRule.append(SPACE);
+      if (second.getPayload().isGuard()) {
+        expandedRule.append(((RePairGuard) second.getPayload()).getRule().toExpandedRuleString());
+      }
+      else {
+        expandedRule.append(((RePairSymbol) second.getPayload()).toString());
+      }
+      r.setExpandedRule(expandedRule.toString());
 
       consoleLogger.debug(" .creating the rule: " + r.toInfoString());
 
@@ -266,6 +285,9 @@ public class NewRepair {
 
       } // walk over all occurrences
 
+      // voila -- remove the digram itself from the tracking table
+      digramsTable.remove(entry.str);
+
       // update new digram frequencies and if needed place those into priority queue
       //
       for (String digramStr : newDigrams) {
@@ -281,6 +303,13 @@ public class NewRepair {
       }
 
     }
+
+    consoleLogger.debug("finished RePair run ...");
+    consoleLogger.debug("R0: " + asString(symbolizedString));
+    consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+        "\n                                                                       "));
+    consoleLogger.debug("digrams queue: " + digramsQueue.toString().replace("\n",
+        "\n                                                        "));
 
     grammar.setR0String(asString(symbolizedString));
 
