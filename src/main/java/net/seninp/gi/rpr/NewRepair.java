@@ -43,7 +43,7 @@ public class NewRepair {
   public static RePairGrammar parse(String inputStr) {
 
     consoleLogger.debug(
-        "Input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
+        "input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
 
     RePairGrammar grammar = new RePairGrammar();
 
@@ -281,8 +281,10 @@ public class NewRepair {
           "\n                                                        "));
 
     }
+    
+    grammar.setR0String(asString(symbolizedString));
 
-    return null;
+    return grammar;
 
   }
 
