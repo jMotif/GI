@@ -43,6 +43,10 @@ public class RePairGrammar {
     this.r0String = str;
   }
 
+  public void setR0ExpnadedString(String str) {
+    this.r0ExpandedString = str;
+  }
+
   /**
    * Get all the rules as the map.
    * 

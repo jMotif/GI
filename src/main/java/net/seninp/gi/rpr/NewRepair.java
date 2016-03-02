@@ -312,6 +312,8 @@ public class NewRepair {
         "\n                                                        "));
 
     grammar.setR0String(asString(symbolizedString));
+    // and since all completed, set the expanded string too
+    grammar.setR0ExpnadedString(inputStr.substring(0));
 
     return grammar;
 
