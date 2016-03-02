@@ -54,6 +54,7 @@ public class TestSequiturPaperGrammars {
       GrammarRules rules = r.toGrammarRulesData();
       // System.out.println(SAXRule.printRules());
 
+      @SuppressWarnings("unused")
       RePairGrammar rr = RePairFactory.buildGrammar(TEST2_STRING);
       // System.out.println(rr.toGrammarRules());
 

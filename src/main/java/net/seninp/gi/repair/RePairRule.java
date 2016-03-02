@@ -72,6 +72,10 @@ public class RePairRule {
     this.first = symbol;
   }
 
+  public RePairSymbol getFirst() {
+    return this.first;
+  }
+
   /**
    * Second symbol setter.
    * 
@@ -79,6 +83,10 @@ public class RePairRule {
    */
   public void setSecond(RePairSymbol symbol) {
     this.second = symbol;
+  }
+
+  public RePairSymbol getSecond() {
+    return this.second;
   }
 
   /**
@@ -108,7 +116,7 @@ public class RePairRule {
    * @param str the expanded rule value.
    * 
    */
-  protected void setExpandedRule(String str) {
+  public void setExpandedRule(String str) {
     this.expandedRuleString = str;
   }
 
