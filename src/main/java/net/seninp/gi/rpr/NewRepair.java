@@ -27,7 +27,7 @@ public class NewRepair {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.ALL;
+  private static Level LOGGING_LEVEL = Level.WARN;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(NewRepair.class);
