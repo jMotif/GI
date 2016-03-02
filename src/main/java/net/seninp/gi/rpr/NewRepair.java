@@ -56,22 +56,21 @@ public class NewRepair {
     // 2.0. - the priority queue
     RepairPriorityQueue digramsQueue = new RepairPriorityQueue();
 
-    // 3.0. - the digrams occurrence hashtable: string -> indexes
+    // 3.0. - the digrams occurrence hashtable: <digram string> -> <R0 occurrence indexes>
     HashMap<String, ArrayList<Integer>> digramsTable = new HashMap<String, ArrayList<Integer>>();
 
     // tokenize the input string
     StringTokenizer st = new StringTokenizer(inputStr, " ");
 
-    int stringPositionCounter = 0;
-
     // while there are tokens, populate digrams hash and construct the table
     //
+    int stringPositionCounter = 0;
     while (st.hasMoreTokens()) {
 
-      // got token, made a symbol
+      // got token, make a symbol
       String token = st.nextToken();
       RePairSymbol symbol = new RePairSymbol(token, stringPositionCounter);
-      consoleLogger.debug("Token @" + stringPositionCounter + ": " + token);
+      consoleLogger.debug("token @" + stringPositionCounter + ": " + token);
 
       // add it to the string
       RePairSymbolRecord sr = new RePairSymbolRecord(symbol);
@@ -106,8 +105,10 @@ public class NewRepair {
       // go on
       stringPositionCounter++;
     }
-    consoleLogger
-        .debug("The R0 string: " + asString(symbolizedString) + "\n" + printHash(digramsTable));
+    consoleLogger.debug("parsed the input..");
+    consoleLogger.debug("RePair input: " + asString(symbolizedString));
+    consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+        "\n                                                                       "));
 
     consoleLogger.debug("populating the priority queue...");
     // populate the priority queue and the index -> digram record map
@@ -128,12 +129,13 @@ public class NewRepair {
     RepairDigramRecord entry = null;
     while ((entry = digramsQueue.dequeue()) != null) {
 
-      consoleLogger
-          .debug("The R0 string: " + asString(symbolizedString) + "\n" + printHash(digramsTable));
+      consoleLogger.debug(" *the current R0: " + asString(symbolizedString));
+      consoleLogger.debug(" *digrams table: " + printHash(digramsTable).replace("\n",
+          "\n                                                                         "));
 
-      consoleLogger.debug("Polled a priority queue entry: " + entry.str + " : " + entry.freq);
-      consoleLogger.debug(digramsQueue.toString().replace("\n",
-          "\n                                                        "));
+      consoleLogger.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
+      consoleLogger.debug(" *" + digramsQueue.toString().replace("\n",
+          "\n                                                          "));
 
       // create a new rule
       //
@@ -148,7 +150,7 @@ public class NewRepair {
       r.setSecond(second.getPayload());
       r.assignLevel();
 
-      consoleLogger.debug(" .created the rule: " + r.toInfoString());
+      consoleLogger.debug(" .creating the rule: " + r.toInfoString());
 
       // substitute each digram entry with the rule
       //
@@ -264,8 +266,8 @@ public class NewRepair {
 
       } // walk over all occurrences
 
-      consoleLogger.debug("The R0 string: " + asString(symbolizedString));
-
+      // update new digram frequencies and if needed place those into priority queue
+      //
       for (String digramStr : newDigrams) {
         if (digramsTable.get(digramStr).size() > 1) {
           if (digramsQueue.containsDigram(digramStr)) {
@@ -277,11 +279,9 @@ public class NewRepair {
           }
         }
       }
-      consoleLogger.debug(digramsQueue.toString().replace("\n",
-          "\n                                                        "));
 
     }
-    
+
     grammar.setR0String(asString(symbolizedString));
 
     return grammar;
@@ -293,7 +293,7 @@ public class NewRepair {
     for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
       sb.append(e.getKey()).append(" -> ").append(e.getValue().toString()).append("\n");
     }
-    return sb.toString();
+    return sb.delete(sb.length() - 1, sb.length()).toString();
   }
 
   private static String asString(ArrayList<RePairSymbolRecord> symbolizedString) {

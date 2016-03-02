@@ -207,7 +207,8 @@ public class RepairPriorityQueue {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer("Nodes: ").append(this.elements.size()).append("\n");
+    StringBuffer sb = new StringBuffer("priority queue of ").append(this.elements.size())
+        .append(" nodes:\n");
     RepairQueueNode hp = this.head;
     int nodeCounter = 0;
     while (null != hp) {
