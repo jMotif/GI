@@ -2,6 +2,8 @@ package net.seninp.gi.rpr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implements the priority queue for RePair. Backed by the doubly linked list of custom nodes.
@@ -321,6 +323,26 @@ public class RepairPriorityQueue {
      */
     public int getFrequency() {
       return this.payload.freq;
+    }
+
+  }
+
+  public void runCheck() {
+
+    HashSet<String> keys = new HashSet<String>();
+    for (String s : this.elements.keySet()) {
+      keys.add(s);
+    }
+
+    RepairQueueNode hp = this.head;
+    while (null != hp) {
+      String str = hp.payload.str;
+      keys.remove(str);
+      hp = hp.next;
+    }
+    if (!(keys.isEmpty())) {
+      System.out.println(keys);
+      throw new RuntimeException("tracking arror here");
     }
 
   }

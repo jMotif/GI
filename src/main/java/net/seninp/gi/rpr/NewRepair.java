@@ -27,7 +27,7 @@ public class NewRepair {
   // logging stuff
   //
   private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.WARN;
+  private static Level LOGGING_LEVEL = Level.ALL;
 
   static {
     consoleLogger = (Logger) LoggerFactory.getLogger(NewRepair.class);
@@ -139,6 +139,7 @@ public class NewRepair {
       consoleLogger.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
       consoleLogger.debug(" *" + digramsQueue.toString().replace("\n",
           "\n                                                          "));
+      digramsQueue.runCheck();
 
       // create a new rule
       //

@@ -1,19 +1,27 @@
 package net.seninp.gi.tinker;
 
-import net.seninp.gi.logic.GrammarRules;
-import net.seninp.gi.sequitur.SequiturFactory;
+import net.seninp.gi.repair.RePairGrammar;
+import net.seninp.gi.rpr.NewRepair;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
+import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.alphabet.Alphabet;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
+import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 public class MemoryLeakTester {
 
-  private static final String INPUT_FNAME = "data/300_signal1.txt";
+  private static final String INPUT_FNAME = "src/resources/test-data/ecg0606.txt";
 
   private static final int SAX_WIN_SIZE = 100;
-  private static final int SAX_PAA_SIZE = 6;
-  private static final int SAX_A_SIZE = 5;
+  private static final int SAX_PAA_SIZE = 4;
+  private static final int SAX_A_SIZE = 3;
 
   private static final double SAX_NORM_THRESHOLD = 0.001;
+
+  private static final SAXProcessor sp = new SAXProcessor();
+
+  private static final Alphabet na = new NormalAlphabet();
 
   public static void main(String[] args) throws Exception {
 
@@ -38,9 +46,13 @@ public class MemoryLeakTester {
 
       System.out.println("Iteration " + i);
       System.gc();
-      GrammarRules g = SequiturFactory.series2SequiturRules(ts, SAX_WIN_SIZE, SAX_PAA_SIZE,
-          SAX_A_SIZE, NumerosityReductionStrategy.EXACT, SAX_NORM_THRESHOLD);
-      System.out.println("Inferred " + g.size() + " rules.");
+
+      SAXRecords sax = sp.ts2saxViaWindow(ts, SAX_WIN_SIZE, SAX_PAA_SIZE, na.getCuts(SAX_A_SIZE),
+          NumerosityReductionStrategy.EXACT, SAX_NORM_THRESHOLD);
+
+      RePairGrammar grammar = NewRepair.parse(sax.getSAXString(" "));
+
+      System.out.println("Inferred " + grammar.getRules().size() + " rules.");
 
       try {
         Thread.sleep(10000); // 1000 milliseconds is one second.
