@@ -15,8 +15,8 @@ public class TestRepairPriorityQueue {
   private static final int FREQ1 = 10;
   private static final int FREQ2 = 13;
   private static final int FREQ3 = 13;
-  private static final int FREQ4 = 5;
-  private static final int FREQ5 = 2;
+  private static final int FREQ4 = 7;
+  private static final int FREQ5 = 5;
 
   private static final String KEY1 = "aaa bbb";
   private static final String KEY2 = "bbb ccc";
@@ -84,6 +84,7 @@ public class TestRepairPriorityQueue {
     el = pq.dequeue();
     assertSame("testing the enqueue & dequeue operations", el, dr4);
     assertEquals("testing the enqueue & dequeue operations", 1, pq.size());
+    
     el = pq.dequeue();
     el = pq.dequeue();
     assertNull("testing the enqueue & dequeue operations", el);
@@ -117,11 +118,11 @@ public class TestRepairPriorityQueue {
     //
     System.out.println(pq);
     el = pq.get(KEY1);
-    pq.updateDigramFrequency(el.getDigram(), 1);
+    pq.updateDigramFrequency(el.getDigram(), 3);
     ArrayList<RepairDigramRecord> arr = pq.toList();
     el = arr.get(arr.size() - 1);
     assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
-    assertEquals("testing the enqueue & dequeue operations", 1, el.getFrequency());
+    assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());
     System.out.println(pq);
 
     // element with KEY5 (fff ggg) go two places up
@@ -165,6 +166,16 @@ public class TestRepairPriorityQueue {
     assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 12, el.getFrequency());
     System.out.println(pq);
+
+    // check that KEY1 gets evicted
+    //
+    el = pq.get(KEY1);
+    el = pq.updateDigramFrequency(el.getDigram(), 0);
+    assertNull("testing the enqueue & dequeue operations", el);
+    assertNull("testing the enqueue & dequeue operations", pq.get(KEY1));
+    assertEquals("testing the enqueue & dequeue operations", 4, pq.size());
+    System.out.println(pq);
+
   }
 
 }

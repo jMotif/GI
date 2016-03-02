@@ -9,6 +9,7 @@ public class TestPaper {
 	private static final String TEST_R0 = "R4 XXX R4";
 
 	public static void main(String[] args) {
+	  
 		RePairGrammar grammar = NewRepair.parse(TEST_STRING);
 
 	}

@@ -6,7 +6,6 @@ import java.util.HashMap;
 public class RepairPriorityQueue {
 
   private RepairQueueNode head = null;
-  private int nodesCount = 0;
 
   private HashMap<String, RepairQueueNode> elements = new HashMap<String, RepairQueueNode>();
 
@@ -16,11 +15,11 @@ public class RepairPriorityQueue {
           "Element with payload " + dr.str + " already exists in the queue...");
     }
     else {
+      // create a new node
       RepairQueueNode nn = new RepairQueueNode(dr);
-      this.elements.put(nn.payload.str, nn);
-      if (0 == nodesCount) {
+      // place it into the queue
+      if (this.elements.isEmpty()) {
         this.head = nn;
-        this.nodesCount = 1;
       }
       else {
         RepairQueueNode hp = head;
@@ -41,8 +40,7 @@ public class RepairPriorityQueue {
               hp.prev = nn;
               nn.next = hp;
             }
-            this.nodesCount++;
-            break;
+            break; // the element has been placed
           }
           else {
             if (null == hp.next) {
@@ -50,12 +48,13 @@ public class RepairPriorityQueue {
               hp.next = nn;
               nn.prev = hp;
               hp = nn;
-              this.nodesCount++;
             }
             hp = hp.next;
           }
         }
       }
+      // also save the element in the index store
+      this.elements.put(nn.payload.str, nn);
     }
   }
 
@@ -68,7 +67,9 @@ public class RepairPriorityQueue {
     if (null != this.head) {
       RepairDigramRecord el = this.head.payload;
       this.head = this.head.next;
-      this.nodesCount--;
+      if (null != this.head) {
+        this.head.prev = null;
+      }
       this.elements.remove(el.str);
       return el;
     }
@@ -81,7 +82,7 @@ public class RepairPriorityQueue {
    * @return the number of elements in the queue.
    */
   public int size() {
-    return this.nodesCount;
+    return this.elements.size();
   }
 
   /**
@@ -125,6 +126,13 @@ public class RepairPriorityQueue {
       // point to that node
       RepairQueueNode el = elements.get(digram);
 
+      if (newFreq < 2) {
+        // evict the element
+        removeNodeFromList(el);
+        this.elements.remove(el.payload.str);
+        return null;
+      }
+
       // if we need to update frequency
       if (el.payload.freq != newFreq) {
 
@@ -133,7 +141,7 @@ public class RepairPriorityQueue {
         el.payload.freq = newFreq;
 
         // if the list is just too short
-        if (1 == this.nodesCount) {
+        if (1 == this.elements.size()) {
           return el.payload;
         }
 
@@ -147,14 +155,14 @@ public class RepairPriorityQueue {
           }
 
           if (null == cp) { // we hit the head
-            dropElement(el);
+            removeNodeFromList(el);
             el.prev = null;
             el.next = this.head;
             this.head.prev = el;
             this.head = el;
           }
           else { // place element just behind of cp
-            dropElement(el);
+            removeNodeFromList(el);
             cp.next.prev = el;
             el.next = cp.next;
             cp.next = el;
@@ -169,13 +177,13 @@ public class RepairPriorityQueue {
           }
 
           if (null == cp.next) { // we hit the tail
-            dropElement(el);
+            removeNodeFromList(el);
             el.prev = cp;
             el.next = null;
             cp.next = el;
           }
           else { // place element just behind of cp
-            dropElement(el);
+            removeNodeFromList(el);
             cp.next.prev = el;
             el.next = cp.next;
             cp.next = el;
@@ -189,7 +197,7 @@ public class RepairPriorityQueue {
   }
 
   public ArrayList<RepairDigramRecord> toList() {
-    ArrayList<RepairDigramRecord> res = new ArrayList<RepairDigramRecord>(this.nodesCount);
+    ArrayList<RepairDigramRecord> res = new ArrayList<RepairDigramRecord>(this.elements.size());
     RepairQueueNode cp = this.head;
     while (null != cp) {
       res.add(cp.payload);
@@ -199,7 +207,7 @@ public class RepairPriorityQueue {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer("Nodes: ").append(this.nodesCount).append("\n");
+    StringBuffer sb = new StringBuffer("Nodes: ").append(this.elements.size()).append("\n");
     RepairQueueNode hp = this.head;
     int nodeCounter = 0;
     while (null != hp) {
@@ -208,7 +216,7 @@ public class RepairPriorityQueue {
       hp = hp.next;
       nodeCounter++;
     }
-    return sb.toString();
+    return sb.delete(sb.length() - 1, sb.length()).toString();
   }
 
   private class RepairQueueNode {
@@ -226,7 +234,7 @@ public class RepairPriorityQueue {
 
   }
 
-  private void dropElement(RepairQueueNode el) {
+  private void removeNodeFromList(RepairQueueNode el) {
     // the head case
     //
     if (null == el.prev) {
@@ -235,8 +243,8 @@ public class RepairPriorityQueue {
         el.next.prev = null;
       }
       else {
-        // can't happen?
-        throw new RuntimeException("Unrecognized situation here...");
+        // can't happen? yep. if there is only one element exists...
+        this.head = null;
       }
     }
     // the tail case
@@ -257,5 +265,9 @@ public class RepairPriorityQueue {
       el.next.prev = el.prev;
     }
 
+  }
+
+  public boolean containsDigram(String digramStr) {
+    return this.elements.containsKey(digramStr);
   }
 }

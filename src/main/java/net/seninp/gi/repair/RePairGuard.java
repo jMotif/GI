@@ -19,8 +19,8 @@ public class RePairGuard extends RePairSymbol {
   public RePairGuard(RePairRule rule) {
     super();
     if (null == rule) {
-       this.rule = null;
-       this.isEmpty = true;
+      this.rule = null;
+      this.isEmpty = true;
     }
     else {
       this.rule = rule;
@@ -29,6 +29,9 @@ public class RePairGuard extends RePairSymbol {
   }
 
   public String toString() {
+    if (null == this.rule) {
+      return "null";
+    }
     return this.rule.toString();
   }
 
@@ -64,6 +67,13 @@ public class RePairGuard extends RePairSymbol {
     else if (!rule.equals(other.rule))
       return false;
     return true;
+  }
+
+  public boolean isNullPlaceholder() {
+    if (null == this.rule) {
+      return true;
+    }
+    return false;
   }
 
 }
