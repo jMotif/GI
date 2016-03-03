@@ -176,8 +176,14 @@ public class NewRepair {
       //
       consoleLogger.debug(" .substituting the digram at locations: " + occurrences.toString());
       HashSet<String> newDigrams = new HashSet<String>(occurrences.size());
-      for (Integer currentIndex : occurrences) {
 
+      // sometimes we remove some of those...
+      ArrayList<Integer> loopOccurrences = new ArrayList<Integer>(occurrences.size());
+      for (Integer i : occurrences) {
+        loopOccurrences.add(i);
+      }
+      while (!(loopOccurrences.isEmpty())) {
+        Integer currentIndex = loopOccurrences.remove(0);
         RePairSymbolRecord currentS = symbolizedString.get(currentIndex);
         RePairSymbolRecord nextS = symbolizedString.get(currentIndex).getNext();
 
@@ -216,11 +222,15 @@ public class NewRepair {
                 .debug(" .removed left digram entry @" + prevS.getPayload().getStringPosition()
                     + " " + oldLeftDigram + ", new freq: " + newFreq);
             digramsTable.get(oldLeftDigram).remove(Integer.valueOf(prevS.getIndex()));
+            if (oldLeftDigram.equalsIgnoreCase(entry.str)) {
+              loopOccurrences.remove(Integer.valueOf(prevS.getIndex()));
+            }
             digramsQueue.updateDigramFrequency(oldLeftDigram, newFreq);
 
             // if it was the last entry...
             if (0 == newFreq) {
               digramsTable.remove(oldLeftDigram);
+              newDigrams.remove(oldLeftDigram);
             }
 
             // and place the new digram entry
@@ -258,11 +268,15 @@ public class NewRepair {
                 .debug(" .removed right digram entry @" + nextSS.getPayload().getStringPosition()
                     + " " + oldRightDigram + ", new freq: " + newFreq);
             digramsTable.get(oldRightDigram).remove(Integer.valueOf(nextS.getIndex()));
+            if (oldRightDigram.equalsIgnoreCase(entry.str)) {
+              loopOccurrences.remove(Integer.valueOf(nextS.getIndex()));
+            }
             digramsQueue.updateDigramFrequency(oldRightDigram, newFreq);
 
             // if it was the last entry...
             if (0 == newFreq) {
               digramsTable.remove(oldRightDigram);
+              newDigrams.remove(oldRightDigram);
             }
 
             // and place the new digram entry

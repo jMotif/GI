@@ -46,15 +46,15 @@ public class TestRepairPriorityQueue {
 
     pq.enqueue(dr3);
     assertEquals("testing the enqueue & dequeue operations", 3, pq.size());
-    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
 
     pq.enqueue(dr4);
     assertEquals("testing the enqueue & dequeue operations", 4, pq.size());
-    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
 
     pq.enqueue(dr5);
     assertEquals("testing the enqueue & dequeue operations", 5, pq.size());
-    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
 
     try {
       RepairDigramRecord dr5Duplicate = new RepairDigramRecord(KEY5, FREQ5);
@@ -66,13 +66,13 @@ public class TestRepairPriorityQueue {
     }
 
     RepairDigramRecord el = pq.peek();
-    assertSame("testing the enqueue & dequeue operations", el, dr2);
+    assertSame("testing the enqueue & dequeue operations", el, dr3);
     el = pq.dequeue();
-    assertSame("testing the enqueue & dequeue operations", el, dr2);
+    assertSame("testing the enqueue & dequeue operations", el, dr3);
     assertEquals("testing the enqueue & dequeue operations", 4, pq.size());
 
     el = pq.dequeue();
-    assertSame("testing the enqueue & dequeue operations", el, dr3);
+    assertSame("testing the enqueue & dequeue operations", el, dr2);
     assertEquals("testing the enqueue & dequeue operations", 3, pq.size());
 
     el = pq.peek();
@@ -152,7 +152,7 @@ public class TestRepairPriorityQueue {
     el = pq.get(KEY3);
     pq.updateDigramFrequency(el.getDigram(), 3);
     arr = pq.toList();
-    el = arr.get(3);
+    el = arr.get(4);
     assertTrue("testing the enqueue & dequeue operations", KEY3.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());
     System.out.println(pq);

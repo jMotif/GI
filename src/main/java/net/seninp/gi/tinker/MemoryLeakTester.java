@@ -13,8 +13,8 @@ public class MemoryLeakTester {
 
   private static final String INPUT_FNAME = "src/resources/test-data/ecg0606.txt";
 
-  private static final int SAX_WIN_SIZE = 100;
-  private static final int SAX_PAA_SIZE = 4;
+  private static final int SAX_WIN_SIZE = 200;
+  private static final int SAX_PAA_SIZE = 3;
   private static final int SAX_A_SIZE = 3;
 
   private static final double SAX_NORM_THRESHOLD = 0.001;
