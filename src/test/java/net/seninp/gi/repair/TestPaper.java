@@ -18,13 +18,13 @@ public class TestPaper {
 
     RePairGrammar grammar = NewRepair.parse(TEST_STRING);
     GrammarRules grammarRules = grammar.toGrammarRulesData();
-    // System.out.println(grammarRules);
+    System.out.println(grammarRules);
     assertTrue("confirming the grammar in paper",
         grammarRules.getRuleRecord(0).getRuleString().trim().equalsIgnoreCase(TEST_R0));
 
     RePairGrammar grammar2 = RePairFactory.buildGrammar(TEST_STRING);
     GrammarRules grammarRules2 = grammar2.toGrammarRulesData();
-    // System.out.println(grammarRules2);
+    System.out.println(grammarRules2);
     assertTrue("confirming the grammar in paper",
         grammarRules2.getRuleRecord(0).getRuleString().trim().equalsIgnoreCase(TEST_R0));
 
