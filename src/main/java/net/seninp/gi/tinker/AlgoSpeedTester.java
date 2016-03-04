@@ -1,8 +1,12 @@
 package net.seninp.gi.tinker;
 
 import java.util.Date;
+import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.rpr.NewRepair;
+import net.seninp.gi.sequitur.SAXRule;
+import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -40,23 +44,23 @@ public class AlgoSpeedTester {
 
       System.out.println("Iteration " + i);
 
-//      // Sequitur
-//      prepareCycle();
-//      Date t0 = new Date();
-//      SAXRule grammar = SequiturFactory.runSequitur(str);
-//      GrammarRules rulesData = grammar.toGrammarRulesData();
-//      System.out.println("Inferred " + rulesData.size() + " Sequitur rules in "
-//          + SAXProcessor.timeToString(t0.getTime(), (new Date()).getTime()));
-//      grammar = null;
-//      rulesData = null;
-//
-//      // New repair
-//      prepareCycle();
-//      Date t1 = new Date();
-//      RePairGrammar grammar1 = RePairFactory.buildGrammar(str);
-//      System.out.println("Inferred " + grammar1.getRules().size() + " RePair rules in "
-//          + SAXProcessor.timeToString(t1.getTime(), (new Date()).getTime()));
-//      grammar1 = null;
+      // Sequitur
+      prepareCycle();
+      Date t0 = new Date();
+      SAXRule grammar = SequiturFactory.runSequitur(str);
+      GrammarRules rulesData = grammar.toGrammarRulesData();
+      System.out.println("Inferred " + rulesData.size() + " Sequitur rules in "
+          + SAXProcessor.timeToString(t0.getTime(), (new Date()).getTime()));
+      grammar = null;
+      rulesData = null;
+
+      // New repair
+      prepareCycle();
+      Date t1 = new Date();
+      RePairGrammar grammar1 = RePairFactory.buildGrammar(str);
+      System.out.println("Inferred " + grammar1.getRules().size() + " RePair rules in "
+          + SAXProcessor.timeToString(t1.getTime(), (new Date()).getTime()));
+      grammar1 = null;
 
       // New repair
       prepareCycle();
