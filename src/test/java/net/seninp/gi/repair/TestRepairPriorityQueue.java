@@ -31,7 +31,7 @@ public class TestRepairPriorityQueue {
   private RepairDigramRecord dr5 = new RepairDigramRecord(KEY5, FREQ5);
 
   @Test
-  public void testEnqueueDequeue() {
+  public void testEnqueueDequeue1() {
 
     RepairPriorityQueue pq = new RepairPriorityQueue();
     assertEquals("testing the enqueue & dequeue operations", 0, pq.size());
@@ -84,11 +84,27 @@ public class TestRepairPriorityQueue {
     el = pq.dequeue();
     assertSame("testing the enqueue & dequeue operations", el, dr4);
     assertEquals("testing the enqueue & dequeue operations", 1, pq.size());
-    
+
     el = pq.dequeue();
     el = pq.dequeue();
     assertNull("testing the enqueue & dequeue operations", el);
 
+  }
+
+  @Test
+  public void testEnqueueDequeue2() {
+
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+    pq.enqueue(dr5);
+    assertEquals("testing the enqueue & dequeue operations", dr5, pq.peek());
+    pq.enqueue(dr4);
+    assertEquals("testing the enqueue & dequeue operations", dr4, pq.peek());
+    pq.enqueue(dr1);
+    assertEquals("testing the enqueue & dequeue operations", dr1, pq.peek());
+    pq.enqueue(dr3);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    pq.enqueue(dr2);
+    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
   }
 
   @Test
