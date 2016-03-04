@@ -1,4 +1,4 @@
-package net.seninp.gi.rpr;
+package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.HashMap;

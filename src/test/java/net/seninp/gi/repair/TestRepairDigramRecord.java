@@ -2,7 +2,6 @@ package net.seninp.gi.repair;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import net.seninp.gi.rpr.RepairDigramRecord;
 
 /**
  * Test the digram record.

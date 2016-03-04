@@ -2,9 +2,9 @@ package net.seninp.gi.tinker;
 
 import java.util.Date;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.repair.NewRepair;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
-import net.seninp.gi.rpr.NewRepair;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;

@@ -1,4 +1,4 @@
-package net.seninp.gi.rpr;
+package net.seninp.gi.repair;
 
 /**
  * The RePair priority queue entry.

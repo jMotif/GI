@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import org.junit.Test;
-import net.seninp.gi.rpr.RepairDigramRecord;
-import net.seninp.gi.rpr.RepairPriorityQueue;
 
 public class TestRepairPriorityQueue {
 
@@ -145,7 +143,10 @@ public class TestRepairPriorityQueue {
     pq.enqueue(dr1);
     //
     // test trivial update
-    RepairDigramRecord el = pq.updateDigramFrequency(KEY1, 75);
+    RepairDigramRecord el = pq.updateDigramFrequency(KEY1, FREQ1);
+    assertEquals("testing queue sorting", el.getFrequency(), FREQ1);
+
+    el = pq.updateDigramFrequency(KEY1, 75);
     assertEquals("testing queue sorting", el.getFrequency(), 75);
     pq.updateDigramFrequency(KEY1, FREQ1);
     //

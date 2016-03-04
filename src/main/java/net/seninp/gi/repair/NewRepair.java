@@ -1,4 +1,4 @@
-package net.seninp.gi.rpr;
+package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,11 +8,6 @@ import java.util.StringTokenizer;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import net.seninp.gi.repair.RePairGrammar;
-import net.seninp.gi.repair.RePairGuard;
-import net.seninp.gi.repair.RePairRule;
-import net.seninp.gi.repair.RePairSymbol;
-import net.seninp.gi.repair.RePairSymbolRecord;
 
 /**
  * Improved repair implementation.
