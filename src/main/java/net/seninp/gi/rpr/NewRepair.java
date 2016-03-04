@@ -334,13 +334,13 @@ public class NewRepair {
 
   }
 
-  private static String printHash(HashMap<String, ArrayList<Integer>> digramsTable) {
-    StringBuffer sb = new StringBuffer();
-    for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
-      sb.append(e.getKey()).append(" -> ").append(e.getValue().toString()).append("\n");
-    }
-    return sb.delete(sb.length() - 1, sb.length()).toString();
-  }
+  // private static String printHash(HashMap<String, ArrayList<Integer>> digramsTable) {
+  // StringBuffer sb = new StringBuffer();
+  // for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
+  // sb.append(e.getKey()).append(" -> ").append(e.getValue().toString()).append("\n");
+  // }
+  // return sb.delete(sb.length() - 1, sb.length()).toString();
+  // }
 
   private static String asString(ArrayList<RePairSymbolRecord> symbolizedString) {
     StringBuffer res = new StringBuffer();
