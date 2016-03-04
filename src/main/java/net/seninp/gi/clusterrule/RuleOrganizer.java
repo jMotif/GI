@@ -3,12 +3,10 @@ package net.seninp.gi.clusterrule;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-
 import com.apporiented.algorithm.clustering.AverageLinkageStrategy;
 import com.apporiented.algorithm.clustering.Cluster;
 import com.apporiented.algorithm.clustering.ClusteringAlgorithm;
 import com.apporiented.algorithm.clustering.DefaultClusteringAlgorithm;
-
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.RuleInterval;
 import net.seninp.gi.logic.SAXMotif;

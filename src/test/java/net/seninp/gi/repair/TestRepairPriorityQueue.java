@@ -132,6 +132,12 @@ public class TestRepairPriorityQueue {
     arr = pq.toList();
     el = arr.get(4);
     assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.getDigram()));
+
+    pq.enqueue(new RepairDigramRecord("aaa", 2));
+    arr = pq.toList();
+    el = arr.get(5);
+    assertEquals("testing the enqueue & dequeue operations", el.freq, 2);
+
   }
 
   @Test
@@ -166,6 +172,15 @@ public class TestRepairPriorityQueue {
     el = pq.updateDigramFrequency(KEY3, FREQ3);
     assertSame("testing queue sorting", el, dr3);
 
+    // check the tail update case
+    //
+    el = pq.updateDigramFrequency(KEY5, 2);
+    ArrayList<RepairDigramRecord> arr = pq.toList();
+    el = arr.get(arr.size() - 1);
+    assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.str));
+    assertEquals("testing the enqueue & dequeue operations", 2, el.freq);
+    el = pq.updateDigramFrequency(KEY5, FREQ5);
+
     // make the head hit the ceiling
     //
     el = pq.peek();
@@ -191,7 +206,7 @@ public class TestRepairPriorityQueue {
     // System.out.println(pq);
     el = pq.get(KEY1);
     pq.updateDigramFrequency(el.getDigram(), 3);
-    ArrayList<RepairDigramRecord> arr = pq.toList();
+    arr = pq.toList();
     el = arr.get(arr.size() - 1);
     assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());

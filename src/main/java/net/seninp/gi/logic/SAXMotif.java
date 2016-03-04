@@ -1,7 +1,5 @@
 package net.seninp.gi.logic;
 
-import net.seninp.gi.logic.RuleInterval;
-
 /**
  * This is a helper data-structure which represents a single occurrence of a rule at the series.
  * 

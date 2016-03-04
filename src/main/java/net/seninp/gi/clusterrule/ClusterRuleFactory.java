@@ -1,10 +1,8 @@
 package net.seninp.gi.clusterrule;
 
 import java.util.ArrayList;
-
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.PackedRuleRecord;
-import net.seninp.gi.logic.SAXPointsNumber;
 import net.seninp.gi.logic.SameLengthMotifs;
 
 public class ClusterRuleFactory {
