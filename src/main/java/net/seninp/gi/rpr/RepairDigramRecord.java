@@ -57,6 +57,10 @@ public class RepairDigramRecord implements Comparable<RepairDigramRecord> {
     return this.freq;
   }
 
+  public String toString() {
+    return this.str + ":" + this.freq;
+  };
+
   @Override
   public int hashCode() {
     final int prime = 31;

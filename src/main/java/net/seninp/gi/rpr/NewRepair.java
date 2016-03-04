@@ -42,8 +42,8 @@ public class NewRepair {
    */
   public static RePairGrammar parse(String inputStr) {
 
-    consoleLogger.debug(
-        "input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
+    // consoleLogger.debug(
+    // "input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
 
     RePairGrammar grammar = new RePairGrammar();
 
@@ -72,7 +72,7 @@ public class NewRepair {
       // got token, make a symbol
       String token = st.nextToken();
       RePairSymbol symbol = new RePairSymbol(token, stringPositionCounter);
-      consoleLogger.debug("token @" + stringPositionCounter + ": " + token);
+      // consoleLogger.debug("token @" + stringPositionCounter + ": " + token);
 
       // add it to the string
       RePairSymbolRecord sr = new RePairSymbolRecord(symbol);
@@ -90,13 +90,13 @@ public class NewRepair {
         // fill the digram occurrence frequency
         if (digramsTable.containsKey(digramStr.toString())) {
           digramsTable.get(digramStr.toString()).add(stringPositionCounter - 1);
-          consoleLogger.debug(" .added a digram entry to: " + digramStr.toString());
+          // consoleLogger.debug(" .added a digram entry to: " + digramStr.toString());
         }
         else {
           ArrayList<Integer> arr = new ArrayList<Integer>();
           arr.add(stringPositionCounter - 1);
           digramsTable.put(digramStr.toString(), arr);
-          consoleLogger.debug(" .created a digram entry for: " + digramStr.toString());
+          // consoleLogger.debug(" .created a digram entry for: " + digramStr.toString());
         }
 
         symbolizedString.get(stringPositionCounter - 1).setNext(sr);
@@ -107,13 +107,13 @@ public class NewRepair {
       // go on
       stringPositionCounter++;
     }
-    consoleLogger.debug("parsed the input string into the doubly linked list of tokens ...");
-    consoleLogger.debug("RePair input: " + asString(symbolizedString));
-    consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
-        "\n                                                                       "));
+    // consoleLogger.debug("parsed the input string into the doubly linked list of tokens ...");
+    // consoleLogger.debug("RePair input: " + asString(symbolizedString));
+    // consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+    // "\n "));
     allDigramsTable.putAll(digramsTable);
 
-    consoleLogger.debug("populating the priority queue...");
+    // consoleLogger.debug("populating the priority queue...");
     // populate the priority queue and the index -> digram record map
     //
     for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
@@ -124,21 +124,22 @@ public class NewRepair {
         digramsQueue.enqueue(dr);
       }
     }
-    consoleLogger.debug(digramsQueue.toString().replace("\n",
-        "\n                                                        "));
+    // consoleLogger.debug(digramsQueue.toString().replace("\n",
+    // "\n "));
 
     // start the Re-Pair cycle
     //
     RepairDigramRecord entry = null;
     while ((entry = digramsQueue.dequeue()) != null) {
 
-      consoleLogger.debug(" *the current R0: " + asString(symbolizedString));
-      consoleLogger.debug(" *digrams table: " + printHash(digramsTable).replace("\n",
-          "\n                                                                         "));
-
-      consoleLogger.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
-      consoleLogger.debug(" *" + digramsQueue.toString().replace("\n",
-          "\n                                                          "));
+      // consoleLogger.debug(" *the current R0: " + asString(symbolizedString));
+      // consoleLogger.debug(" *digrams table: " + printHash(digramsTable).replace("\n",
+      // "\n "));
+      //
+      // consoleLogger.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
+      // consoleLogger.debug(" *" + digramsQueue.toString().replace("\n",
+      // "\n "));
+      // digramsQueue.runCheck();
 
       // create a new rule
       //
@@ -169,14 +170,20 @@ public class NewRepair {
       }
       r.setExpandedRule(expandedRule.toString());
 
-      consoleLogger.debug(" .creating the rule: " + r.toInfoString());
-
-      // substitute each digram entry with the rule
+      // consoleLogger.debug(" .creating the rule: " + r.toInfoString());
       //
-      consoleLogger.debug(" .substituting the digram at locations: " + occurrences.toString());
+      // // substitute each digram entry with the rule
+      // //
+      // consoleLogger.debug(" .substituting the digram at locations: " + occurrences.toString());
       HashSet<String> newDigrams = new HashSet<String>(occurrences.size());
-      for (Integer currentIndex : occurrences) {
 
+      // sometimes we remove some of those...
+      ArrayList<Integer> loopOccurrences = new ArrayList<Integer>(occurrences.size());
+      for (Integer i : occurrences) {
+        loopOccurrences.add(i);
+      }
+      while (!(loopOccurrences.isEmpty())) {
+        Integer currentIndex = loopOccurrences.remove(0);
         RePairSymbolRecord currentS = symbolizedString.get(currentIndex);
         RePairSymbolRecord nextS = symbolizedString.get(currentIndex).getNext();
 
@@ -211,15 +218,19 @@ public class NewRepair {
             String oldLeftDigram = prevS.getPayload().toString() + " "
                 + currentS.getPayload().toString();
             int newFreq = digramsTable.get(oldLeftDigram).size() - 1;
-            consoleLogger
-                .debug(" .removed left digram entry @" + prevS.getPayload().getStringPosition()
-                    + " " + oldLeftDigram + ", new freq: " + newFreq);
+            // consoleLogger
+            // .debug(" .removed left digram entry @" + prevS.getPayload().getStringPosition()
+            // + " " + oldLeftDigram + ", new freq: " + newFreq);
             digramsTable.get(oldLeftDigram).remove(Integer.valueOf(prevS.getIndex()));
+            if (oldLeftDigram.equalsIgnoreCase(entry.str)) {
+              loopOccurrences.remove(Integer.valueOf(prevS.getIndex()));
+            }
             digramsQueue.updateDigramFrequency(oldLeftDigram, newFreq);
 
             // if it was the last entry...
             if (0 == newFreq) {
               digramsTable.remove(oldLeftDigram);
+              newDigrams.remove(oldLeftDigram);
             }
 
             // and place the new digram entry
@@ -227,15 +238,15 @@ public class NewRepair {
             // see the new freq..
             if (digramsTable.containsKey(newLeftDigram)) {
               digramsTable.get(newLeftDigram).add(prevS.getPayload().getStringPosition());
-              consoleLogger.debug(" .added a digram entry to: " + newLeftDigram + ", @"
-                  + prevS.getPayload().getStringPosition());
+              // consoleLogger.debug(" .added a digram entry to: " + newLeftDigram + ", @"
+              // + prevS.getPayload().getStringPosition());
             }
             else {
               ArrayList<Integer> arr = new ArrayList<Integer>();
               arr.add(prevS.getPayload().getStringPosition());
               digramsTable.put(newLeftDigram, arr);
-              consoleLogger.debug(" .created a digram entry for: " + newLeftDigram.toString()
-                  + ", @" + prevS.getPayload().getStringPosition());
+              // consoleLogger.debug(" .created a digram entry for: " + newLeftDigram.toString()
+              // + ", @" + prevS.getPayload().getStringPosition());
             }
             newDigrams.add(newLeftDigram);
           }
@@ -253,15 +264,19 @@ public class NewRepair {
             String oldRightDigram = nextS.getPayload().toString() + " "
                 + nextSS.getPayload().toString();
             int newFreq = digramsTable.get(oldRightDigram).size() - 1;
-            consoleLogger
-                .debug(" .removed right digram entry @" + nextSS.getPayload().getStringPosition()
-                    + " " + oldRightDigram + ", new freq: " + newFreq);
+            // consoleLogger
+            // .debug(" .removed right digram entry @" + nextSS.getPayload().getStringPosition()
+            // + " " + oldRightDigram + ", new freq: " + newFreq);
             digramsTable.get(oldRightDigram).remove(Integer.valueOf(nextS.getIndex()));
+            if (oldRightDigram.equalsIgnoreCase(entry.str)) {
+              loopOccurrences.remove(Integer.valueOf(nextS.getIndex()));
+            }
             digramsQueue.updateDigramFrequency(oldRightDigram, newFreq);
 
             // if it was the last entry...
             if (0 == newFreq) {
               digramsTable.remove(oldRightDigram);
+              newDigrams.remove(oldRightDigram);
             }
 
             // and place the new digram entry
@@ -269,15 +284,15 @@ public class NewRepair {
             // see the new freq..
             if (digramsTable.containsKey(newRightDigram)) {
               digramsTable.get(newRightDigram).add(currentS.getPayload().getStringPosition());
-              consoleLogger.debug(" .added a digram entry to: " + newRightDigram + ", @"
-                  + currentS.getPayload().getStringPosition());
+              // consoleLogger.debug(" .added a digram entry to: " + newRightDigram + ", @"
+              // + currentS.getPayload().getStringPosition());
             }
             else {
               ArrayList<Integer> arr = new ArrayList<Integer>();
               arr.add(currentS.getPayload().getStringPosition());
               digramsTable.put(newRightDigram, arr);
-              consoleLogger.debug(" .created a digram entry for: " + newRightDigram.toString()
-                  + ", @" + currentS.getPayload().getStringPosition());
+              // consoleLogger.debug(" .created a digram entry for: " + newRightDigram.toString()
+              // + ", @" + currentS.getPayload().getStringPosition());
             }
             newDigrams.add(newRightDigram);
           }
@@ -304,12 +319,12 @@ public class NewRepair {
 
     }
 
-    consoleLogger.debug("finished RePair run ...");
-    consoleLogger.debug("R0: " + asString(symbolizedString));
-    consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
-        "\n                                                                       "));
-    consoleLogger.debug("digrams queue: " + digramsQueue.toString().replace("\n",
-        "\n                                                        "));
+    // consoleLogger.debug("finished RePair run ...");
+    // consoleLogger.debug("R0: " + asString(symbolizedString));
+    // consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+    // "\n "));
+    // consoleLogger.debug("digrams queue: " + digramsQueue.toString().replace("\n",
+    // "\n "));
 
     grammar.setR0String(asString(symbolizedString));
     // and since all completed, set the expanded string too

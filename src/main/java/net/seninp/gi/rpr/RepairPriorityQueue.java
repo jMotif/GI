@@ -2,6 +2,7 @@ package net.seninp.gi.rpr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Implements the priority queue for RePair. Backed by the doubly linked list of custom nodes.
@@ -23,48 +24,65 @@ public class RepairPriorityQueue {
    * @param digramRecord the digram record to place into.
    */
   public void enqueue(RepairDigramRecord digramRecord) {
+
+    // if the same key element is in the queue - something went wrong with tracking...
     if (elements.containsKey(digramRecord.str)) {
       throw new IllegalArgumentException(
           "Element with payload " + digramRecord.str + " already exists in the queue...");
     }
     else {
+
       // create a new node
       RepairQueueNode nn = new RepairQueueNode(digramRecord);
-      // place it into the queue
+
+      // place it into the queue if it's empty
       if (this.elements.isEmpty()) {
         this.head = nn;
       }
+      // if new node has lesser or equal than head frequency... this going to be the new head
+      else if (nn.getFrequency() >= this.head.getFrequency()) {
+        this.head.prev = nn;
+        nn.next = this.head;
+        this.head = nn;
+      }
+      // in all other cases find a good place in the existing queue, starting from the head
       else {
-        RepairQueueNode hp = head;
-        while (null != hp) {
-          // see how it fits with head...
-          if (nn.getFrequency() > hp.getFrequency()) {
-            // its going to be new hp ...
-            if (null == hp.prev) {
-              // i.e., head
-              this.head = nn;
-              hp.prev = nn;
-              nn.next = hp;
-            }
-            else {
-              RepairQueueNode php = hp.prev;
-              php.next = nn;
-              nn.prev = php;
-              hp.prev = nn;
-              nn.next = hp;
-            }
+        RepairQueueNode currentNode = head;
+        while (null != currentNode.next) {
+          //
+          // if current node has lesser or equal frequency... it should be after nn
+          //
+          // remember we are pointing on the second node inside this loop or onto second to tail
+          // node
+          //
+          if (nn.getFrequency() >= currentNode.getFrequency()) {
+            RepairQueueNode prevN = currentNode.prev;
+            prevN.next = nn;
+            nn.prev = prevN;
+            currentNode.prev = nn;
+            nn.next = currentNode;
             break; // the element has been placed
           }
+          currentNode = currentNode.next;
+        }
+        // check if loop was broken by condition, not by placement
+        if (null == currentNode.next) {
+          // so, currentNode points on the tail...
+          if (nn.getFrequency() >= currentNode.getFrequency()) {
+            // insert just before...
+            RepairQueueNode prevN = currentNode.prev;
+            prevN.next = nn;
+            nn.prev = prevN;
+            currentNode.prev = nn;
+            nn.next = currentNode;
+          }
           else {
-            if (null == hp.next) {
-              // we hit the tail... going to be the last element
-              hp.next = nn;
-              nn.prev = hp;
-              hp = nn;
-            }
-            hp = hp.next;
+            // or make a new tail
+            nn.prev = currentNode;
+            currentNode.next = nn;
           }
         }
+
       }
       // also save the element in the index store
       this.elements.put(nn.payload.str, nn);
@@ -143,80 +161,126 @@ public class RepairPriorityQueue {
    * @return the pointer onto updated element.
    */
   public RepairDigramRecord updateDigramFrequency(String digram, int newFreq) {
+
     // if the key exists
-    if (this.elements.containsKey(digram)) {
+    if (!this.elements.containsKey(digram)) {
+      return null;
+    }
 
-      // point to that node
-      RepairQueueNode el = elements.get(digram);
+    // get a pointer on that node
+    RepairQueueNode alteredNode = elements.get(digram);
 
-      if (newFreq < 2) {
-        // evict the element
-        removeNodeFromList(el);
-        this.elements.remove(el.payload.str);
-        return null;
+    // the trivial case
+    if (newFreq == alteredNode.payload.freq) {
+      return alteredNode.payload;
+    }
+
+    // simply evict the node if the freq is too low
+    if (2 > newFreq) {
+      removeNodeFromList(alteredNode);
+      this.elements.remove(alteredNode.payload.str);
+      return null;
+    }
+
+    // update the frequency
+    int oldFreq = alteredNode.payload.freq;
+    alteredNode.payload.freq = newFreq;
+
+    // if the list is just too damn short
+    if (1 == this.elements.size()) {
+      return alteredNode.payload;
+    }
+
+    // if we have to push the element up in the list
+    if (newFreq > oldFreq) {
+
+      // what if this is a head already?
+      if (null == alteredNode.prev) {
+        return alteredNode.payload;
       }
 
-      // if we need to update frequency
-      if (el.payload.freq != newFreq) {
+      // going up here
+      RepairQueueNode currentNode = alteredNode.prev;
+      removeNodeFromList(alteredNode);
+      alteredNode.next = null;
+      alteredNode.prev = null;
 
-        // update the frequency
-        int oldFreq = el.payload.freq;
-        el.payload.freq = newFreq;
+      while ((currentNode.payload.freq < alteredNode.payload.freq) && (null != currentNode)) {
+        currentNode = currentNode.prev;
+      }
 
-        // if the list is just too short
-        if (1 == this.elements.size()) {
-          return el.payload;
+      // we hit the head, oops... make it the new head
+      if (null == currentNode) {
+        alteredNode.next = this.head;
+        this.head.prev = alteredNode;
+        this.head = alteredNode;
+      }
+      else {
+        if (null == currentNode.next) {
+          currentNode.next = alteredNode;
+          alteredNode.prev = currentNode;
         }
+        else {
+          currentNode.next.prev = alteredNode;
+          alteredNode.next = currentNode.next;
+          currentNode.next = alteredNode;
+          alteredNode.prev = currentNode;
+        }
+      }
+    }
+    else {
 
-        // if we have to push the element up in the list
-        if (newFreq > oldFreq) {
+      // what if this is a tail already?
+      if (alteredNode.next == null) {
+        return alteredNode.payload;
+      }
 
-          // going up here
-          RepairQueueNode cp = el.prev;
-          while (null != cp && el.payload.freq > cp.payload.freq) {
-            cp = cp.prev;
+      // going down..
+      RepairQueueNode currentNode = alteredNode.next;
+      removeNodeFromList(alteredNode);
+      alteredNode.next = null;
+      alteredNode.prev = null;
+
+      while (null != currentNode.next && currentNode.payload.freq > alteredNode.payload.freq) {
+        currentNode = currentNode.next;
+      }
+
+      if (null == currentNode.next) { // we hit the tail
+        if (alteredNode.payload.freq > currentNode.payload.freq) {
+          // place before tail
+          if (this.head.equals(currentNode)) {
+            alteredNode.next = currentNode;
+            currentNode.prev = alteredNode;
+            this.head = alteredNode;
           }
-
-          if (null == cp) { // we hit the head
-            removeNodeFromList(el);
-            el.prev = null;
-            el.next = this.head;
-            this.head.prev = el;
-            this.head = el;
-          }
-          else { // place element just behind of cp
-            removeNodeFromList(el);
-            cp.next.prev = el;
-            el.next = cp.next;
-            cp.next = el;
-            el.prev = cp;
+          else {
+            alteredNode.next = currentNode;
+            alteredNode.prev = currentNode.prev;
+            currentNode.prev.next = alteredNode;
+            currentNode.prev = alteredNode;
           }
         }
         else {
-          // going down..
-          RepairQueueNode cp = el;
-          while (null != cp.next && el.payload.freq < cp.next.payload.freq) {
-            cp = cp.next;
-          }
-
-          if (null == cp.next) { // we hit the tail
-            removeNodeFromList(el);
-            el.prev = cp;
-            el.next = null;
-            cp.next = el;
-          }
-          else { // place element just behind of cp
-            removeNodeFromList(el);
-            cp.next.prev = el;
-            el.next = cp.next;
-            cp.next = el;
-            el.prev = cp;
-          }
+          currentNode.next = alteredNode;
+          alteredNode.prev = currentNode;
         }
       }
-      return el.payload;
+      else { // place element just before of cp
+        alteredNode.next = currentNode;
+        alteredNode.prev = currentNode.prev;
+        if (null == currentNode.prev) {
+          // i.e. we are in da head...
+          this.head = alteredNode;
+        }
+        else {
+          currentNode.prev.next = alteredNode;
+          currentNode.prev = alteredNode;
+        }
+      }
     }
-    return null;
+
+    return alteredNode.payload;
+
   }
 
   /**
@@ -321,6 +385,73 @@ public class RepairPriorityQueue {
      */
     public int getFrequency() {
       return this.payload.freq;
+    }
+
+    @Override
+    public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + getOuterType().hashCode();
+      result = prime * result + ((next == null) ? 0 : next.hashCode());
+      result = prime * result + ((payload == null) ? 0 : payload.hashCode());
+      result = prime * result + ((prev == null) ? 0 : prev.hashCode());
+      return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+      if (this == obj)
+        return true;
+      if (obj == null)
+        return false;
+      if (getClass() != obj.getClass())
+        return false;
+      RepairQueueNode other = (RepairQueueNode) obj;
+      if (!getOuterType().equals(other.getOuterType()))
+        return false;
+      if (next == null) {
+        if (other.next != null)
+          return false;
+      }
+      else if (!next.equals(other.next))
+        return false;
+      if (payload == null) {
+        if (other.payload != null)
+          return false;
+      }
+      else if (!payload.equals(other.payload))
+        return false;
+      if (prev == null) {
+        if (other.prev != null)
+          return false;
+      }
+      else if (!prev.equals(other.prev))
+        return false;
+      return true;
+    }
+
+    private RepairPriorityQueue getOuterType() {
+      return RepairPriorityQueue.this;
+    }
+
+  }
+
+  public void runCheck() {
+
+    HashSet<String> keys = new HashSet<String>();
+    for (String s : this.elements.keySet()) {
+      keys.add(s);
+    }
+
+    RepairQueueNode hp = this.head;
+    while (null != hp) {
+      String str = hp.payload.str;
+      keys.remove(str);
+      hp = hp.next;
+    }
+    if (!(keys.isEmpty())) {
+      System.out.println(keys);
+      throw new RuntimeException("tracking arror here");
     }
 
   }
