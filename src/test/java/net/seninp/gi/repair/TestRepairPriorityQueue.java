@@ -179,45 +179,45 @@ public class TestRepairPriorityQueue {
     // element with KEY3 goes to head
     //
     el = pq.get(KEY3);
-    System.out.println(pq);
+    // System.out.println(pq);
     pq.updateDigramFrequency(el.getDigram(), 18);
     el = pq.peek();
     assertTrue("testing the enqueue & dequeue operations", KEY3.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 18, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // element with KEY1 goes to tail
     //
-    System.out.println(pq);
+    // System.out.println(pq);
     el = pq.get(KEY1);
     pq.updateDigramFrequency(el.getDigram(), 3);
     ArrayList<RepairDigramRecord> arr = pq.toList();
     el = arr.get(arr.size() - 1);
     assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // element with KEY5 (fff ggg) go two places up
     //
-    System.out.println(pq);
+    // System.out.println(pq);
     el = pq.get(KEY5);
     pq.updateDigramFrequency(el.getDigram(), 17);
     arr = pq.toList();
     el = arr.get(1);
     assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 17, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // element with KEY5 (fff ggg) go two places down
     //
-    System.out.println(pq);
+    // System.out.println(pq);
     el = pq.get(KEY5);
     pq.updateDigramFrequency(el.getDigram(), 4);
     arr = pq.toList();
     el = arr.get(3);
     assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 4, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // move a head element down
     //
@@ -227,7 +227,7 @@ public class TestRepairPriorityQueue {
     el = arr.get(4);
     assertTrue("testing the enqueue & dequeue operations", KEY3.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 3, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // move a tail element up
     //
@@ -237,7 +237,7 @@ public class TestRepairPriorityQueue {
     el = arr.get(1);
     assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
     assertEquals("testing the enqueue & dequeue operations", 12, el.getFrequency());
-    System.out.println(pq);
+    // System.out.println(pq);
 
     // check that KEY1 gets evicted
     //
@@ -246,7 +246,7 @@ public class TestRepairPriorityQueue {
     assertNull("testing the enqueue & dequeue operations", el);
     assertNull("testing the enqueue & dequeue operations", pq.get(KEY1));
     assertEquals("testing the enqueue & dequeue operations", 4, pq.size());
-    System.out.println(pq);
+    // System.out.println(pq);
 
   }
 
