@@ -72,14 +72,11 @@ I've implemented RePair from scratch and it uses the same [GrammaRules](https://
 which yields: 	
 
 	R0 -> R2 XXX R2 
-	R1 -> abc abc  : abc abc, [0, 4]
-	R2 -> R1 cba   : abc abc cba, [0, 4]
+        R1 -> abc cba  : abc cba, [1, 5]
+        R2 -> abc R1  : abc abc cba, [0, 4]
 
 
-Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications is high and my implementation doesn't scale well as suggested by the plot below.
-
-	
-![Threaded RePair performance](https://raw.githubusercontent.com/jMotif/GI/master/src/RCode/profiling/profiling.png)
+Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications and synchronization was the majot showstopper, so the current *new* implementation is single-threaded (but you can still get the parallel one tagged "old_repair").
 
 ## Made with Aloha!
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
