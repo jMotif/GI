@@ -4,7 +4,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
-import net.seninp.gi.rpr.NewRepair;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;

@@ -3,9 +3,8 @@ package net.seninp.gi.repair;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import net.seninp.gi.logic.GrammarRules;
-import net.seninp.gi.rpr.NewRepair;
 
-public class TestPaper {
+public class TestRepairPaperGrammar {
 
   private static final String TEST_STRING = "abc abc cba cba bac XXX abc abc cba cba bac";
 

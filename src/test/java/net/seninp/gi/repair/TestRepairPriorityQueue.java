@@ -7,8 +7,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import org.junit.Test;
-import net.seninp.gi.rpr.RepairDigramRecord;
-import net.seninp.gi.rpr.RepairPriorityQueue;
 
 public class TestRepairPriorityQueue {
 
@@ -31,10 +29,11 @@ public class TestRepairPriorityQueue {
   private RepairDigramRecord dr5 = new RepairDigramRecord(KEY5, FREQ5);
 
   @Test
-  public void testEnqueueDequeue() {
+  public void testGenericEnqueueDequeue() {
 
     RepairPriorityQueue pq = new RepairPriorityQueue();
     assertEquals("testing the enqueue & dequeue operations", 0, pq.size());
+    assertNull("testing the enqueue & dequeue operations", pq.peek());
 
     pq.enqueue(dr1);
     assertEquals("testing the enqueue & dequeue operations", 1, pq.size());
@@ -84,7 +83,7 @@ public class TestRepairPriorityQueue {
     el = pq.dequeue();
     assertSame("testing the enqueue & dequeue operations", el, dr4);
     assertEquals("testing the enqueue & dequeue operations", 1, pq.size());
-    
+
     el = pq.dequeue();
     el = pq.dequeue();
     assertNull("testing the enqueue & dequeue operations", el);
@@ -92,17 +91,90 @@ public class TestRepairPriorityQueue {
   }
 
   @Test
-  public void testQueueSort() {
+  public void testEnqueueFromHead() {
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+    pq.enqueue(dr5);
+    assertEquals("testing the enqueue & dequeue operations", dr5, pq.peek());
+    pq.enqueue(dr4);
+    assertEquals("testing the enqueue & dequeue operations", dr4, pq.peek());
+    pq.enqueue(dr1);
+    assertEquals("testing the enqueue & dequeue operations", dr1, pq.peek());
+    pq.enqueue(dr3);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    pq.enqueue(dr2);
+    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+  }
+
+  @Test
+  public void testEnqueueFromTail() {
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+
+    pq.enqueue(dr2);
+    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+
+    pq.enqueue(dr3);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+
+    pq.enqueue(dr1);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    ArrayList<RepairDigramRecord> arr = pq.toList();
+    RepairDigramRecord el = arr.get(2);
+    assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
+
+    pq.enqueue(dr4);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    arr = pq.toList();
+    el = arr.get(3);
+    assertTrue("testing the enqueue & dequeue operations", KEY4.equalsIgnoreCase(el.getDigram()));
+
+    pq.enqueue(dr5);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    arr = pq.toList();
+    el = arr.get(4);
+    assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.getDigram()));
+  }
+
+  @Test
+  public void testPriorityQueueUpdate() {
+
+    // create the priority queue using the dqtq
+    //
     RepairPriorityQueue pq = new RepairPriorityQueue();
     pq.enqueue(dr1);
+    //
+    // test trivial update
+    RepairDigramRecord el = pq.updateDigramFrequency(KEY1, FREQ1);
+    assertEquals("testing queue sorting", el.getFrequency(), FREQ1);
+
+    el = pq.updateDigramFrequency(KEY1, 75);
+    assertEquals("testing queue sorting", el.getFrequency(), 75);
+    pq.updateDigramFrequency(KEY1, FREQ1);
+    //
     pq.enqueue(dr2);
     pq.enqueue(dr3);
     pq.enqueue(dr4);
     pq.enqueue(dr5);
 
-    RepairDigramRecord el = pq.get(KEY3);
+    // element retrieval test
+    //
+    el = pq.get(KEY3);
     assertSame("testing queue sorting", el, dr3);
     assertNull(pq.get("zhaba baba"));
+
+    // check the trivial update
+    //
+    el = pq.updateDigramFrequency(KEY3, FREQ3);
+    assertSame("testing queue sorting", el, dr3);
+
+    // make the head hit the ceiling
+    //
+    el = pq.peek();
+    assertSame("testing queue sorting", el, dr3);
+    el = pq.updateDigramFrequency(KEY3, Integer.MAX_VALUE);
+
+    el = pq.peek();
+    assertSame("testing queue sorting", el, dr3);
+    el = pq.updateDigramFrequency(KEY3, FREQ3);
 
     // element with KEY3 goes to head
     //

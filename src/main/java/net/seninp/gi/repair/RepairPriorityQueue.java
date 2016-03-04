@@ -1,8 +1,7 @@
-package net.seninp.gi.rpr;
+package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Implements the priority queue for RePair. Backed by the doubly linked list of custom nodes.
@@ -194,18 +193,17 @@ public class RepairPriorityQueue {
     // if we have to push the element up in the list
     if (newFreq > oldFreq) {
 
-      // what if this is a head already?
-      if (null == alteredNode.prev) {
-        return alteredNode.payload;
-      }
-
       // going up here
       RepairQueueNode currentNode = alteredNode.prev;
+      if (null == alteredNode.prev) {
+        currentNode = alteredNode.next;
+      }
+
       removeNodeFromList(alteredNode);
       alteredNode.next = null;
       alteredNode.prev = null;
 
-      while ((currentNode.payload.freq < alteredNode.payload.freq) && (null != currentNode)) {
+      while ((null != currentNode) && (currentNode.payload.freq < alteredNode.payload.freq)) {
         currentNode = currentNode.prev;
       }
 
@@ -436,23 +434,24 @@ public class RepairPriorityQueue {
 
   }
 
-  public void runCheck() {
+  // public void runCheck() {
+  //
+  // HashSet<String> keys = new HashSet<String>();
+  // for (String s : this.elements.keySet()) {
+  // keys.add(s);
+  // }
+  //
+  // RepairQueueNode hp = this.head;
+  // while (null != hp) {
+  // String str = hp.payload.str;
+  // keys.remove(str);
+  // hp = hp.next;
+  // }
+  // if (!(keys.isEmpty())) {
+  // System.out.println(keys);
+  // throw new RuntimeException("tracking arror here");
+  // }
+  //
+  // }
 
-    HashSet<String> keys = new HashSet<String>();
-    for (String s : this.elements.keySet()) {
-      keys.add(s);
-    }
-
-    RepairQueueNode hp = this.head;
-    while (null != hp) {
-      String str = hp.payload.str;
-      keys.remove(str);
-      hp = hp.next;
-    }
-    if (!(keys.isEmpty())) {
-      System.out.println(keys);
-      throw new RuntimeException("tracking arror here");
-    }
-
-  }
 }

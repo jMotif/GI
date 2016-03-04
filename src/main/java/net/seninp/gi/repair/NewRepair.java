@@ -1,4 +1,4 @@
-package net.seninp.gi.rpr;
+package net.seninp.gi.repair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,11 +8,6 @@ import java.util.StringTokenizer;
 import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import net.seninp.gi.repair.RePairGrammar;
-import net.seninp.gi.repair.RePairGuard;
-import net.seninp.gi.repair.RePairRule;
-import net.seninp.gi.repair.RePairSymbol;
-import net.seninp.gi.repair.RePairSymbolRecord;
 
 /**
  * Improved repair implementation.
@@ -334,13 +329,13 @@ public class NewRepair {
 
   }
 
-  private static String printHash(HashMap<String, ArrayList<Integer>> digramsTable) {
-    StringBuffer sb = new StringBuffer();
-    for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
-      sb.append(e.getKey()).append(" -> ").append(e.getValue().toString()).append("\n");
-    }
-    return sb.delete(sb.length() - 1, sb.length()).toString();
-  }
+  // private static String printHash(HashMap<String, ArrayList<Integer>> digramsTable) {
+  // StringBuffer sb = new StringBuffer();
+  // for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
+  // sb.append(e.getKey()).append(" -> ").append(e.getValue().toString()).append("\n");
+  // }
+  // return sb.delete(sb.length() - 1, sb.length()).toString();
+  // }
 
   private static String asString(ArrayList<RePairSymbolRecord> symbolizedString) {
     StringBuffer res = new StringBuffer();
