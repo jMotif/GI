@@ -106,6 +106,19 @@ public class TestRepairPriorityQueue {
   }
 
   @Test
+  public void testEnqueueFromTailExceptOne() {
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+    pq.enqueue(dr2);
+    pq.enqueue(dr3);
+    pq.enqueue(dr1);
+    pq.enqueue(dr5);
+    pq.enqueue(dr4);
+    ArrayList<RepairDigramRecord> arr = pq.toList();
+    RepairDigramRecord el = arr.get(arr.size() - 2);
+    assertTrue("testing the enqueue & dequeue operations", KEY4.equalsIgnoreCase(el.getDigram()));
+  }
+
+  @Test
   public void testEnqueueFromTail() {
     RepairPriorityQueue pq = new RepairPriorityQueue();
 
