@@ -92,8 +92,7 @@ public class TestRepairPriorityQueue {
   }
 
   @Test
-  public void testEnqueueDequeue2() {
-
+  public void testEnqueueFromHead() {
     RepairPriorityQueue pq = new RepairPriorityQueue();
     pq.enqueue(dr5);
     assertEquals("testing the enqueue & dequeue operations", dr5, pq.peek());
@@ -105,6 +104,35 @@ public class TestRepairPriorityQueue {
     assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
     pq.enqueue(dr2);
     assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+  }
+
+  @Test
+  public void testEnqueueFromTail() {
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+
+    pq.enqueue(dr2);
+    assertEquals("testing the enqueue & dequeue operations", dr2, pq.peek());
+
+    pq.enqueue(dr3);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+
+    pq.enqueue(dr1);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    ArrayList<RepairDigramRecord> arr = pq.toList();
+    RepairDigramRecord el = arr.get(2);
+    assertTrue("testing the enqueue & dequeue operations", KEY1.equalsIgnoreCase(el.getDigram()));
+
+    pq.enqueue(dr4);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    arr = pq.toList();
+    el = arr.get(3);
+    assertTrue("testing the enqueue & dequeue operations", KEY4.equalsIgnoreCase(el.getDigram()));
+
+    pq.enqueue(dr5);
+    assertEquals("testing the enqueue & dequeue operations", dr3, pq.peek());
+    arr = pq.toList();
+    el = arr.get(4);
+    assertTrue("testing the enqueue & dequeue operations", KEY5.equalsIgnoreCase(el.getDigram()));
   }
 
   @Test
