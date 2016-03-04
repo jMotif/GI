@@ -1,6 +1,7 @@
 package net.seninp.gi.repair;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
@@ -154,6 +155,17 @@ public class TestRepairPriorityQueue {
   }
 
   @Test
+  public void testPrioritizeTwo() {
+    RepairPriorityQueue pq = new RepairPriorityQueue();
+    pq.enqueue(dr2);
+    pq.enqueue(dr1);
+    pq.updateDigramFrequency(KEY2, 2);
+    ArrayList<RepairDigramRecord> arr = pq.toList();
+    RepairDigramRecord el = arr.get(arr.size() - 1);
+    assertTrue("testing the enqueue & dequeue operations", KEY2.equalsIgnoreCase(el.getDigram()));
+  }
+
+  @Test
   public void testPriorityQueueUpdate() {
 
     // create the priority queue using the dqtq
@@ -275,6 +287,8 @@ public class TestRepairPriorityQueue {
     assertNull("testing the enqueue & dequeue operations", pq.get(KEY1));
     assertEquals("testing the enqueue & dequeue operations", 4, pq.size());
     // System.out.println(pq);
+
+    assertNotNull("test toString", pq.toString());
 
   }
 
