@@ -143,14 +143,37 @@ public class TestRepairPriorityQueue {
     //
     RepairPriorityQueue pq = new RepairPriorityQueue();
     pq.enqueue(dr1);
+    //
+    // test trivial update
+    RepairDigramRecord el = pq.updateDigramFrequency(KEY1, 75);
+    assertEquals("testing queue sorting", el.getFrequency(), 75);
+    pq.updateDigramFrequency(KEY1, FREQ1);
+    //
     pq.enqueue(dr2);
     pq.enqueue(dr3);
     pq.enqueue(dr4);
     pq.enqueue(dr5);
 
-    RepairDigramRecord el = pq.get(KEY3);
+    // element retrieval test
+    //
+    el = pq.get(KEY3);
     assertSame("testing queue sorting", el, dr3);
     assertNull(pq.get("zhaba baba"));
+
+    // check the trivial update
+    //
+    el = pq.updateDigramFrequency(KEY3, FREQ3);
+    assertSame("testing queue sorting", el, dr3);
+
+    // make the head hit the ceiling
+    //
+    el = pq.peek();
+    assertSame("testing queue sorting", el, dr3);
+    el = pq.updateDigramFrequency(KEY3, Integer.MAX_VALUE);
+
+    el = pq.peek();
+    assertSame("testing queue sorting", el, dr3);
+    el = pq.updateDigramFrequency(KEY3, FREQ3);
 
     // element with KEY3 goes to head
     //

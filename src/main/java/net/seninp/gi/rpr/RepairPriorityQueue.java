@@ -193,18 +193,17 @@ public class RepairPriorityQueue {
     // if we have to push the element up in the list
     if (newFreq > oldFreq) {
 
-      // what if this is a head already?
-      if (null == alteredNode.prev) {
-        return alteredNode.payload;
-      }
-
       // going up here
       RepairQueueNode currentNode = alteredNode.prev;
+      if (null == alteredNode.prev) {
+        currentNode = alteredNode.next;
+      }
+
       removeNodeFromList(alteredNode);
       alteredNode.next = null;
       alteredNode.prev = null;
 
-      while ((currentNode.payload.freq < alteredNode.payload.freq) && (null != currentNode)) {
+      while ((null != currentNode) && (currentNode.payload.freq < alteredNode.payload.freq)) {
         currentNode = currentNode.prev;
       }
 
