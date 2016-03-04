@@ -31,10 +31,11 @@ public class TestRepairPriorityQueue {
   private RepairDigramRecord dr5 = new RepairDigramRecord(KEY5, FREQ5);
 
   @Test
-  public void testEnqueueDequeue1() {
+  public void testGenericEnqueueDequeue() {
 
     RepairPriorityQueue pq = new RepairPriorityQueue();
     assertEquals("testing the enqueue & dequeue operations", 0, pq.size());
+    assertNull("testing the enqueue & dequeue operations", pq.peek());
 
     pq.enqueue(dr1);
     assertEquals("testing the enqueue & dequeue operations", 1, pq.size());
@@ -136,7 +137,10 @@ public class TestRepairPriorityQueue {
   }
 
   @Test
-  public void testQueueSort() {
+  public void testPriorityQueueUpdate() {
+
+    // create the priority queue using the dqtq
+    //
     RepairPriorityQueue pq = new RepairPriorityQueue();
     pq.enqueue(dr1);
     pq.enqueue(dr2);
