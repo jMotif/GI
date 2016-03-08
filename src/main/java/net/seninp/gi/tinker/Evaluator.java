@@ -10,8 +10,6 @@ import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
-import net.seninp.gi.sequitur.SAXRule;
-import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
@@ -37,6 +35,10 @@ public class Evaluator {
   private static final String TAB = "\t";
 
   private static final String CR = "\n";
+
+  // private static final String THE_R = "R";
+  //
+  // private static final String SPACE = " ";
 
   private static TSProcessor tp = new TSProcessor();
   private static NormalAlphabet na = new NormalAlphabet();
@@ -85,6 +87,31 @@ public class Evaluator {
 
           GrammarRules rules = grammar.toGrammarRulesData();
 
+          // String resultString = new String(grammar.getR0CompressedString());
+          //
+          // int currentSearchStart = resultString.indexOf(THE_R);
+          // while (currentSearchStart >= 0) {
+          // int spaceIdx = resultString.indexOf(SPACE, currentSearchStart);
+          // String ruleName = resultString.substring(currentSearchStart, spaceIdx + 1);
+          // Integer ruleId = Integer.valueOf(ruleName.substring(1, ruleName.length() - 1));
+          // RePairRule rule = grammar.getRules().get(ruleId);
+          // if (rule != null) {
+          // if (rule.toExpandedRuleString()
+          // .charAt(rule.toExpandedRuleString().length() - 1) == ' ') {
+          // resultString = resultString.replaceAll(ruleName, rule.toExpandedRuleString());
+          // }
+          // else {
+          // resultString = resultString.replaceAll(ruleName,
+          // rule.toExpandedRuleString() + SPACE);
+          // }
+          // }
+          // currentSearchStart = resultString.indexOf("R", spaceIdx);
+          // }
+          //
+          // if (!saxData.getSAXString(SPACE).equalsIgnoreCase(resultString)) {
+          // throw new RuntimeErrorException(null, "Grammar inference failed...");
+          // }
+
           GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
 
           // sequitur section
@@ -125,9 +152,7 @@ public class Evaluator {
         }
       }
     }
-
     bw.close();
-
   }
 
 }

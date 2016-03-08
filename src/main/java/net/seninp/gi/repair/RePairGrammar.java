@@ -42,6 +42,10 @@ public class RePairGrammar {
   public void setR0String(String str) {
     this.r0String = str;
   }
+  
+  public String getR0CompressedString() {
+    return this.r0String;
+  }
 
   public void setR0ExpnadedString(String str) {
     this.r0ExpandedString = str;
