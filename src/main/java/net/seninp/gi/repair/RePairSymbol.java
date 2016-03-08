@@ -1,7 +1,6 @@
 package net.seninp.gi.repair;
 
 import java.util.Arrays;
-import net.seninp.jmotif.sax.datastructure.SAXRecord;
 
 /**
  * The symbol -- which essentially is a token.
@@ -27,18 +26,6 @@ public class RePairSymbol {
   public RePairSymbol() {
     super();
     this.stringPosition = null;
-  }
-
-  /**
-   * Constructor.
-   * 
-   * @param r the SAX record to use for the symbol construction.
-   * @param stringPosition the position of the symbol in the string.
-   */
-  public RePairSymbol(SAXRecord r, Integer stringPosition) {
-    super();
-    this.string = Arrays.copyOf(r.getPayload(), r.getPayload().length);
-    this.stringPosition = stringPosition;
   }
 
   /**

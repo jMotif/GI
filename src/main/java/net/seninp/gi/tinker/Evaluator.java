@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.repair.RePairFactory;
+import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.gi.rulepruner.RulePrunerFactory;
 import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
@@ -29,6 +31,7 @@ public class Evaluator {
       720, 740, 760, 780, 800, 820, 840, 860, 880, 900 };
 
   private static final int[] PAAS = { 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30 };
+
   private static final int[] ALPHABETS = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 12 };
 
   private static final String TAB = "\t";
@@ -54,7 +57,7 @@ public class Evaluator {
     double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
 
     if ("300_signal1".equalsIgnoreCase(dataset) || "318_signal1".equalsIgnoreCase(dataset)) {
-      series = Arrays.copyOfRange(series, 0, 30000);
+      series = Arrays.copyOfRange(series, 0, 100000);
     }
 
     ArrayList<Integer> wins = new ArrayList<Integer>();
@@ -76,23 +79,23 @@ public class Evaluator {
 
           // commented out repair section
           //
-          // RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
-          // grammar.expandRules();
-          // grammar.buildIntervals(saxData, series, w);
-          //
-          // GrammarRules rules = grammar.toGrammarRulesData();
-          //
-          // GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
+          RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
+          grammar.expandRules();
+          grammar.buildIntervals(saxData, series, w);
+
+          GrammarRules rules = grammar.toGrammarRulesData();
+
+          GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
 
           // sequitur section
           //
-          String discretizedTS = saxData.getSAXString(" ");
-
-          SAXRule grammar = SequiturFactory.runSequitur(discretizedTS);
-          GrammarRules rules = grammar.toGrammarRulesData();
-          SequiturFactory.updateRuleIntervals(rules, saxData, true, series, w, p);
-
-          GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
+          // String discretizedTS = saxData.getSAXString(" ");
+          //
+          // SAXRule grammar = SequiturFactory.runSequitur(discretizedTS);
+          // GrammarRules rules = grammar.toGrammarRulesData();
+          // SequiturFactory.updateRuleIntervals(rules, saxData, true, series, w, p);
+          //
+          // GrammarRules prunedRules = RulePrunerFactory.performPruning(series, rules);
 
           StringBuilder sb = new StringBuilder();
 

@@ -23,7 +23,7 @@ public class RepairPriorityQueue {
    * @param digramRecord the digram record to place into.
    */
   public void enqueue(RepairDigramRecord digramRecord) {
-
+//    System.out.println("before == " + this.toString());
     // if the same key element is in the queue - something went wrong with tracking...
     if (elements.containsKey(digramRecord.str)) {
       throw new IllegalArgumentException(
@@ -38,7 +38,7 @@ public class RepairPriorityQueue {
       if (this.elements.isEmpty()) {
         this.head = nn;
       }
-      // if new node has lesser or equal than head frequency... this going to be the new head
+      // if new node has higher than or equal to the head frequency... this going to be the new head
       else if (nn.getFrequency() >= this.head.getFrequency()) {
         this.head.prev = nn;
         nn.next = this.head;
@@ -48,10 +48,9 @@ public class RepairPriorityQueue {
       else {
         RepairQueueNode currentNode = head;
         while (null != currentNode.next) {
-          //
-          // if current node has lesser or equal frequency... it should be after nn
-          //
-          // remember we are pointing on the second node inside this loop or onto second to tail
+          // the intent is to slide down the list finding a place at new node is greater than a node
+          // a tracking pointer points to...
+          // ABOVE we just checked that at this loop start that the current node is greater than new
           // node
           //
           if (nn.getFrequency() >= currentNode.getFrequency()) {
@@ -64,7 +63,7 @@ public class RepairPriorityQueue {
           }
           currentNode = currentNode.next;
         }
-        // check if loop was broken by condition, not by placement
+        // check if loop was broken by the TAIL condition, not by placement
         if (null == currentNode.next) {
           // so, currentNode points on the tail...
           if (nn.getFrequency() >= currentNode.getFrequency()) {
@@ -85,7 +84,9 @@ public class RepairPriorityQueue {
       }
       // also save the element in the index store
       this.elements.put(nn.payload.str, nn);
+      
     }
+//    System.out.println("before == " + this.toString());
   }
 
   /**
@@ -101,6 +102,7 @@ public class RepairPriorityQueue {
         this.head.prev = null;
       }
       this.elements.remove(el.str);
+//      System.out.println(this);
       return el;
     }
     return null;
@@ -178,6 +180,7 @@ public class RepairPriorityQueue {
     if (2 > newFreq) {
       removeNodeFromList(alteredNode);
       this.elements.remove(alteredNode.payload.str);
+//      System.out.println(this);
       return null;
     }
 
@@ -187,6 +190,7 @@ public class RepairPriorityQueue {
 
     // if the list is just too damn short
     if (1 == this.elements.size()) {
+//      System.out.println(this);
       return alteredNode.payload;
     }
 
@@ -230,6 +234,12 @@ public class RepairPriorityQueue {
 
       // what if this is a tail already?
       if (alteredNode.next == null) {
+//        System.out.println(this);
+        return alteredNode.payload;
+      }
+      // or if we got to stay in the head
+      if (this.head == alteredNode && alteredNode.payload.freq >= this.head.next.payload.freq) {
+//        System.out.println(this);
         return alteredNode.payload;
       }
 
@@ -276,7 +286,7 @@ public class RepairPriorityQueue {
         }
       }
     }
-
+//    System.out.println(this);
     return alteredNode.payload;
 
   }
@@ -346,7 +356,22 @@ public class RepairPriorityQueue {
     int nodeCounter = 0;
     while (null != hp) {
       sb.append(nodeCounter).append(": ").append(hp.payload.str).append(", ")
-          .append(hp.payload.freq).append("\n");
+          .append(hp.payload.freq);
+      sb.append("|");
+      if (null == hp.prev) {
+        sb.append("null");
+      }
+      else {
+        sb.append("ok");
+      }
+      sb.append("|");
+      if (null == hp.next) {
+        sb.append("null");
+      }
+      else {
+        sb.append("ok");
+      }
+      sb.append("|\n");
       hp = hp.next;
       nodeCounter++;
     }
