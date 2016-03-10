@@ -4,15 +4,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Locale;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.beust.jcommander.JCommander;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.StackTrace;
 
@@ -42,17 +39,9 @@ public class RulePrunerPrinter {
   private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,grammarRules,"
       + "compressedGrammarSize,prunedRules,isCovered,coverage\n";
 
-  // logging stuff
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(RulePrunerPrinter.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-    dfPercent.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-    dfSize.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(RulePrunerPrinter.class);
 
   /**
    * Main runnable.

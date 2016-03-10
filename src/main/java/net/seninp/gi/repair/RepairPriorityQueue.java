@@ -23,7 +23,7 @@ public class RepairPriorityQueue {
    * @param digramRecord the digram record to place into.
    */
   public void enqueue(RepairDigramRecord digramRecord) {
-//    System.out.println("before == " + this.toString());
+    // System.out.println("before == " + this.toString());
     // if the same key element is in the queue - something went wrong with tracking...
     if (elements.containsKey(digramRecord.str)) {
       throw new IllegalArgumentException(
@@ -84,9 +84,9 @@ public class RepairPriorityQueue {
       }
       // also save the element in the index store
       this.elements.put(nn.payload.str, nn);
-      
+
     }
-//    System.out.println("before == " + this.toString());
+    // System.out.println("before == " + this.toString());
   }
 
   /**
@@ -102,7 +102,7 @@ public class RepairPriorityQueue {
         this.head.prev = null;
       }
       this.elements.remove(el.str);
-//      System.out.println(this);
+      // System.out.println(this);
       return el;
     }
     return null;
@@ -180,7 +180,7 @@ public class RepairPriorityQueue {
     if (2 > newFreq) {
       removeNodeFromList(alteredNode);
       this.elements.remove(alteredNode.payload.str);
-//      System.out.println(this);
+      // System.out.println(this);
       return null;
     }
 
@@ -190,7 +190,7 @@ public class RepairPriorityQueue {
 
     // if the list is just too damn short
     if (1 == this.elements.size()) {
-//      System.out.println(this);
+      // System.out.println(this);
       return alteredNode.payload;
     }
 
@@ -234,12 +234,12 @@ public class RepairPriorityQueue {
 
       // what if this is a tail already?
       if (alteredNode.next == null) {
-//        System.out.println(this);
+        // System.out.println(this);
         return alteredNode.payload;
       }
       // or if we got to stay in the head
       if (this.head == alteredNode && alteredNode.payload.freq >= this.head.next.payload.freq) {
-//        System.out.println(this);
+        // System.out.println(this);
         return alteredNode.payload;
       }
 
@@ -286,7 +286,7 @@ public class RepairPriorityQueue {
         }
       }
     }
-//    System.out.println(this);
+    // System.out.println(this);
     return alteredNode.payload;
 
   }

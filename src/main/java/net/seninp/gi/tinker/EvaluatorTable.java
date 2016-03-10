@@ -14,23 +14,9 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 public class EvaluatorTable {
 
-  private static final String[] DATASETS = { 
-      "gps_track", 
-      "dutch_power_demand", 
-      "ecg0606",
-      "chfdbchf15",
-      "stdb_308",
-      "mitdbx_108",
-      "300_signal1", 
-      "318_signal1",
-      "insect",
-      "nprs43", 
-      "nprs44",
-      "TEK14", 
-      "TEK16", 
-      "TEK17",
-      "ann_gun_CentroidA1",
-      "winding_col" };
+  private static final String[] DATASETS = { "gps_track", "dutch_power_demand", "ecg0606",
+      "chfdbchf15", "stdb_308", "mitdbx_108", "300_signal1", "318_signal1", "insect", "nprs43",
+      "nprs44", "TEK14", "TEK16", "TEK17", "ann_gun_CentroidA1", "winding_col" };
 
   private static final String TAB = "\t";
 
@@ -54,7 +40,7 @@ public class EvaluatorTable {
         + "pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n";
 
     double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
-    
+
     if ("300_signal1".equalsIgnoreCase(dataset) || "318_signal1".equalsIgnoreCase(dataset)) {
       series = Arrays.copyOfRange(series, 0, 30000);
     }

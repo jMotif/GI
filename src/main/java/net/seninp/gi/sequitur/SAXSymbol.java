@@ -65,14 +65,14 @@ public abstract class SAXSymbol {
    */
   public static void join(SAXSymbol left, SAXSymbol right) {
 
-    // System.out.println("      performing the join of " + getPayload(left) + " and "
+    // System.out.println(" performing the join of " + getPayload(left) + " and "
     // + getPayload(right));
 
     // check for an OLD digram existence - i.e. left must have a next symbol
     // if .n exists then we are joining TERMINAL symbols within the string, and must clean-up the
     // old digram
     if (left.n != null) {
-      // System.out.println("        " + getPayload(left)
+      // System.out.println(" " + getPayload(left)
       // + " use to be in the digram table, cleaning up");
       left.deleteDigram();
     }
@@ -95,15 +95,15 @@ public abstract class SAXSymbol {
   public void insertAfter(SAXSymbol toInsert) {
 
     // if (this.isGuard()) {
-    // System.out.println("    this is Guard of the rule " + ((SAXGuard) this).r.ruleIndex
+    // System.out.println(" this is Guard of the rule " + ((SAXGuard) this).r.ruleIndex
     // + " inserting " + toInsert.value + " after ");
     // }
     // else if (this.isNonTerminal()) {
-    // System.out.println("    this is non-terminal representing the rule "
+    // System.out.println(" this is non-terminal representing the rule "
     // + ((SAXNonTerminal) this).r.ruleIndex + " inserting " + toInsert.value + " after ");
     // }
     // else {
-    // System.out.println("    this is symbol " + this.value + " inserting " + toInsert.value
+    // System.out.println(" this is symbol " + this.value + " inserting " + toInsert.value
     // + " after ");
     // }
 
@@ -157,7 +157,7 @@ public abstract class SAXSymbol {
    */
   public boolean check() {
 
-    // System.out.println("      performing CHECK on " + getPayload(this));
+    // System.out.println(" performing CHECK on " + getPayload(this));
 
     // System.out.println("[sequitur debug] *calling check() on* " + this.value + ", n isGuard: "
     // + n.isGuard());
@@ -178,7 +178,7 @@ public abstract class SAXSymbol {
       // + this.n.value + ")? NO. Checking in.");
       // found = theDigrams.put(this, this);
       theDigrams.put(this, this);
-      // System.out.println("      *** Digrams now: " + makeDigramsTable());
+      // System.out.println(" *** Digrams now: " + makeDigramsTable());
       // System.out.println("[sequitur debug] *digrams* " + hash2String());
       return false;
     }
@@ -292,7 +292,7 @@ public abstract class SAXSymbol {
 
         // rule.assignLevel();
 
-        // System.out.println("      *** Digrams now: " + makeDigramsTable());
+        // System.out.println(" *** Digrams now: " + makeDigramsTable());
 
       }
       catch (CloneNotSupportedException c) {

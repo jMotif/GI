@@ -7,56 +7,51 @@ import net.seninp.gi.logic.SameLengthMotifs;
 
 public class ClusterRuleFactory {
 
-	/**
-	 * Performs clustering.
-	 * 
-	 * @param ts
-	 *            the input time series.
-	 * @param grammarRules
-	 *            the grammar.
-	 * @return pruned ruleset.
-	 */
-	public static ArrayList<SameLengthMotifs> performPruning(double[] ts,
-			GrammarRules grammarRules, double thresholdLength,
-			double thresholdCom, double fractionTopDist) {
+  /**
+   * Performs clustering.
+   * 
+   * @param ts the input time series.
+   * @param grammarRules the grammar.
+   * @return pruned ruleset.
+   */
+  public static ArrayList<SameLengthMotifs> performPruning(double[] ts, GrammarRules grammarRules,
+      double thresholdLength, double thresholdCom, double fractionTopDist) {
 
-		RuleOrganizer ro = new RuleOrganizer();
+    RuleOrganizer ro = new RuleOrganizer();
 
-		ArrayList<SameLengthMotifs> allClassifiedMotifs = ro.classifyMotifs(
-				thresholdLength, grammarRules);
+    ArrayList<SameLengthMotifs> allClassifiedMotifs = ro.classifyMotifs(thresholdLength,
+        grammarRules);
 
-		allClassifiedMotifs = ro.removeOverlappingInSimiliar(
-				allClassifiedMotifs, grammarRules, ts, thresholdCom);
+    allClassifiedMotifs = ro.removeOverlappingInSimiliar(allClassifiedMotifs, grammarRules, ts,
+        thresholdCom);
 
-		ArrayList<SameLengthMotifs> newAllClassifiedMotifs = ro
-				.refinePatternsByClustering(grammarRules, ts,
-						allClassifiedMotifs, fractionTopDist);
-		
-		return newAllClassifiedMotifs;				
-	}
+    ArrayList<SameLengthMotifs> newAllClassifiedMotifs = ro.refinePatternsByClustering(grammarRules,
+        ts, allClassifiedMotifs, fractionTopDist);
 
-	public static ArrayList<PackedRuleRecord> getPackedRule(
-			ArrayList<SameLengthMotifs> newAllClassifiedMotifs) {
+    return newAllClassifiedMotifs;
+  }
 
-		ArrayList<PackedRuleRecord> arrPackedRuleRecords = new ArrayList<PackedRuleRecord>();
-		int i = 0;
-		for (SameLengthMotifs subsequencesInClass : newAllClassifiedMotifs) {
-			int classIndex = i;
-			int subsequencesNumber = subsequencesInClass.getSameLenMotifs()
-					.size();
-			int minLength = subsequencesInClass.getMinMotifLen();
-			int maxLength = subsequencesInClass.getMaxMotifLen();
+  public static ArrayList<PackedRuleRecord> getPackedRule(
+      ArrayList<SameLengthMotifs> newAllClassifiedMotifs) {
 
-			PackedRuleRecord packedRuleRecord = new PackedRuleRecord();
-			packedRuleRecord.setClassIndex(classIndex);
-			packedRuleRecord.setSubsequenceNumber(subsequencesNumber);
-			packedRuleRecord.setMinLength(minLength);
-			packedRuleRecord.setMaxLength(maxLength);
+    ArrayList<PackedRuleRecord> arrPackedRuleRecords = new ArrayList<PackedRuleRecord>();
+    int i = 0;
+    for (SameLengthMotifs subsequencesInClass : newAllClassifiedMotifs) {
+      int classIndex = i;
+      int subsequencesNumber = subsequencesInClass.getSameLenMotifs().size();
+      int minLength = subsequencesInClass.getMinMotifLen();
+      int maxLength = subsequencesInClass.getMaxMotifLen();
 
-			arrPackedRuleRecords.add(packedRuleRecord);
-			i++;
-		}
+      PackedRuleRecord packedRuleRecord = new PackedRuleRecord();
+      packedRuleRecord.setClassIndex(classIndex);
+      packedRuleRecord.setSubsequenceNumber(subsequencesNumber);
+      packedRuleRecord.setMinLength(minLength);
+      packedRuleRecord.setMaxLength(maxLength);
 
-		return arrPackedRuleRecords;
-	}
+      arrPackedRuleRecords.add(packedRuleRecord);
+      i++;
+    }
+
+    return arrPackedRuleRecords;
+  }
 }

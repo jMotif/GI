@@ -3,9 +3,8 @@ package net.seninp.gi.rulepruner;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.gi.GIAlgorithm;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
@@ -34,15 +33,11 @@ public class RulePruner {
 
   private double[] ts;
   private SAXProcessor sp;
-
-  // logging stuff
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
+  private static final Logger LOGGER = LoggerFactory.getLogger(RulePruner.class);
 
   static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(RulePruner.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
     dfPercent.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
     dfSize.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
   }
@@ -168,7 +163,7 @@ public class RulePruner {
     // print the output
     //
     // bw.write(logStr.toString());
-    consoleLogger.info(logStr.toString().replace(CR, ""));
+    LOGGER.info(logStr.toString().replace(CR, ""));
 
     return res;
   }

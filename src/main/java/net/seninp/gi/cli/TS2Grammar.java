@@ -7,10 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.beust.jcommander.JCommander;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.gi.GIAlgorithm;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRuleRecord;
@@ -34,15 +33,9 @@ public class TS2Grammar {
   private static NormalAlphabet na = new NormalAlphabet();
   private static SAXProcessor sp = new SAXProcessor();
 
-  // the logger business
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.DEBUG;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(TS2Grammar.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(TS2Grammar.class);
 
   public static void main(String[] args) throws Exception {
 
@@ -82,13 +75,13 @@ public class TS2Grammar {
 
     // read the file
     //
-    consoleLogger.info("Reading data ...");
+    LOGGER.info("Reading data ...");
     double[] series = tp.readTS(TS2GrammarParameters.IN_FILE, 0);
-    consoleLogger.info("read " + series.length + " points from " + TS2GrammarParameters.IN_FILE);
+    LOGGER.info("read " + series.length + " points from " + TS2GrammarParameters.IN_FILE);
 
     // discretize
     //
-    consoleLogger.info("Performing SAX conversion ...");
+    LOGGER.info("Performing SAX conversion ...");
     SAXRecords saxData = sp.ts2saxViaWindow(series, TS2GrammarParameters.SAX_WINDOW_SIZE,
         TS2GrammarParameters.SAX_PAA_SIZE, na.getCuts(TS2GrammarParameters.SAX_ALPHABET_SIZE),
         TS2GrammarParameters.SAX_NR_STRATEGY, TS2GrammarParameters.SAX_NORM_THRESHOLD);
@@ -99,14 +92,14 @@ public class TS2Grammar {
     //
     GrammarRules rules = new GrammarRules();
     if (GIAlgorithm.SEQUITUR == TS2GrammarParameters.GI_ALGORITHM_IMPLEMENTATION) {
-      consoleLogger.info("Inferring Sequitur grammar ...");
+      LOGGER.info("Inferring Sequitur grammar ...");
       SAXRule grammar = SequiturFactory.runSequitur(discretizedTS);
       rules = grammar.toGrammarRulesData();
       SequiturFactory.updateRuleIntervals(rules, saxData, true, series,
           TS2GrammarParameters.SAX_WINDOW_SIZE, TS2GrammarParameters.SAX_PAA_SIZE);
     }
     else if (GIAlgorithm.REPAIR == TS2GrammarParameters.GI_ALGORITHM_IMPLEMENTATION) {
-      consoleLogger.info("Inferring RePair grammar ...");
+      LOGGER.info("Inferring RePair grammar ...");
       RePairGrammar grammar = RePairFactory.buildGrammar(discretizedTS);
       grammar.expandRules();
       grammar.buildIntervals(saxData, series, TS2GrammarParameters.SAX_WINDOW_SIZE);
@@ -115,11 +108,11 @@ public class TS2Grammar {
 
     // collect stats
     //
-    consoleLogger.info("Collecting stats ...");
+    LOGGER.info("Collecting stats ...");
 
     // produce the output
     //
-    consoleLogger.info("Producing the output ...");
+    LOGGER.info("Producing the output ...");
     String fname = TS2GrammarParameters.OUT_FILE;
 
     boolean fileOpen = false;
