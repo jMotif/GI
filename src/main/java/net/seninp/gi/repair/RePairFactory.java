@@ -1,8 +1,5 @@
 package net.seninp.gi.repair;
 
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 /**
@@ -15,14 +12,9 @@ public final class RePairFactory {
 
   private static final String SPACE = " ";
 
-  // logging stuff
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.WARN;
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(RePairFactory.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
+  // private static final Logger LOGGER = LoggerFactory.getLogger(RePairFactory.class);
 
   /**
    * Disable constructor.

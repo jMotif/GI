@@ -5,9 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 /**
  * Improved repair implementation.
@@ -19,15 +16,9 @@ public class NewRepair {
 
   private static final String SPACE = " ";
 
-  // logging stuff
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.WARN;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(NewRepair.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
+  // private static final Logger LOGGER = LoggerFactory.getLogger(NewRepair.class);
 
   /**
    * Parses the input string into a grammar.
@@ -37,7 +28,7 @@ public class NewRepair {
    */
   public static RePairGrammar parse(String inputStr) {
 
-    // consoleLogger.debug(
+    // LOGGER.debug(
     // "input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
 
     RePairGrammar grammar = new RePairGrammar();
@@ -67,7 +58,7 @@ public class NewRepair {
       // got token, make a symbol
       String token = st.nextToken();
       RePairSymbol symbol = new RePairSymbol(token, stringPositionCounter);
-      // consoleLogger.debug("token @" + stringPositionCounter + ": " + token);
+      // LOGGER.debug("token @" + stringPositionCounter + ": " + token);
 
       // add it to the string
       RePairSymbolRecord sr = new RePairSymbolRecord(symbol);
@@ -85,13 +76,13 @@ public class NewRepair {
         // fill the digram occurrence frequency
         if (digramsTable.containsKey(digramStr.toString())) {
           digramsTable.get(digramStr.toString()).add(stringPositionCounter - 1);
-          // consoleLogger.debug(" .added a digram entry to: " + digramStr.toString());
+          // LOGGER.debug(" .added a digram entry to: " + digramStr.toString());
         }
         else {
           ArrayList<Integer> arr = new ArrayList<Integer>();
           arr.add(stringPositionCounter - 1);
           digramsTable.put(digramStr.toString(), arr);
-          // consoleLogger.debug(" .created a digram entry for: " + digramStr.toString());
+          // LOGGER.debug(" .created a digram entry for: " + digramStr.toString());
         }
 
         symbolizedString.get(stringPositionCounter - 1).setNext(sr);
@@ -102,13 +93,13 @@ public class NewRepair {
       // go on
       stringPositionCounter++;
     }
-    // consoleLogger.debug("parsed the input string into the doubly linked list of tokens ...");
-    // consoleLogger.debug("RePair input: " + asString(symbolizedString));
-    // consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+    // LOGGER.debug("parsed the input string into the doubly linked list of tokens ...");
+    // LOGGER.debug("RePair input: " + asString(symbolizedString));
+    // LOGGER.debug("digrams table: " + printHash(digramsTable).replace("\n",
     // "\n "));
     allDigramsTable.putAll(digramsTable);
 
-    // consoleLogger.debug("populating the priority queue...");
+    // LOGGER.debug("populating the priority queue...");
     // populate the priority queue and the index -> digram record map
     //
     for (Entry<String, ArrayList<Integer>> e : digramsTable.entrySet()) {
@@ -119,7 +110,7 @@ public class NewRepair {
         digramsQueue.enqueue(dr);
       }
     }
-    // consoleLogger.debug(digramsQueue.toString().replace("\n",
+    // LOGGER.debug(digramsQueue.toString().replace("\n",
     // "\n "));
 
     // start the Re-Pair cycle
@@ -127,12 +118,12 @@ public class NewRepair {
     RepairDigramRecord entry = null;
     while ((entry = digramsQueue.dequeue()) != null) {
 
-      // consoleLogger.debug(" *the current R0: " + asString(symbolizedString));
-      // consoleLogger.debug(" *digrams table: " + printHash(digramsTable).replace("\n",
+      // LOGGER.debug(" *the current R0: " + asString(symbolizedString));
+      // LOGGER.debug(" *digrams table: " + printHash(digramsTable).replace("\n",
       // "\n "));
       //
-      // consoleLogger.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
-      // consoleLogger.debug(" *" + digramsQueue.toString().replace("\n",
+      // LOGGER.debug(" *polled a priority queue entry: " + entry.str + " : " + entry.freq);
+      // LOGGER.debug(" *" + digramsQueue.toString().replace("\n",
       // "\n "));
       // digramsQueue.runCheck();
 
@@ -165,11 +156,11 @@ public class NewRepair {
       }
       r.setExpandedRule(expandedRule.toString());
 
-      // consoleLogger.debug(" .creating the rule: " + r.toInfoString());
+      // LOGGER.debug(" .creating the rule: " + r.toInfoString());
       //
       // // substitute each digram entry with the rule
       // //
-      // consoleLogger.debug(" .substituting the digram at locations: " + occurrences.toString());
+      // LOGGER.debug(" .substituting the digram at locations: " + occurrences.toString());
       HashSet<String> newDigrams = new HashSet<String>(occurrences.size());
 
       // sometimes we remove some of those...
@@ -233,14 +224,14 @@ public class NewRepair {
             // see the new freq..
             if (digramsTable.containsKey(newLeftDigram)) {
               digramsTable.get(newLeftDigram).add(prevS.getPayload().getStringPosition());
-              // consoleLogger.debug(" .added a digram entry to: " + newLeftDigram + ", @"
+              // LOGGER.debug(" .added a digram entry to: " + newLeftDigram + ", @"
               // + prevS.getPayload().getStringPosition());
             }
             else {
               ArrayList<Integer> arr = new ArrayList<Integer>();
               arr.add(prevS.getPayload().getStringPosition());
               digramsTable.put(newLeftDigram, arr);
-              // consoleLogger.debug(" .created a digram entry for: " + newLeftDigram.toString()
+              // LOGGER.debug(" .created a digram entry for: " + newLeftDigram.toString()
               // + ", @" + prevS.getPayload().getStringPosition());
             }
             newDigrams.add(newLeftDigram);
@@ -279,14 +270,14 @@ public class NewRepair {
             // see the new freq..
             if (digramsTable.containsKey(newRightDigram)) {
               digramsTable.get(newRightDigram).add(currentS.getPayload().getStringPosition());
-              // consoleLogger.debug(" .added a digram entry to: " + newRightDigram + ", @"
+              // LOGGER.debug(" .added a digram entry to: " + newRightDigram + ", @"
               // + currentS.getPayload().getStringPosition());
             }
             else {
               ArrayList<Integer> arr = new ArrayList<Integer>();
               arr.add(currentS.getPayload().getStringPosition());
               digramsTable.put(newRightDigram, arr);
-              // consoleLogger.debug(" .created a digram entry for: " + newRightDigram.toString()
+              // LOGGER.debug(" .created a digram entry for: " + newRightDigram.toString()
               // + ", @" + currentS.getPayload().getStringPosition());
             }
             newDigrams.add(newRightDigram);
@@ -314,11 +305,11 @@ public class NewRepair {
 
     }
 
-    // consoleLogger.debug("finished RePair run ...");
-    // consoleLogger.debug("R0: " + asString(symbolizedString));
-    // consoleLogger.debug("digrams table: " + printHash(digramsTable).replace("\n",
+    // LOGGER.debug("finished RePair run ...");
+    // LOGGER.debug("R0: " + asString(symbolizedString));
+    // LOGGER.debug("digrams table: " + printHash(digramsTable).replace("\n",
     // "\n "));
-    // consoleLogger.debug("digrams queue: " + digramsQueue.toString().replace("\n",
+    // LOGGER.debug("digrams queue: " + digramsQueue.toString().replace("\n",
     // "\n "));
 
     grammar.setR0String(asString(symbolizedString));

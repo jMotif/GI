@@ -44,12 +44,14 @@ public class RulePrunerParameters {
 
   // sub-sampling parameter
   //
-  @Parameter(names = { "--subsample" }, description = "subsampling fraction (0.0 - 1.0) for longer time series")
+  @Parameter(names = {
+      "--subsample" }, description = "subsampling fraction (0.0 - 1.0) for longer time series")
   public static Double SUBSAMPLING_FRACTION = Double.NaN;
 
   // grid boundaries for discretization parameters
   //
-  @Parameter(names = { "--bounds", "-b" }, description = "grid boundaries (Wmin Wmax Wstep Pmin Pmax Pstep Amin Amax Astep)")
+  @Parameter(names = { "--bounds",
+      "-b" }, description = "grid boundaries (Wmin Wmax Wstep Pmin Pmax Pstep Amin Amax Astep)")
   public static String GRID_BOUNDARIES = "10 100 10 10 50 10 2 12 2";
 
 }

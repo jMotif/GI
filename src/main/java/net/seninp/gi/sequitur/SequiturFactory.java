@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import net.seninp.gi.logic.GIUtils;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
@@ -31,15 +30,9 @@ public final class SequiturFactory {
 
   private static SAXProcessor sp = new SAXProcessor();
 
-  // logging stuff
+  // the logger
   //
-  private static Logger consoleLogger;
-  private static Level LOGGING_LEVEL = Level.INFO;
-
-  static {
-    consoleLogger = (Logger) LoggerFactory.getLogger(SequiturFactory.class);
-    consoleLogger.setLevel(LOGGING_LEVEL);
-  }
+  private static final Logger LOGGER = LoggerFactory.getLogger(SequiturFactory.class);
 
   /**
    * Disabling the constructor.
@@ -58,7 +51,7 @@ public final class SequiturFactory {
    */
   public static SAXRule runSequitur(String inputString) throws Exception {
 
-    consoleLogger.trace("digesting the string " + inputString);
+    LOGGER.trace("digesting the string " + inputString);
 
     // clear global collections
     //
@@ -100,7 +93,7 @@ public final class SequiturFactory {
 
       currentPosition++;
 
-      // consoleLogger.debug("Current grammar:\n" + SAXRule.getRules());
+      // LOGGER.debug("Current grammar:\n" + SAXRule.getRules());
     }
 
     return resRule;
@@ -120,7 +113,7 @@ public final class SequiturFactory {
   // public static SAXRule runSequiturWithEditDistanceThreshold(String string, Integer alphabetSize,
   // Integer threshold) throws Exception {
   //
-  // consoleLogger.trace("digesting the string " + string);
+  // LOGGER.trace("digesting the string " + string);
   //
   // // clear global collections
   // //
@@ -178,7 +171,7 @@ public final class SequiturFactory {
   // resRule.last().p.check();
   // currentPosition++;
   //
-  // consoleLogger.trace("Current grammar:\n" + SAXRule.printRules());
+  // LOGGER.trace("Current grammar:\n" + SAXRule.printRules());
   // }
   //
   // return resRule;
@@ -201,12 +194,12 @@ public final class SequiturFactory {
       int saxPAASize, int saxAlphabetSize, NumerosityReductionStrategy numerosityReductionStrategy,
       double normalizationThreshold) throws Exception, IOException {
 
-    consoleLogger.debug("Discretizing time series...");
+    LOGGER.debug("Discretizing time series...");
 
     SAXRecords saxFrequencyData = sp.ts2saxViaWindow(timeseries, saxWindowSize, saxPAASize,
         normalA.getCuts(saxAlphabetSize), numerosityReductionStrategy, normalizationThreshold);
 
-    consoleLogger.debug("Inferring the grammar...");
+    LOGGER.debug("Inferring the grammar...");
 
     // this is a string we are about to feed into Sequitur
     //
@@ -237,10 +230,10 @@ public final class SequiturFactory {
     }
 
     // bw.close();
-    consoleLogger.debug("Collecting the grammar rules statistics and expanding the rules...");
+    LOGGER.debug("Collecting the grammar rules statistics and expanding the rules...");
     GrammarRules rules = grammar.toGrammarRulesData();
 
-    consoleLogger.debug("Mapping expanded rules to time-series intervals...");
+    LOGGER.debug("Mapping expanded rules to time-series intervals...");
     SequiturFactory.updateRuleIntervals(rules, saxFrequencyData, true, timeseries, saxWindowSize,
         saxPAASize);
 
@@ -340,8 +333,8 @@ public final class SequiturFactory {
     ArrayList<Integer> saxWordsIndexes = new ArrayList<Integer>(saxFrequencyData.getAllIndices());
 
     // debug printout
-    consoleLogger.trace("Expanded rule: \"" + ruleContainer.getExpandedRuleString() + '\"');
-    consoleLogger.trace("Indexes: " + ruleContainer.getOccurrences());
+    LOGGER.trace("Expanded rule: \"" + ruleContainer.getExpandedRuleString() + '\"');
+    LOGGER.trace("Indexes: " + ruleContainer.getOccurrences());
 
     // array of all words of this expanded rule
     String[] expandedRuleSplit = ruleContainer.getExpandedRuleString().trim().split(" ");
@@ -351,13 +344,13 @@ public final class SequiturFactory {
       String extractedStr = "";
       StringBuffer sb = new StringBuffer(expandedRuleSplit.length);
       for (int i = 0; i < expandedRuleSplit.length; i++) {
-        consoleLogger.trace("currentIndex " + currentIndex + ", i: " + i);
+        LOGGER.trace("currentIndex " + currentIndex + ", i: " + i);
         extractedStr = extractedStr.concat(" ").concat(String.valueOf(
             saxFrequencyData.getByIndex(saxWordsIndexes.get(currentIndex + i)).getPayload()));
         sb.append(saxWordsIndexes.get(currentIndex + i)).append(" ");
       }
-      consoleLogger.trace("Recovered string: " + extractedStr);
-      consoleLogger.trace("Recovered positions: " + sb.toString());
+      LOGGER.trace("Recovered string: " + extractedStr);
+      LOGGER.trace("Recovered positions: " + sb.toString());
 
       int start = saxWordsIndexes.get(currentIndex);
       int end = -1;
