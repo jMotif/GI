@@ -3,12 +3,9 @@ package net.seninp.gi.rulepruner;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.beust.jcommander.JCommander;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.util.StackTrace;
@@ -33,15 +30,15 @@ public class RulePrunerPrinter {
   //
   // private static final String COMMA = ",";
   private static final String CR = "\n";
-  private static final DecimalFormat dfPercent = (new DecimalFormat("0.00"));
-  private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
+  // private static final DecimalFormat dfPercent = (new DecimalFormat("0.00"));
+  // private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
 
   private static final String OUTPUT_HEADER = "window,paa,alphabet,approxDist,grammarSize,grammarRules,"
       + "compressedGrammarSize,prunedRules,isCovered,coverage\n";
 
   // the logger
   //
-  private static final Logger LOGGER = LoggerFactory.getLogger(RulePrunerPrinter.class);
+  // private static final Logger LOGGER = LoggerFactory.getLogger(RulePrunerPrinter.class);
 
   /**
    * Main runnable.
