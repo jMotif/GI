@@ -50,13 +50,14 @@ public class RulePruner {
   /**
    * Samples the specified point.
    * 
-   * @param windowSize
-   * @param paaSize
-   * @param alphabetSize
-   * @param nrStrategy
-   * @param nThreshold
-   * @return
-   * @throws Exception
+   * @param windowSize the sliding window size.
+   * @param paaSize the PAA size.
+   * @param alphabetSize the Alphabet size.
+   * @param giAlgorithm the GI algorithm to use.
+   * @param nrStrategy the numerosity reduction strategy.
+   * @param nThreshold the normalization threshold.
+   * @return the resulting point characteristics.
+   * @throws Exception if error occurs.
    */
   public SampledPoint sample(int windowSize, int paaSize, int alphabetSize, GIAlgorithm giAlgorithm,
       NumerosityReductionStrategy nrStrategy, double nThreshold) throws Exception {

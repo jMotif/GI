@@ -3,6 +3,12 @@ package net.seninp.gi.cli;
 import java.util.ArrayList;
 import net.seninp.gi.logic.GrammarRuleRecord;
 
+/**
+ * Computes grammar stats.
+ * 
+ * @author psenin
+ *
+ */
 public class GrammarStats {
 
   private static final Object CR = "\n";

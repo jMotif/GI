@@ -112,7 +112,7 @@ public class GIUtils {
    * 
    * @param length the original time-series length.
    * @param rules the grammar rules set.
-   * @return
+   * @return the mean rule coverage.
    */
   public static double getMeanRuleCoverage(int length, GrammarRules rules) {
     // get the coverage array

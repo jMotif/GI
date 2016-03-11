@@ -12,6 +12,10 @@ public class ClusterRuleFactory {
    * 
    * @param ts the input time series.
    * @param grammarRules the grammar.
+   * @param thresholdLength a parameter.
+   * @param thresholdCom another parameter.
+   * @param fractionTopDist yet another parameter.
+   * 
    * @return pruned ruleset.
    */
   public static ArrayList<SameLengthMotifs> performPruning(double[] ts, GrammarRules grammarRules,
@@ -31,6 +35,12 @@ public class ClusterRuleFactory {
     return newAllClassifiedMotifs;
   }
 
+  /**
+   * Gets packed rules set.
+   * 
+   * @param newAllClassifiedMotifs a parameter.
+   * @return packed rule set.
+   */
   public static ArrayList<PackedRuleRecord> getPackedRule(
       ArrayList<SameLengthMotifs> newAllClassifiedMotifs) {
 

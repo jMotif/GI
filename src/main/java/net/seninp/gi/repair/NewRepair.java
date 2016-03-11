@@ -24,7 +24,7 @@ public class NewRepair {
    * Parses the input string into a grammar.
    * 
    * @param inputStr the string to parse.
-   * @return
+   * @return the grammar.
    */
   public static RePairGrammar parse(String inputStr) {
 

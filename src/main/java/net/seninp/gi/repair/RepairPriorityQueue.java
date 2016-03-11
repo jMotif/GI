@@ -92,7 +92,7 @@ public class RepairPriorityQueue {
   /**
    * Returns the most frequently seen element -- the head of the queue.
    * 
-   * @return
+   * @return the digram record from the top of the queue or a null.
    */
   public RepairDigramRecord dequeue() {
     if (null != this.head) {

@@ -7,9 +7,9 @@ public class DistanceComputation {
   /**
    * Calculating the distance between time series and pattern.
    * 
-   * @param ts , a series of points for time series.
-   * @param pValue , a series of points for pattern.
-   * @return
+   * @param ts a series of points for time series.
+   * @param pValue a series of points for pattern.
+   * @return the distance value.
    */
   protected double calcDistTSAndPattern(double[] ts, double[] pValue) {
     double INF = 10000000000000000000f;
@@ -41,6 +41,14 @@ public class DistanceComputation {
     return bestDist;
   }
 
+  /**
+   * Normalized early abandoned Euclidean distance.
+   * 
+   * @param ts1 the first series.
+   * @param ts2 the second series.
+   * @param bsfDist the distance value (used for early abandon).
+   * @return the distance value.
+   */
   protected double eculideanDistNormEAbandon(double[] ts1, double[] ts2, double bsfDist) {
     double dist = 0;
     double tsLen = ts1.length;
@@ -58,6 +66,13 @@ public class DistanceComputation {
     return Math.sqrt(dist) / tsLen;
   }
 
+  /**
+   * Normalized Euclidean distance.
+   * 
+   * @param ts1 the first series.
+   * @param ts2 the second series.
+   * @return the distance value.
+   */
   protected double eculideanDistNorm(double[] ts1, double[] ts2) {
     double dist = 0;
     double tsLen = ts1.length;
