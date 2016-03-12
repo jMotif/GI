@@ -44,8 +44,10 @@ public class NewRepair {
 
     // 3.0. - the R0 digrams occurrence hashtable: <digram string> -> <R0 occurrence indexes>
     HashMap<String, ArrayList<Integer>> digramsTable = new HashMap<String, ArrayList<Integer>>();
+
     // 3.1. - all digrams ever seen will be here
-    HashMap<String, ArrayList<Integer>> allDigramsTable = new HashMap<String, ArrayList<Integer>>();
+    // HashMap<String, ArrayList<Integer>> allDigramsTable = new HashMap<String,
+    // ArrayList<Integer>>();
 
     // tokenize the input string
     StringTokenizer st = new StringTokenizer(inputStr, " ");
@@ -97,7 +99,7 @@ public class NewRepair {
     // LOGGER.debug("RePair input: " + asString(symbolizedString));
     // LOGGER.debug("digrams table: " + printHash(digramsTable).replace("\n",
     // "\n "));
-    allDigramsTable.putAll(digramsTable);
+    // allDigramsTable.putAll(digramsTable);
 
     // LOGGER.debug("populating the priority queue...");
     // populate the priority queue and the index -> digram record map

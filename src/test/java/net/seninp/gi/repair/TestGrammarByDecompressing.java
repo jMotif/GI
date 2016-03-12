@@ -22,7 +22,7 @@ public class TestGrammarByDecompressing {
 
   private static final int SAX_WIN_SIZE = 160;
   private static final int SAX_PAA_SIZE = 4;
-  private static final int SAX_A_SIZE = 7;
+  private static final int SAX_A_SIZE = 4;
   private static final double SAX_NORM_THRESHOLD = 0.001;
 
   private static final SAXProcessor sp = new SAXProcessor();

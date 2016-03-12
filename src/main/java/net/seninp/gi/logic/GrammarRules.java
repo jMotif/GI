@@ -49,7 +49,7 @@ public class GrammarRules implements Iterable<GrammarRuleRecord> {
       sb.append(" -> ").append(rr.getValue().getExpandedRuleString());
       sb.append("\n");
     }
-    return sb.toString();
+    return sb.delete(sb.length() - 1, sb.length()).toString();
   }
 
   public int getHighestFrequency() {
