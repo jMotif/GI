@@ -95,3 +95,11 @@ All these may affect the performance of the upstream time series analysis algori
 
 ## Made with Aloha!
 ![Made with Aloha!](https://raw.githubusercontent.com/GrammarViz2/grammarviz2_src/master/src/resources/assets/aloha.jpg)
+
+
+#### Versions:
+`0.8.6`
+  * pre-1.0 release with improved RePair implementation.
+
+`0.0.1 - 0.8.5`
+  * initial code development, parallel repair implementation lifecycle.
