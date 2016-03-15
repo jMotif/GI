@@ -61,7 +61,7 @@ My own addition allows to retrieve the Sequitur rules as an iterable collection 
 
 3.0 RePair API use
 ------------
-I've implemented RePair from scratch and it uses the same [GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java) data structures to communicate the results. 
+I've implemented RePair from scratch and it uses the same [GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java) data structures as for Sequitur, so it can be plugged into Grammarviz seamlessly: 
 
 	String TEST_STRING = "abc abc cba XXX abc abc cba";
 	
@@ -76,7 +76,7 @@ which yields:
         R2 -> abc R1  : abc abc cba, [0, 4]
 
 
-Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications and synchronization was the majot showstopper, so the current *new* implementation is single-threaded (but you can still get the parallel one tagged "old_repair").
+Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications and synchronization was the majot showstopper, so the current *new* implementation (>0.8.5) is single-threaded (but you can still get the parallel one -- it is tagged "old_repair" in the version control).
 
 
 4.0 Performance comparison
