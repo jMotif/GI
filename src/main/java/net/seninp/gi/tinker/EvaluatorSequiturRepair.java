@@ -20,15 +20,17 @@ import net.seninp.jmotif.sax.datastructure.SAXRecords;
 
 public class EvaluatorSequiturRepair {
 
-  private static final String[] DATASETS = { "ann_gun_CentroidA1", "chfdbchf15",
-      "dutch_power_demand", "ecg0606", "gps_track", "insect", "mitdbx_108", "nprs43", "nprs44",
-      "stdb_308", "TEK14", "TEK16", "TEK17", "winding_col", "300_signal1", "318_signal1" };
+  private static final String[] DATASETS = { 
+//      "ann_gun_CentroidA1", "chfdbchf15",
+//      "dutch_power_demand", "ecg0606", "gps_track", "insect", "mitdbx_108", "nprs43", "nprs44",
+//      "stdb_308", "TEK14", "TEK16", "TEK17", "winding_col", 
+      "300_signal1", "318_signal1" };
 
-  private static final int[] WINDOWS = { 50, 150, 250 };
+  private static final int[] WINDOWS = { 150 };
 
-  private static final int[] PAAS = { 6, 12 };
+  private static final int[] PAAS = { 6 };
 
-  private static final int[] ALPHABETS = { 4, 8 };
+  private static final int[] ALPHABETS = { 4 };
 
   private static final String TAB = "\t";
 
