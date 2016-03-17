@@ -75,6 +75,10 @@ public class RePairSymbol {
   public int getLevel() {
     return 0;
   }
+  
+  public String toExpandedString() {
+    return String.valueOf(this.string);
+  }
 
   public String toString() {
     return String.valueOf(this.string);

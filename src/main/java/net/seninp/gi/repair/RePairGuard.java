@@ -32,6 +32,13 @@ public class RePairGuard extends RePairSymbol {
     return this.rule;
   }
 
+  public String toExpandedString() {
+    if (null == this.rule) {
+      return "null";
+    }
+    return this.rule.toExpandedRuleString();
+  }
+  
   public String toString() {
     if (null == this.rule) {
       return "null";

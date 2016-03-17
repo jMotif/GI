@@ -141,22 +141,7 @@ public class NewRepair {
       r.setFirst(first.getPayload());
       r.setSecond(second.getPayload());
       r.assignLevel();
-
-      StringBuffer expandedRule = new StringBuffer();
-      if (first.getPayload().isGuard()) {
-        expandedRule.append(((RePairGuard) first.getPayload()).getRule().toExpandedRuleString());
-      }
-      else {
-        expandedRule.append(((RePairSymbol) first.getPayload()).toString());
-      }
-      expandedRule.append(SPACE);
-      if (second.getPayload().isGuard()) {
-        expandedRule.append(((RePairGuard) second.getPayload()).getRule().toExpandedRuleString());
-      }
-      else {
-        expandedRule.append(((RePairSymbol) second.getPayload()).toString());
-      }
-      r.setExpandedRule(expandedRule.toString());
+      r.setExpandedRule(first.getPayload().toExpandedString() + SPACE +  second.getPayload().toExpandedString());
 
       // LOGGER.debug(" .creating the rule: " + r.toInfoString());
       //
