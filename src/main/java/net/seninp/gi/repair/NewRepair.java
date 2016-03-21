@@ -141,7 +141,8 @@ public class NewRepair {
       r.setFirst(first.getPayload());
       r.setSecond(second.getPayload());
       r.assignLevel();
-      r.setExpandedRule(first.getPayload().toExpandedString() + SPACE +  second.getPayload().toExpandedString());
+      r.setExpandedRule(
+          first.getPayload().toExpandedString() + SPACE + second.getPayload().toExpandedString());
 
       // LOGGER.debug(" .creating the rule: " + r.toInfoString());
       //
@@ -156,7 +157,10 @@ public class NewRepair {
         loopOccurrences.add(i);
       }
       while (!(loopOccurrences.isEmpty())) {
-        Integer currentIndex = loopOccurrences.remove(0);
+
+        // secure the position
+        //
+        int currentIndex = loopOccurrences.remove(0);
         RePairSymbolRecord currentS = symbolizedString.get(currentIndex);
         RePairSymbolRecord nextS = symbolizedString.get(currentIndex).getNext();
 
@@ -181,94 +185,87 @@ public class NewRepair {
 
         // 2.0 correct entry at the left
         //
-        if (currentIndex > 0) {
+        if (currentIndex > 0 && null != prevNotNull) {
 
-          RePairSymbolRecord prevS = currentS.getPrevious();
-
-          if (null != prevS) {
-
-            // cleanup old left digram
-            String oldLeftDigram = prevS.getPayload().toString() + " "
-                + currentS.getPayload().toString();
-            int newFreq = digramsTable.get(oldLeftDigram).size() - 1;
-            // consoleLogger
-            // .debug(" .removed left digram entry @" + prevS.getPayload().getStringPosition()
-            // + " " + oldLeftDigram + ", new freq: " + newFreq);
-            digramsTable.get(oldLeftDigram).remove(Integer.valueOf(prevS.getIndex()));
-            if (oldLeftDigram.equalsIgnoreCase(entry.str)) {
-              loopOccurrences.remove(Integer.valueOf(prevS.getIndex()));
-            }
-            digramsQueue.updateDigramFrequency(oldLeftDigram, newFreq);
-
-            // if it was the last entry...
-            if (0 == newFreq) {
-              digramsTable.remove(oldLeftDigram);
-              newDigrams.remove(oldLeftDigram);
-            }
-
-            // and place the new digram entry
-            String newLeftDigram = prevS.getPayload().toString() + " " + r.toString();
-            // see the new freq..
-            if (digramsTable.containsKey(newLeftDigram)) {
-              digramsTable.get(newLeftDigram).add(prevS.getPayload().getStringPosition());
-              // LOGGER.debug(" .added a digram entry to: " + newLeftDigram + ", @"
-              // + prevS.getPayload().getStringPosition());
-            }
-            else {
-              ArrayList<Integer> arr = new ArrayList<Integer>();
-              arr.add(prevS.getPayload().getStringPosition());
-              digramsTable.put(newLeftDigram, arr);
-              // LOGGER.debug(" .created a digram entry for: " + newLeftDigram.toString()
-              // + ", @" + prevS.getPayload().getStringPosition());
-            }
-            newDigrams.add(newLeftDigram);
+          // cleanup old left digram
+          String oldLeftDigram = prevNotNull.getPayload().toString() + " "
+              + currentS.getPayload().toString();
+          int newFreq = digramsTable.get(oldLeftDigram).size() - 1;
+          // consoleLogger
+          // .debug(" .removed left digram entry @" + prevNotNull.getPayload().getStringPosition()
+          // + " " + oldLeftDigram + ", new freq: " + newFreq);
+          digramsTable.get(oldLeftDigram).remove(Integer.valueOf(prevNotNull.getIndex()));
+          if (oldLeftDigram.equalsIgnoreCase(entry.str)) {
+            loopOccurrences.remove(Integer.valueOf(prevNotNull.getIndex()));
           }
+          digramsQueue.updateDigramFrequency(oldLeftDigram, newFreq);
+
+          // if it was the last entry...
+          if (0 == newFreq) {
+            digramsTable.remove(oldLeftDigram);
+            newDigrams.remove(oldLeftDigram);
+          }
+
+          // and place the new digram entry
+          String newLeftDigram = prevNotNull.getPayload().toString() + " " + r.toString();
+          // see the new freq..
+          if (digramsTable.containsKey(newLeftDigram)) {
+            digramsTable.get(newLeftDigram).add(prevNotNull.getPayload().getStringPosition());
+            // LOGGER.debug(" .added a digram entry to: " + newLeftDigram + ", @"
+            // + prevNotNull.getPayload().getStringPosition());
+          }
+          else {
+            ArrayList<Integer> arr = new ArrayList<Integer>();
+            arr.add(prevNotNull.getPayload().getStringPosition());
+            digramsTable.put(newLeftDigram, arr);
+            // LOGGER.debug(" .created a digram entry for: " + newLeftDigram.toString()
+            // + ", @" + prevNotNull.getPayload().getStringPosition());
+          }
+          newDigrams.add(newLeftDigram);
+
         }
 
         // 3.0 correct entry at the right
         //
-        if (currentIndex < symbolizedString.size() - 2) {
+        RePairSymbolRecord nextSS = nextS.getNext();
+        if (currentIndex < symbolizedString.size() - 2 && null != nextSS) {
 
-          RePairSymbolRecord nextSS = nextS.getNext();
-
-          if (null != nextSS) {
-
-            // cleanup old left digram
-            String oldRightDigram = nextS.getPayload().toString() + " "
-                + nextSS.getPayload().toString();
-            int newFreq = digramsTable.get(oldRightDigram).size() - 1;
-            // consoleLogger
-            // .debug(" .removed right digram entry @" + nextSS.getPayload().getStringPosition()
-            // + " " + oldRightDigram + ", new freq: " + newFreq);
-            digramsTable.get(oldRightDigram).remove(Integer.valueOf(nextS.getIndex()));
-            if (oldRightDigram.equalsIgnoreCase(entry.str)) {
-              loopOccurrences.remove(Integer.valueOf(nextS.getIndex()));
-            }
-            digramsQueue.updateDigramFrequency(oldRightDigram, newFreq);
-
-            // if it was the last entry...
-            if (0 == newFreq) {
-              digramsTable.remove(oldRightDigram);
-              newDigrams.remove(oldRightDigram);
-            }
-
-            // and place the new digram entry
-            String newRightDigram = r.toString() + " " + nextSS.getPayload().toString();
-            // see the new freq..
-            if (digramsTable.containsKey(newRightDigram)) {
-              digramsTable.get(newRightDigram).add(currentS.getPayload().getStringPosition());
-              // LOGGER.debug(" .added a digram entry to: " + newRightDigram + ", @"
-              // + currentS.getPayload().getStringPosition());
-            }
-            else {
-              ArrayList<Integer> arr = new ArrayList<Integer>();
-              arr.add(currentS.getPayload().getStringPosition());
-              digramsTable.put(newRightDigram, arr);
-              // LOGGER.debug(" .created a digram entry for: " + newRightDigram.toString()
-              // + ", @" + currentS.getPayload().getStringPosition());
-            }
-            newDigrams.add(newRightDigram);
+          // cleanup old left digram
+          String oldRightDigram = nextS.getPayload().toString() + " "
+              + nextSS.getPayload().toString();
+          int newFreq = digramsTable.get(oldRightDigram).size() - 1;
+          // consoleLogger
+          // .debug(" .removed right digram entry @" + nextSS.getPayload().getStringPosition()
+          // + " " + oldRightDigram + ", new freq: " + newFreq);
+          digramsTable.get(oldRightDigram).remove(Integer.valueOf(nextS.getIndex()));
+          if (oldRightDigram.equalsIgnoreCase(entry.str)) {
+            loopOccurrences.remove(Integer.valueOf(nextS.getIndex()));
           }
+          digramsQueue.updateDigramFrequency(oldRightDigram, newFreq);
+
+          // if it was the last entry...
+          if (0 == newFreq) {
+            digramsTable.remove(oldRightDigram);
+            newDigrams.remove(oldRightDigram);
+          }
+
+          // and place the new digram entry
+          String newRightDigram = r.toString() + " " + nextSS.getPayload().toString();
+          // see the new freq..
+          if (digramsTable.containsKey(newRightDigram)) {
+            digramsTable.get(newRightDigram).add(currentS.getPayload().getStringPosition());
+            // LOGGER.debug(" .added a digram entry to: " + newRightDigram + ", @"
+            // + currentS.getPayload().getStringPosition());
+          }
+          else {
+            ArrayList<Integer> arr = new ArrayList<Integer>();
+            arr.add(currentS.getPayload().getStringPosition());
+            digramsTable.put(newRightDigram, arr);
+            // LOGGER.debug(" .created a digram entry for: " + newRightDigram.toString()
+            // + ", @" + currentS.getPayload().getStringPosition());
+          }
+          newDigrams.add(newRightDigram);
+
         }
 
       } // walk over all occurrences
