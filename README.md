@@ -51,7 +51,7 @@ which prints the following output:
 	3	R3	1	3	2	4	R2 d 	a b c d 	[5, 9, 14]
 	4	R4	1	2	2	5	R3 e 	a b c d e 	[9, 14]
  
-My own addition allows to retrieve the Sequitur rules as an iterable collection of [GrammaRuleRecords](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java) and to map them back to the discretized time series:
+My own addition allows to retrieve the Sequitur rules as an iterable collection of [GrammaRuleRecords](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) and to map them back to the discretized time series:
 
 	GrammarRules rules = r.toGrammarRulesData();
 	GrammarRuleRecord rec = rules.get(4);
@@ -61,7 +61,7 @@ My own addition allows to retrieve the Sequitur rules as an iterable collection 
 
 3.0 RePair API use
 ------------
-I've implemented RePair from scratch and it uses the same [GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/GrammarRuleRecord.java) data structures as for Sequitur, so it can be plugged into Grammarviz seamlessly: 
+I've implemented RePair from scratch and it uses the same [GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) data structures as for Sequitur, so it can be plugged into Grammarviz seamlessly: 
 
 	String TEST_STRING = "abc abc cba XXX abc abc cba";
 	
