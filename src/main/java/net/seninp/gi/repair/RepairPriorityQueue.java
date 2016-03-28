@@ -23,6 +23,7 @@ public class RepairPriorityQueue {
    * @param digramRecord the digram record to place into.
    */
   public void enqueue(RepairDigramRecord digramRecord) {
+    
     // System.out.println("before == " + this.toString());
     // if the same key element is in the queue - something went wrong with tracking...
     if (elements.containsKey(digramRecord.str)) {
@@ -33,20 +34,25 @@ public class RepairPriorityQueue {
 
       // create a new node
       RepairQueueNode nn = new RepairQueueNode(digramRecord);
+      System.out.println(nn.payload);
 
       // place it into the queue if it's empty
       if (this.elements.isEmpty()) {
         this.head = nn;
       }
-      // if new node has higher than or equal to the head frequency... this going to be the new head
+      
+      // if new node has _higher than_ or _equal to_ the head frequency... this going to be the new head
       else if (nn.getFrequency() >= this.head.getFrequency()) {
         this.head.prev = nn;
         nn.next = this.head;
         this.head = nn;
       }
-      // in all other cases find a good place in the existing queue, starting from the head
+      
+      // in all other cases find an appropriate place in the existing queue, starting from the head
       else {
+        
         RepairQueueNode currentNode = head;
+        
         while (null != currentNode.next) {
           // the intent is to slide down the list finding a place at new node is greater than a node
           // a tracking pointer points to...
@@ -63,6 +69,7 @@ public class RepairPriorityQueue {
           }
           currentNode = currentNode.next;
         }
+        
         // check if loop was broken by the TAIL condition, not by placement
         if (null == currentNode.next) {
           // so, currentNode points on the tail...
@@ -317,7 +324,8 @@ public class RepairPriorityQueue {
     if (null == el.prev) {
       if (null != el.next) {
         this.head = el.next;
-        el.next.prev = null;
+        this.head.prev = null;
+        el=null;
       }
       else {
         // can't happen? yep. if there is only one element exists...
