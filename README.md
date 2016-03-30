@@ -83,11 +83,10 @@ Thanks to the algorithm's design, I was able to parallelize RePair. However, the
 ------------
 The both implemented GI algorithms, Sequitur and RePair, demonstrate a somewhat similar performance with minor differnces. Specifically: 
  -   Sequitur implementation is slower than RePair
- -   Sequitur tends to produce more rules
- -   Sequitur rules are less frequent than RePair
+ -   Sequitur tends to produce more rules, but Sequitur rules are less frequent than RePair rules
  -   Sequitur rule-corresponding subsequences vary in length more
- -   Sequitur usually covers more points than RePair
- -   Sequitur coverage however is lower than that of RePair
+ -   Sequitur rules usually cover more points than RePair
+ -   Sequitur rule coverage depth is lower than that of RePair
 
 All these may affect the performance of the upstream time series analysis algorithms such as SAX-VSM-G, Grammarviz, and RRA. Here is the table with some numbers collected by running Sequitur and RePair using sliding window of size 150, PAA 6, and the alphabet 4. I used the EXACT numerosity reduction in these runs.
 
