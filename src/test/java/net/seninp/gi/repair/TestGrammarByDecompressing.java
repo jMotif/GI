@@ -39,6 +39,8 @@ public class TestGrammarByDecompressing {
         NumerosityReductionStrategy.EXACT, SAX_NORM_THRESHOLD);
 
     inputSAXString = sax.getSAXString(" ");
+    
+    System.out.println(this.inputSAXString);
 
   }
 
