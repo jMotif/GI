@@ -1,10 +1,14 @@
 package net.seninp.gi.repair;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import net.seninp.jmotif.sax.SAXProcessor;
 
 /**
  * Improved repair implementation.
@@ -18,7 +22,7 @@ public class NewRepair {
 
   // the logger
   //
-  // private static final Logger LOGGER = LoggerFactory.getLogger(NewRepair.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(NewRepair.class);
 
   /**
    * Parses the input string into a grammar.
@@ -28,8 +32,8 @@ public class NewRepair {
    */
   public static RePairGrammar parse(String inputStr) {
 
-    // LOGGER.debug(
-    // "input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens): " + inputStr);
+    Date start0 = new Date();
+    LOGGER.debug("input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens) ");
 
     RePairGrammar grammar = new RePairGrammar();
 
@@ -95,6 +99,10 @@ public class NewRepair {
       // go on
       stringPositionCounter++;
     }
+    Date start1 = new Date();
+    LOGGER.debug("tokenized input and extracted all pairs in "
+        + SAXProcessor.timeToString(start0.getTime(), start1.getTime()) + ", " + digramsTable.size()
+        + " distinct pairs found");
     // LOGGER.debug("parsed the input string into the doubly linked list of tokens ...");
     // LOGGER.debug("RePair input: " + asString(symbolizedString));
     // LOGGER.debug("digrams table: " + printHash(digramsTable).replace("\n",
@@ -112,8 +120,13 @@ public class NewRepair {
         digramsQueue.enqueue(dr);
       }
     }
+    Date start2 = new Date();
+//    LOGGER.debug("built the priority queue in "
+//        + SAXProcessor.timeToString(start1.getTime(), start2.getTime()) + ", " + digramsQueue.size()
+//        + " digrams in the queue");
     // LOGGER.debug(digramsQueue.toString().replace("\n",
     // "\n "));
+    // System.out.println(digramsQueue.toString());
 
     // start the Re-Pair cycle
     //
@@ -137,6 +150,7 @@ public class NewRepair {
       RePairSymbolRecord second = first.getNext();
 
       RePairRule r = new RePairRule(grammar);
+      // System.out.println("polled a priority queue entry: " + entry.str + " : " + entry.freq + " -> created the rule " + r.ruleNumber);
 
       r.setFirst(first.getPayload());
       r.setSecond(second.getPayload());
@@ -288,6 +302,10 @@ public class NewRepair {
       }
 
     }
+
+    Date start3 = new Date();
+    LOGGER.debug("finished repair grammar construction in "
+        + SAXProcessor.timeToString(start2.getTime(), start3.getTime()));
 
     // LOGGER.debug("finished RePair run ...");
     // LOGGER.debug("R0: " + asString(symbolizedString));

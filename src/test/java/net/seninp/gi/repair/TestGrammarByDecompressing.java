@@ -21,7 +21,7 @@ public class TestGrammarByDecompressing {
   private static final String INPUT_FNAME = "src/resources/test-data/ecg0606.txt";
 
   private static final int SAX_WIN_SIZE = 160;
-  private static final int SAX_PAA_SIZE = 4;
+  private static final int SAX_PAA_SIZE = 5;
   private static final int SAX_A_SIZE = 4;
   private static final double SAX_NORM_THRESHOLD = 0.001;
 
@@ -39,6 +39,10 @@ public class TestGrammarByDecompressing {
         NumerosityReductionStrategy.EXACT, SAX_NORM_THRESHOLD);
 
     inputSAXString = sax.getSAXString(" ");
+
+    inputSAXString = "dacb bbbd bbcb bdbb cbbc accb ccbc dbba cbbc bbdb bcbb dbbc bbcb adcc ccbc daba cbbc bbdb bcbb dbbc bbcb adcb bdac dcbb cbbd bbcb bdbb cbbc accb cdbb dbbb cbbd bccb bdab cbbc accb cdbb dbbb cbbd bbcb bdbb cbbc accc ccbb cbbd bbcb bdbb cbbc accb";
+
+    // System.out.println(this.inputSAXString);
 
   }
 
@@ -67,7 +71,7 @@ public class TestGrammarByDecompressing {
     }
 
     assertTrue("asserting new implementation correctness",
-        inputSAXString.equalsIgnoreCase(resultString));
+        inputSAXString.equalsIgnoreCase(resultString.trim()));
     //
     // System.out.println(repairGrammar.r0String + "\n" + resultString);
 

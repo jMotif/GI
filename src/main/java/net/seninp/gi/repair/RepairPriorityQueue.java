@@ -34,7 +34,7 @@ public class RepairPriorityQueue {
 
       // create a new node
       RepairQueueNode nn = new RepairQueueNode(digramRecord);
-      System.out.println(nn.payload);
+      // System.out.println(nn.payload);
 
       // place it into the queue if it's empty
       if (this.elements.isEmpty()) {

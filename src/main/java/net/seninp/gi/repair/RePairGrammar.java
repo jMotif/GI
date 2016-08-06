@@ -156,7 +156,7 @@ public class RePairGrammar {
     res.addRule(r0);
 
     for (RePairRule rule : theRules.values()) {
-
+      // System.out.println("processing the rule " + rule.ruleNumber);
       GrammarRuleRecord rec = new GrammarRuleRecord();
 
       rec.setRuleNumber(rule.ruleNumber);
