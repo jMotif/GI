@@ -14,7 +14,6 @@ import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
-import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
 import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 
@@ -33,7 +32,7 @@ public class RulePruner {
   private static final DecimalFormat dfSize = (new DecimalFormat("#.0000"));
 
   private double[] ts;
-  private SAXProcessor sp;
+  // private SAXProcessor sp;
   // the logger
   //
   private static final Logger LOGGER = LoggerFactory.getLogger(RulePruner.class);
@@ -45,7 +44,7 @@ public class RulePruner {
 
   public RulePruner(double[] ts) {
     this.ts = ts;
-    this.sp = new SAXProcessor();
+    // this.sp = new SAXProcessor();
   }
 
   /**
@@ -75,13 +74,14 @@ public class RulePruner {
 
     // convert to SAX
     //
-    //ParallelSAXImplementation ps = new ParallelSAXImplementation();
+    ParallelSAXImplementation ps = new ParallelSAXImplementation();
     SAXProcessor sp = new SAXProcessor();
-    NormalAlphabet na = new NormalAlphabet();
-//    SAXRecords saxData = ps.process(ts, 1, windowSize, paaSize, alphabetSize, nrStrategy,
-//        nThreshold);
-    SAXRecords saxData = sp.ts2saxViaWindow(ts, windowSize, paaSize, na.getCuts(alphabetSize), nrStrategy,
+    // NormalAlphabet na = new NormalAlphabet();
+    SAXRecords saxData = ps.process(ts, 1, windowSize, paaSize, alphabetSize, nrStrategy,
         nThreshold);
+    // SAXRecords saxData = sp.ts2saxViaWindow(ts, windowSize, paaSize, na.getCuts(alphabetSize),
+    // nrStrategy,
+    // nThreshold);
     if (Thread.currentThread().isInterrupted() && null == saxData) {
       System.err.println("Sampler being interrupted, returning NULL!");
       return null;
