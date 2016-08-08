@@ -14,8 +14,8 @@ import net.seninp.gi.sequitur.SAXRule;
 import net.seninp.gi.sequitur.SequiturFactory;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 
 /**
  * Implements the rule pruner.
@@ -36,8 +36,8 @@ public class RulePruner {
   // the logger
   //
   private static final Logger LOGGER = LoggerFactory.getLogger(RulePruner.class);
-
-  static {
+  
+    static {
     dfPercent.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
     dfSize.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.US));
   }
@@ -61,7 +61,7 @@ public class RulePruner {
    */
   public SampledPoint sample(int windowSize, int paaSize, int alphabetSize, GIAlgorithm giAlgorithm,
       NumerosityReductionStrategy nrStrategy, double nThreshold) throws Exception {
-
+    
     SampledPoint res = new SampledPoint();
 
     StringBuffer logStr = new StringBuffer();
@@ -74,14 +74,13 @@ public class RulePruner {
 
     // convert to SAX
     //
-    ParallelSAXImplementation ps = new ParallelSAXImplementation();
+    // ParallelSAXImplementation ps = new ParallelSAXImplementation();
     SAXProcessor sp = new SAXProcessor();
-    // NormalAlphabet na = new NormalAlphabet();
-    SAXRecords saxData = ps.process(ts, 1, windowSize, paaSize, alphabetSize, nrStrategy,
-        nThreshold);
-    // SAXRecords saxData = sp.ts2saxViaWindow(ts, windowSize, paaSize, na.getCuts(alphabetSize),
-    // nrStrategy,
+    NormalAlphabet na = new NormalAlphabet();
+    // SAXRecords saxData = ps.process(ts, 1, windowSize, paaSize, alphabetSize, nrStrategy,
     // nThreshold);
+    SAXRecords saxData = sp.ts2saxViaWindow(ts, windowSize, paaSize, na.getCuts(alphabetSize),
+        nrStrategy, nThreshold);
     if (Thread.currentThread().isInterrupted() && null == saxData) {
       System.err.println("Sampler being interrupted, returning NULL!");
       return null;
