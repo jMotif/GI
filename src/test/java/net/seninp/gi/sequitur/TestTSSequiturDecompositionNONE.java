@@ -1,16 +1,14 @@
 package net.seninp.gi.sequitur;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.RuleInterval;
-import net.seninp.gi.repair.RePairFactory;
-import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
-import net.seninp.jmotif.sax.SAXException;
 import net.seninp.jmotif.sax.SAXProcessor;
 import net.seninp.jmotif.sax.TSProcessor;
 import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
@@ -43,7 +41,11 @@ public class TestTSSequiturDecompositionNONE {
       String sax_str = sax.getSAXString(" ");
 
       SAXRule r = SequiturFactory.runSequitur(sax_str);
-      GrammarRules rules = r.toGrammarRulesData();
+      // GrammarRules rules = r.toGrammarRulesData();
+
+      GrammarRules rules = SequiturFactory.series2SequiturRules(data, 3, 2, 3,
+          NumerosityReductionStrategy.NONE, 0.5);
+
       // System.out.println(SAXRule.printRules() + "\n ---- \n");
       // Number Name Level Occurr. Usage Yield Rule str Expaneded Indexes
       // 0 R0 0 0 0 0 R1 R1 R2 R3 R3 R2 R4 R4 aa aa aa aa aa aa aa aa ac ac bb bb bb bb bb bb bb bb
