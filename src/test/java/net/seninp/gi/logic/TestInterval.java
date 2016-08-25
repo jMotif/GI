@@ -23,6 +23,7 @@ public class TestInterval {
 
   private static final int START2 = 5;
   private static final int END2 = 25;
+  private static final double COVERAGE2 = 0.2;
 
   private static final int START3 = 21;
   private static final int END3 = 33;
@@ -75,6 +76,7 @@ public class TestInterval {
   @Test
   public void testIntersects() {
     assertFalse(i1.intersects(i3));
+    assertFalse(i3.intersects(i1));
 
     i3.setStart(i1.getEnd());
     assertTrue(i2.contains(i1.getEnd()));
@@ -86,6 +88,24 @@ public class TestInterval {
   @Test
   public void testContains() {
     assertTrue(i2.contains(i1.getEnd()));
+  }
+
+  /**
+   * Test setters.
+   */
+  @Test
+  public void testSetters() {
+    i2 = new Interval(START2, END2, COVERAGE2);
+    
+    assertFalse(i2.hashCode() == i1.hashCode());
+    assertFalse(i1.equals(i2));
+    
+    i1.setStart(START2);
+    i1.setEnd(END2);
+    i1.setCoverage(COVERAGE2);
+    
+    assertTrue(i2.hashCode() == i1.hashCode());
+    assertTrue(i1.equals(i2));
   }
 
 }
