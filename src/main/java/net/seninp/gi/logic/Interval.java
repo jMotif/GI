@@ -17,6 +17,18 @@ public class Interval {
    * 
    * @param start the interval's start.
    * @param end the interval's end.
+   */
+  public Interval(int start, int end) {
+    this.start = start;
+    this.end = end;
+    this.coverage = -1;
+  }
+
+  /**
+   * Constructor; start inclusive, end exclusive.
+   * 
+   * @param start the interval's start.
+   * @param end the interval's end.
    * @param coverage the interval's coverage.
    */
   public Interval(int start, int end, double coverage) {
@@ -54,19 +66,60 @@ public class Interval {
   }
 
   /**
-   * True if two intervals overlap.
-   * 
-   * @param other interval to compare with.
-   * @return true if there is an overlap.
+   * Returns true if this interval intersects the specified interval.
+   *
+   * @param that the other interval
+   * @return <tt>true</tt> if this interval intersects the argument interval; <tt>false</tt>
+   * otherwise
    */
-  public boolean overlaps(Interval other) {
-    if (null == other) {
+  public boolean intersects(Interval that) {
+    if (this.end < that.start) {
       return false;
     }
-    if ((this.start < other.getEnd()) && (this.end > other.getStart())) {
-      return true;
+    if (that.end < this.start) {
+      return false;
     }
-    return false;
+    return true;
+  }
+
+  /**
+   * Returns true if this interval contains the specified value.
+   *
+   * @param x the value
+   * @return <tt>true</tt> if this interval contains the value <tt>x</tt>; <tt>false</tt> otherwise
+   */
+  public boolean contains(int x) {
+    return (start <= x) && (x <= end);
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    long temp;
+    temp = Double.doubleToLongBits(coverage);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    result = prime * result + end;
+    result = prime * result + start;
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    Interval other = (Interval) obj;
+    if (Double.doubleToLongBits(coverage) != Double.doubleToLongBits(other.coverage))
+      return false;
+    if (end != other.end)
+      return false;
+    if (start != other.start)
+      return false;
+    return true;
   }
 
 }

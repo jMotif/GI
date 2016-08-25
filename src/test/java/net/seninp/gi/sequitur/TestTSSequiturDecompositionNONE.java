@@ -36,15 +36,15 @@ public class TestTSSequiturDecompositionNONE {
   public void test() {
     try {
 
+      GrammarRules rules = SequiturFactory.series2SequiturRules(data, 3, 2, 3,
+          NumerosityReductionStrategy.NONE, 0.5);
+
       SAXRecords sax = sp.ts2saxViaWindow(data, 3, 2, na.getCuts(3),
           NumerosityReductionStrategy.NONE, 0.5);
       String sax_str = sax.getSAXString(" ");
 
       SAXRule r = SequiturFactory.runSequitur(sax_str);
       // GrammarRules rules = r.toGrammarRulesData();
-
-      GrammarRules rules = SequiturFactory.series2SequiturRules(data, 3, 2, 3,
-          NumerosityReductionStrategy.NONE, 0.5);
 
       // System.out.println(SAXRule.printRules() + "\n ---- \n");
       // Number Name Level Occurr. Usage Yield Rule str Expaneded Indexes
