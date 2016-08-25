@@ -131,17 +131,17 @@ public class GIUtils {
         }
       }
     }
-    int minCoverage = 0;
-    int maxCoverage = 0;
+    // int minCoverage = 0;
+    // int maxCoverage = 0;
     int coverageSum = 0;
     for (int i : coverageArray) {
       coverageSum += i;
-      if (i < minCoverage) {
-        minCoverage = i;
-      }
-      if (i > maxCoverage) {
-        maxCoverage = i;
-      }
+      // if (i < minCoverage) {
+      // minCoverage = i;
+      // }
+      // if (i > maxCoverage) {
+      // maxCoverage = i;
+      // }
     }
     return (double) coverageSum / (double) length;
   }
