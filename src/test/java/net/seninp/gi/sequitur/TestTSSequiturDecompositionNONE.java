@@ -37,14 +37,14 @@ public class TestTSSequiturDecompositionNONE {
     try {
 
       GrammarRules rules = SequiturFactory.series2SequiturRules(data, 3, 2, 3,
-          NumerosityReductionStrategy.NONE, 0.5);
+          NumerosityReductionStrategy.NONE, 0.01);
 
       SAXRecords sax = sp.ts2saxViaWindow(data, 3, 2, na.getCuts(3),
-          NumerosityReductionStrategy.NONE, 0.5);
+          NumerosityReductionStrategy.NONE, 0.01);
       String sax_str = sax.getSAXString(" ");
 
       SAXRule r = SequiturFactory.runSequitur(sax_str);
-      // GrammarRules rules = r.toGrammarRulesData();
+      // GrammarRules ruless = r.toGrammarRulesData();
 
       // System.out.println(SAXRule.printRules() + "\n ---- \n");
       // Number Name Level Occurr. Usage Yield Rule str Expaneded Indexes
@@ -68,15 +68,15 @@ public class TestTSSequiturDecompositionNONE {
       // is two points and three points interval -- 4 points total
       // ... two of these "aa aa aa aa" map to 4 points + 3 points interval = makes 6 points
 
-      GrammarRuleRecord r5 = rules.get(5);
-      RuleInterval firstR5occurrence = r5.getRuleIntervals().get(0);
-      assertEquals(0, firstR5occurrence.getStart());
-      assertEquals(4, firstR5occurrence.getEnd());
+      GrammarRuleRecord r4 = rules.get(4);
+      RuleInterval firstR4occurrence = r4.getRuleIntervals().get(0);
+      assertEquals(0, firstR4occurrence.getStart());
+      assertEquals(4, firstR4occurrence.getEnd());
 
-      ArrayList<RuleInterval> R5positions = SequiturFactory.getRulePositionsByRuleNum(5, r, sax,
+      ArrayList<RuleInterval> R4positions = SequiturFactory.getRulePositionsByRuleNum(4, r, sax,
           data, 3);
-      assertEquals(0, R5positions.get(0).getStart());
-      assertEquals(4, R5positions.get(0).getEnd());
+      assertEquals(0, R4positions.get(0).getStart());
+      assertEquals(4, R4positions.get(0).getEnd());
 
       //
       //
@@ -84,13 +84,13 @@ public class TestTSSequiturDecompositionNONE {
 
       GrammarRuleRecord r1 = rules.get(1);
       RuleInterval secondR1occurrence = r1.getRuleIntervals().get(1);
-      assertEquals(4, secondR1occurrence.getStart());
-      assertEquals(10, secondR1occurrence.getEnd());
+      assertEquals(10, secondR1occurrence.getStart());
+      assertEquals(22, secondR1occurrence.getEnd());
 
       ArrayList<RuleInterval> R1positions = SequiturFactory.getRulePositionsByRuleNum(1, r, sax,
           data, 3);
-      assertEquals(4, R1positions.get(1).getStart());
-      assertEquals(10, R1positions.get(1).getEnd());
+      assertEquals(10, R1positions.get(1).getStart());
+      assertEquals(22, R1positions.get(1).getEnd());
 
       // for (GrammarRuleRecord rule : rules) {
       // System.out.println(rule.getRuleIntervals());
@@ -98,7 +98,7 @@ public class TestTSSequiturDecompositionNONE {
 
     }
     catch (Exception e) {
-      fail("exception shouldn't be thrown");
+      fail("exception " + e.toString() + "shouldn't be thrown");
     }
   }
 
