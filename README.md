@@ -98,7 +98,7 @@ All these may affect the performance of the upstream time series analysis algori
 
 #### Versions:
 `1.0.0`
-  * more tests & Grammarviz3.0 release.
+  * more tests & [Grammarviz3.0](https://github.com/GrammarViz2/grammarviz2_src) release.
   
 `0.8.6`
   * pre-1.0 release with improved RePair implementation.
