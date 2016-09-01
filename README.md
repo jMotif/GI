@@ -71,10 +71,9 @@ I've implemented RePair from scratch and it uses the same [GrammaRules](https://
 	
 which yields: 	
 
-	R0 -> R2 XXX R2 
+		R0 -> R2 XXX R2 
         R1 -> abc cba  : abc cba, [1, 5]
         R2 -> abc R1  : abc abc cba, [0, 4]
-
 
 Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications and synchronization was the majot showstopper, so the current *new* implementation (>0.8.5) is single-threaded (but you can still get the parallel one -- it is tagged "old_repair" in the version control).
 
