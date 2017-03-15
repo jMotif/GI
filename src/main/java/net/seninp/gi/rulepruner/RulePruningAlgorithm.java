@@ -125,42 +125,74 @@ public class RulePruningAlgorithm {
   }
 
   private void removeOverlappingRules() {
+    List<RuleInterval> currentCovering = this.usedRuleCovering();
+    int[] coveringCounts = this.intervalCoveringCounts(currentCovering);
+    int intervalCount = 0;
+
     boolean continueSearch = true;
     while (continueSearch) {
       continueSearch = false;
 
-      for (int currentRule : usedRules) { // used rules are those in the current cover
-        if (0 == currentRule) {
+      for (int currentRuleId : usedRules) { // used rules are those in the current cover
+        if (0 == currentRuleId) {
           continue;
         }
 
-        // a set of intervals in consideration
-        List<RuleInterval> intervalsA = grammarRules.get(currentRule).getRuleIntervals();
+        // the set of intervals in consideration
+        GrammarRuleRecord currentRule = grammarRules.get(currentRuleId);
+        List<RuleInterval> currentRuleIntervals = currentRule.getRuleIntervals();
 
-        // a set of intervals we are going to compare with
-        List<RuleInterval> intervalsB = new ArrayList<>();
-
-        for (int ridB : usedRules) { // used rules are those in the current cover
-          if (0 == ridB || currentRule == ridB) {
-            continue;
-          }
-          intervalsB.addAll(grammarRules.get(ridB).getRuleIntervals());
-        }
-
-        if (intervalsB.isEmpty()) {
+        intervalCount -= currentRuleIntervals.size();
+        if (intervalCount == 0) {
           break; // this only happens with a single rule, when nothing to compare with
         }
-        if (this.isCompletelyCoveredBy(intervalsB, intervalsA)) {
-          usedRules.remove(currentRule);
-          removedRules.add(currentRule); // we would not consider it later on
+        this.removeFromCoveringCounts(coveringCounts, currentRuleIntervals);
+
+        if (this.isCompletelyCoveredBy(coveringCounts, currentRuleIntervals)) {
+          usedRules.remove(currentRuleId);
+          removedRules.add(currentRuleId); // we would not consider it later on
           continueSearch = true;
           break;
         }
-        // else {
-        // System.out.println(
-        // "rule " + grammarRules.get(currentRule).getRuleName() + " can't be removed");
-        // }
+        else {
+          // add the removed rules back into the covering to properly check next rule.
+          intervalCount += currentRuleIntervals.size();
+          this.updateCoveringCounts(coveringCounts, currentRuleIntervals);
+          logger.trace("rule {} can't be removed", currentRule.getRuleName());
+        }
+      }
+    }
+  }
 
+  private List<RuleInterval> usedRuleCovering() {
+    List<RuleInterval> covering = new ArrayList<>();
+    for (int ridB : usedRules) { // used rules are those in the current cover
+      if (0 == ridB) {
+        continue;
+      }
+      covering.addAll(grammarRules.get(ridB).getRuleIntervals());
+    }
+    return covering;
+  }
+
+  private int[] intervalCoveringCounts(List<RuleInterval> intervals) {
+    int[] coveringCount = new int[range.length];
+    this.updateCoveringCounts(coveringCount, intervals);
+    return coveringCount;
+  }
+
+  private void updateCoveringCounts(int[] covering, List<RuleInterval> intervals) {
+    for (RuleInterval i : intervals) {
+      for (int j = i.getStart(); j < i.getEnd(); j++) {
+        covering[j] += 1;
+      }
+    }
+  }
+
+  private void removeFromCoveringCounts(int[] covering, List<RuleInterval> intervals) {
+    for (RuleInterval i : intervals) {
+      for (int j = i.getStart(); j < i.getEnd(); j++) {
+        covering[j] -= 1;
       }
     }
   }
@@ -168,57 +200,18 @@ public class RulePruningAlgorithm {
   /**
    * Checks if the cover is complete.
    *
-   * @param cover the cover.
+   * @param isCovered the cover.
    * @param intervals set of rule intervals.
    * @return true if the set complete.
    */
-  private boolean isCompletelyCoveredBy(List<RuleInterval> cover, List<RuleInterval> intervals) {
-
-    // first we build an array of intervals
-    //
-    int min = intervals.get(0).getStart();
-    int max = intervals.get(0).getEnd();
-    for (RuleInterval i : intervals) {
-      if (i.getStart() < min) {
-        min = i.getStart();
-      }
-      if (i.getEnd() > max) {
-        max = i.getEnd();
-      }
-    }
-    boolean[] isNotCovered = new boolean[max - min]; // all a false on the init
+  private boolean isCompletelyCoveredBy(int[] isCovered, List<RuleInterval> intervals) {
     for (RuleInterval i : intervals) {
       for (int j = i.getStart(); j < i.getEnd(); j++) {
-        isNotCovered[j - min] = true; // this is covered by the selection BUTnot by cover yet
+          if (isCovered[j] == 0) {
+            return false;
+          }
       }
     }
-
-    // so now here we have the range where true value correspond to the ranges belonging to
-    // "intervals", which we effectively checking for being covered by cover
-    //
-    // true means uncovered
-    //
-    for (RuleInterval i : cover) {
-
-      for (int j = i.getStart(); j < i.getEnd(); j++) {
-        if (j < min || j >= max) {
-          continue;
-        }
-        if (isNotCovered[j - min]) {
-          isNotCovered[j - min] = false;
-        }
-      }
-    }
-
-    // int ctr = 0;
-    for (boolean b : isNotCovered) {
-      if (b) {
-        // System.out.println("not covered: " + (min + ctr));
-        return false;
-      }
-      // ctr++;
-    }
-
     return true;
   }
 
@@ -254,7 +247,7 @@ public class RulePruningAlgorithm {
         if (usedRules.contains(ruleId)) {
           newRuleStr.append(t).append(" ");
         } else {
-          logger.debug("updating the rule " + rId);
+          logger.trace("updating the rule " + rId);
           newRuleStr.append(resolve(ruleId)).append(" ");
         }
       } else {

@@ -4,8 +4,8 @@ import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.gi.logic.RuleInterval;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Pruner methods implementation.
@@ -174,7 +174,7 @@ public class RulePrunerFactory {
    * @param ruleIntervals The intervals used for this update.
    * @return an updated array.
    */
-  public static boolean[] updateRanges(boolean[] range, ArrayList<RuleInterval> ruleIntervals) {
+  public static boolean[] updateRanges(boolean[] range, List<RuleInterval> ruleIntervals) {
     boolean[] res = Arrays.copyOf(range, range.length);
     for (RuleInterval i : ruleIntervals) {
       int start = i.getStart();
