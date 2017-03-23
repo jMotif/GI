@@ -45,7 +45,7 @@ public class GrammarRules implements Iterable<GrammarRuleRecord>, Serializable {
   public String toString() {
     StringBuffer sb = new StringBuffer();
     for (Entry<Integer, GrammarRuleRecord> rr : rules.entrySet()) {
-      if(rr.getKey() == 0){ continue; }
+      // if(rr.getKey() == 0){ continue; }
       sb.append(rr.getValue().getRuleName());
       sb.append(" -> ").append(rr.getValue().getRuleString());
       sb.append(" -> ").append(rr.getValue().getExpandedRuleString());

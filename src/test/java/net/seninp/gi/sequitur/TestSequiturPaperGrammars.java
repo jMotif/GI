@@ -3,9 +3,10 @@ package net.seninp.gi.sequitur;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import java.util.ArrayList;
 import org.junit.Test;
-import net.seninp.gi.logic.GrammarRuleRecord;
 import net.seninp.gi.logic.GrammarRules;
+import net.seninp.gi.logic.RuleInterval;
 import net.seninp.gi.repair.RePairFactory;
 import net.seninp.gi.repair.RePairGrammar;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
@@ -87,20 +88,46 @@ public class TestSequiturPaperGrammars {
 
     try {
 
-      final double[] originalTimeSeries = { 1., 0., 1., 0., 1., 0., 1., 0., 1., 0., 1. };
+      //
+      // here is the string of the size 6: a b c d b c
+      //
+      // mapped on the 11 points time series
+      //
+      // a0, b2, c4, d6, b8, c10
+      //
+      // so each token occupies two positions except the last
+      //
+      // 0-1, 2-3, 4-5, 6-7, 8-9, 10-19
+      //
+      final double[] originalTimeSeries = new double[6 * 2 + 7];
       SAXRecords saxData = new SAXRecords();
       int idx = 0;
       for (String s : TEST1_STRING.split("\\s+")) {
         saxData.add(s.toCharArray(), idx);
         idx += 2;
       }
+
       SAXRule grammar = SequiturFactory.runSequitur(saxData.getSAXString(" "));
       GrammarRules rules = grammar.toGrammarRulesData();
       SequiturFactory.updateRuleIntervals(rules, saxData, true, originalTimeSeries, 1, 1);
 
-      for (GrammarRuleRecord rec : grammar.getRuleRecords()) {
-        System.out.println(rec.getRuleIntervals());
-      }
+      //
+      // System.out.println(rules.toString());
+      // for (GrammarRuleRecord rec : grammar.getRuleRecords()) {
+      // System.out.println(rec + ", " + rec.getRuleIntervals());
+      // }
+      //
+      // R0 -> a R1 d R1 , [[0-11]]
+      // R1 -> b c , [[2-6], [8-11]]
+      //
+      ArrayList<RuleInterval> int0 = grammar.getRuleRecords().get(0).getRuleIntervals();
+      assertEquals(1, int0.size());
+      assertEquals(new RuleInterval(0, 19), int0.get(0));
+
+      ArrayList<RuleInterval> int1 = grammar.getRuleRecords().get(1).getRuleIntervals();
+      assertEquals(2, int1.size());
+      assertEquals(new RuleInterval(2, 6), int1.get(0));
+      assertEquals(new RuleInterval(8, 19), int1.get(1));
 
     }
     catch (Exception e) {
@@ -109,7 +136,14 @@ public class TestSequiturPaperGrammars {
 
     try {
 
-      final double[] originalTimeSeries = new double[6 * 5];
+      //
+      // here will be 6x5 = 30 points
+      //
+      // the string of the size 6: a b c d b c
+      //
+      // 0-4, 5-9, 10-14, 15-19, 20-24, 25-29
+
+      final double[] originalTimeSeries = new double[6 * 5 - 1];
 
       SAXRecords saxData = new SAXRecords();
       int idx = 0;
@@ -122,9 +156,14 @@ public class TestSequiturPaperGrammars {
       GrammarRules rules = grammar.toGrammarRulesData();
       SequiturFactory.updateRuleIntervals(rules, saxData, true, originalTimeSeries, 1, 1);
 
-      for (GrammarRuleRecord rec : grammar.getRuleRecords()) {
-        System.out.println(rec.getRuleIntervals());
-      }
+      ArrayList<RuleInterval> int0 = grammar.getRuleRecords().get(0).getRuleIntervals();
+      assertEquals(1, int0.size());
+      assertEquals(new RuleInterval(0, 29), int0.get(0));
+
+      ArrayList<RuleInterval> int1 = grammar.getRuleRecords().get(1).getRuleIntervals();
+      assertEquals(2, int1.size());
+      assertEquals(new RuleInterval(5, 15), int1.get(0));
+      assertEquals(new RuleInterval(20, 29), int1.get(1));
 
     }
     catch (Exception e) {
