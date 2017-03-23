@@ -1,5 +1,6 @@
 package net.seninp.gi.logic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -10,7 +11,7 @@ import java.util.Arrays;
  * @author Manfred Lerner, seninp
  * 
  */
-public class GrammarRuleRecord {
+public class GrammarRuleRecord implements Serializable {
 
   /* The rule number in Sequitur grammar. */
   private int ruleNumber;

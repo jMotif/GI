@@ -1,5 +1,7 @@
 package net.seninp.gi.logic;
 
+import java.io.Serializable;
+
 /**
  * 
  * Helper class implementing an interval used when plotting.
@@ -7,7 +9,7 @@ package net.seninp.gi.logic;
  * @author Manfred Lerner, seninp
  * 
  */
-public class RuleInterval implements Comparable<RuleInterval>, Cloneable {
+public class RuleInterval implements Comparable<RuleInterval>, Cloneable, Serializable {
 
   public int id; // the corresponding rule id
   public int startPos; // interval start

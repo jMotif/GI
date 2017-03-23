@@ -1,5 +1,6 @@
 package net.seninp.gi.logic;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map.Entry;
 import java.util.SortedMap;
@@ -11,7 +12,7 @@ import java.util.TreeMap;
  * @author psenin
  *
  */
-public class GrammarRules implements Iterable<GrammarRuleRecord> {
+public class GrammarRules implements Iterable<GrammarRuleRecord>, Serializable {
 
   private SortedMap<Integer, GrammarRuleRecord> rules;
 
