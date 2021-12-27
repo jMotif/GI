@@ -71,7 +71,7 @@ I've implemented RePair from scratch and it uses the same [GrammaRules](https://
 	
 which yields: 	
 
-		R0 -> R2 XXX R2 
+	R0 -> R2 XXX R2 
         R1 -> abc cba  : abc cba, [1, 5]
         R2 -> abc R1  : abc abc cba, [0, 4]
 
