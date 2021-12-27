@@ -94,7 +94,7 @@
     <repository>
       <id>github</id>
       <name>GitHub Packages</name>
-      <url>https://maven.pkg.github.com/jMotif/SAX</url>
+      <url>https://maven.pkg.github.com/jMotif/GI</url>
     </repository>
   </distributionManagement>
 
