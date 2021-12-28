@@ -59,7 +59,7 @@
 
   <groupId>net.seninp</groupId>
   <artifactId>jmotif-gi</artifactId>
-  <version>1.1.0</version>
+  <version>1.1.1-SNAPSHOT</version>
 
   <name>jmotif-gi</name>
   <description>An implementation of grammar inference algorithms for JMotif libraries.</description>
@@ -83,7 +83,7 @@
     <url>http://github.com/jMotif/gi.git</url>
     <connection>scm:git:git://git@github.com/jMotif/gi.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jMotif/gi.git</developerConnection>
-    <tag>jmotif-gi-1.1.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <distributionManagement>
