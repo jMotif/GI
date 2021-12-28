@@ -51,12 +51,14 @@ public class RulePrunerPrinter {
     try {
 
       RulePrunerParameters params = new RulePrunerParameters();
-      JCommander jct = new JCommander(params, args);
+      JCommander jct = new JCommander(params);
 
       if (0 == args.length) {
         jct.usage();
       }
       else {
+        
+        jct.parse(args);
 
         // get params printed
         //

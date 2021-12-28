@@ -11,6 +11,8 @@ import java.io.Serializable;
  */
 public class RuleInterval implements Comparable<RuleInterval>, Cloneable, Serializable {
 
+  /** The serial. */
+  private static final long serialVersionUID = -5167641541768459775L;
   public int id; // the corresponding rule id
   public int startPos; // interval start
   public int endPos; // interval stop

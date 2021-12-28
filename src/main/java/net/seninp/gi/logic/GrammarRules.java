@@ -14,6 +14,8 @@ import java.util.TreeMap;
  */
 public class GrammarRules implements Iterable<GrammarRuleRecord>, Serializable {
 
+  /** The serial. */
+  private static final long serialVersionUID = 3982321937773958595L;
   private SortedMap<Integer, GrammarRuleRecord> rules;
 
   public GrammarRules() {

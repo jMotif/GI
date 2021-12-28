@@ -40,12 +40,14 @@ public class TS2Grammar {
   public static void main(String[] args) throws Exception {
 
     TS2GrammarParameters params = new TS2GrammarParameters();
-    JCommander jct = new JCommander(params, args);
+    JCommander jct = new JCommander(params);
 
     if (0 == args.length) {
       jct.usage();
       System.exit(10);
     }
+    
+    jct.parse(args);
 
     // get params printed
     //

@@ -13,6 +13,9 @@ import java.util.Arrays;
  */
 public class GrammarRuleRecord implements Serializable {
 
+  /** The serial. */
+  private static final long serialVersionUID = -6836200298737035047L;
+
   /* The rule number in Sequitur grammar. */
   private int ruleNumber;
 

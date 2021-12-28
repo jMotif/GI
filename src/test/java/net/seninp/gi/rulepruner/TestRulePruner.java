@@ -88,7 +88,7 @@ public class TestRulePruner {
   @Test
   public void test() {
 
-    assertEquals(new Integer(24), RulePrunerFactory.computeGrammarSize(grammar, 3));
+    assertEquals(Integer.valueOf(24), RulePrunerFactory.computeGrammarSize(grammar, 3));
 
     // System.out.println("Raw grammar of size " + RulePrunerFactory.computeGrammarSize(grammar,
     // 3));
@@ -100,7 +100,7 @@ public class TestRulePruner {
     // "Pruned grammar of size " + RulePrunerFactory.computeGrammarSize(prunedGrammar, 3));
     // System.out.println(prunedGrammar.toString());
 
-    assertEquals(new Integer(20), RulePrunerFactory.computeGrammarSize(prunedGrammar, 3));
+    assertEquals(Integer.valueOf(20), RulePrunerFactory.computeGrammarSize(prunedGrammar, 3));
   }
 
 }
