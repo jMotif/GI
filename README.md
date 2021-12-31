@@ -1,4 +1,4 @@
-## jMotif-GI: Grammatical Inference
+## Sequitur and RePair Grammatical Inference for time series pattern mining
 ![maven build](https://github.com/jMotif/GI/actions/workflows/maven.yml/badge.svg) 
 [![codecov.io](http://codecov.io/github/jMotif/GI/coverage.svg?branch=master)](http://codecov.io/github/jMotif/GI?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi)
