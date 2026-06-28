@@ -229,11 +229,28 @@ public abstract class SAXSymbol {
     SAXNonTerminal nt = new SAXNonTerminal(r);
     nt.originalPosition = this.originalPosition;
     this.p.insertAfter(nt);
-    // do p check
-    //
-    // TODO: not getting this
-    if (!p.check()) {
-      p.n.check();
+    // Replacing the digram with the non-terminal nt creates two NEW digrams that must be
+    // re-checked against the digram index: the LEFT one (p, nt) and the RIGHT one (nt, nt.n).
+    // check() returns true only when it consumed the digram into a match/new rule (which can
+    // restructure the neighbourhood); it returns false when the digram was merely inserted as
+    // unique or when nt is a rule end. So: check the left boundary first, and only if it did NOT
+    // trigger a match -- leaving p.n (== nt) and its successor intact -- check the right boundary.
+    // (If the left check DID match, it already re-checks the affected links, so re-checking here
+    // would be redundant or act on stale links.)
+    checkNewLinks(p);
+  }
+
+  /**
+   * Re-checks the two digrams created around a freshly substituted non-terminal: the left digram at
+   * {@code left} (left, left.n) and, only if that did not trigger a match, the right digram at
+   * {@code left.n} (left.n, left.n.n). See {@link #substitute(SAXRule)} for why the right boundary is
+   * skipped once the left one matches.
+   *
+   * @param left the symbol immediately before the substituted non-terminal.
+   */
+  private static void checkNewLinks(SAXSymbol left) {
+    if (!left.check()) {
+      left.n.check();
     }
   }
 
