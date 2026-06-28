@@ -309,28 +309,24 @@ public abstract class SAXSymbol {
   }
 
   /**
-   * Custom hashcode implementation. Produces the hashcode for a digram using this and the next
-   * symbol.
-   * 
+   * Hash code for the digram (this.value, this.n.value) -- the same pair {@link #equals(Object)}
+   * compares. An order-sensitive combination of the two strings' (cached) hash codes.
+   *
+   * <p>
+   * The previous implementation summed {@code Character.getNumericValue} over each value's characters
+   * and combined the two sums linearly. On the small SAX alphabet that collides catastrophically: on a
+   * realistic 12k-token input its 1521 distinct digrams landed in only 100 buckets (deepest 64), so the
+   * static {@code theDigrams} lookups in {@code check()} / {@code deleteDigram()} -- the inner loop of
+   * Sequitur -- degraded toward linear {@code equals}-chain scans. Combining the standard
+   * {@link String#hashCode()} of each value (1521 digrams -> 1235 buckets, deepest 6) restores the O(1)
+   * lookup. It is a pure function of (value, n.value), so it stays consistent with {@code equals} and
+   * is deterministic across runs/JVMs; only the bucket layout changes, never which digram a lookup
+   * returns, so the inferred grammar is unchanged.
+   *
    * @return the digram's hash code.
    */
   public int hashCode() {
-    int hash1 = 31;
-    int hash2 = 13;
-    int num0 = 0;
-
-    for (int i = 0; i < value.length(); i++) {
-      num0 = num0 + Character.getNumericValue(value.charAt(i));
-    }
-
-    int num1 = 0;
-
-    for (int i = 0; i < n.value.length(); i++) {
-      num1 = num1 + Character.getNumericValue(n.value.charAt(i));
-    }
-
-    hash2 = num0 * hash1 + hash2 * num1;
-    return hash2;
+    return 31 * value.hashCode() + n.value.hashCode();
   }
 
   // public int hashCode2() {
