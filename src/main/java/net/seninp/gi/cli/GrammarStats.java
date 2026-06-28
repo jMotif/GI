@@ -14,15 +14,15 @@ public class GrammarStats {
   private static final Object CR = "\n";
   private static final Object TAB = "\t";
 
-  ArrayList<Integer> ruleLength = new ArrayList<Integer>();
+  ArrayList<Integer> ruleLength = new ArrayList<>();
   Integer minLength = 0;
   Integer maxLength = 0;
 
-  ArrayList<Integer> ruleUse = new ArrayList<Integer>();
+  ArrayList<Integer> ruleUse = new ArrayList<>();
   Integer minUse = 0;
   Integer maxUse = 0;
 
-  ArrayList<Integer> ruleFrequency = new ArrayList<Integer>();
+  ArrayList<Integer> ruleFrequency = new ArrayList<>();
   Integer minFrequency = 0;
   Integer maxFrequency = 0;
 

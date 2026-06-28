@@ -44,7 +44,7 @@ public class ClusterRuleFactory {
   public static ArrayList<PackedRuleRecord> getPackedRule(
       ArrayList<SameLengthMotifs> newAllClassifiedMotifs) {
 
-    ArrayList<PackedRuleRecord> arrPackedRuleRecords = new ArrayList<PackedRuleRecord>();
+    ArrayList<PackedRuleRecord> arrPackedRuleRecords = new ArrayList<>();
     int i = 0;
     for (SameLengthMotifs subsequencesInClass : newAllClassifiedMotifs) {
       int classIndex = i;

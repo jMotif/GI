@@ -51,7 +51,7 @@ public class TS2Grammar {
 
     // get params printed
     //
-    StringBuffer sb = new StringBuffer(1024);
+    StringBuilder sb = new StringBuilder(1024);
     sb.append("GrammarViz2 CLI converter v.1").append(CR);
     sb.append("parameters:").append(CR);
 
@@ -139,7 +139,7 @@ public class TS2Grammar {
       // make sure this processed by the stats object
       grammarStats.process(ruleRecord);
 
-      sb = new StringBuffer();
+      sb = new StringBuilder();
       sb.append("/// ").append(ruleRecord.getRuleName()).append(CR);
       sb.append(ruleRecord.getRuleName()).append(" -> \'").append(ruleRecord.getRuleString().trim())
           .append("\', expanded rule string: \'").append(ruleRecord.getExpandedRuleString())

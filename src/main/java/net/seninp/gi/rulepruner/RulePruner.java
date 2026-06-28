@@ -64,7 +64,7 @@ public class RulePruner {
     
     SampledPoint res = new SampledPoint();
 
-    StringBuffer logStr = new StringBuffer();
+    StringBuilder logStr = new StringBuilder();
     logStr.append(windowSize).append(COMMA).append(paaSize).append(COMMA).append(alphabetSize)
         .append(COMMA);
 

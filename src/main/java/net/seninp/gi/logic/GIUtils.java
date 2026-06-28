@@ -41,7 +41,7 @@ public class GIUtils {
    */
   public static List<RuleInterval> getZeroIntervals(int[] coverageArray) {
 
-    ArrayList<RuleInterval> res = new ArrayList<RuleInterval>();
+    ArrayList<RuleInterval> res = new ArrayList<>();
 
     int start = -1;
     boolean inInterval = false;

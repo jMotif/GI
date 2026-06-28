@@ -20,7 +20,7 @@ public class GrammarRules implements Iterable<GrammarRuleRecord>, Serializable {
 
   public GrammarRules() {
     super();
-    this.rules = new TreeMap<Integer, GrammarRuleRecord>();
+    this.rules = new TreeMap<>();
   }
 
   public void addRule(GrammarRuleRecord arrRule) {
@@ -45,7 +45,7 @@ public class GrammarRules implements Iterable<GrammarRuleRecord>, Serializable {
   }
 
   public String toString() {
-    StringBuffer sb = new StringBuffer();
+    StringBuilder sb = new StringBuilder();
     for (Entry<Integer, GrammarRuleRecord> rr : rules.entrySet()) {
       // if(rr.getKey() == 0){ continue; }
       sb.append(rr.getValue().getRuleName());

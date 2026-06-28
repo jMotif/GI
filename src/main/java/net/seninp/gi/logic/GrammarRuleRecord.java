@@ -26,7 +26,7 @@ public class GrammarRuleRecord implements Serializable {
   private String expandedRuleString;
 
   /* The indexes at which the rule occurs in the discretized time series. */
-  private ArrayList<Integer> timeSeriesOccurrenceIndexes = new ArrayList<Integer>();
+  private ArrayList<Integer> timeSeriesOccurrenceIndexes = new ArrayList<>();
 
   /* This rule intervals on the original time series. */
   private ArrayList<RuleInterval> ruleIntervals;
@@ -136,7 +136,7 @@ public class GrammarRuleRecord implements Serializable {
   }
 
   public void setOccurrences(int[] indexes) {
-    this.timeSeriesOccurrenceIndexes = new ArrayList<Integer>();
+    this.timeSeriesOccurrenceIndexes = new ArrayList<>();
     for (Integer idx : indexes) {
       this.timeSeriesOccurrenceIndexes.add(idx);
     }
@@ -206,7 +206,7 @@ public class GrammarRuleRecord implements Serializable {
 
   public ArrayList<RuleInterval> getRuleIntervals() {
     if (null == this.ruleIntervals) {
-      return new ArrayList<RuleInterval>();
+      return new ArrayList<>();
     }
     return this.ruleIntervals;
   }

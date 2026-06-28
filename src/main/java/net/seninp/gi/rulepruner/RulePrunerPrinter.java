@@ -62,7 +62,7 @@ public class RulePrunerPrinter {
 
         // get params printed
         //
-        StringBuffer sb = new StringBuffer(1024);
+        StringBuilder sb = new StringBuilder(1024);
         sb.append("Rule pruner CLI v.1").append(CR);
         sb.append("parameters:").append(CR);
 
@@ -104,7 +104,7 @@ public class RulePrunerPrinter {
             new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
         bw.write(OUTPUT_HEADER);
 
-        ArrayList<SampledPoint> res = new ArrayList<SampledPoint>();
+        ArrayList<SampledPoint> res = new ArrayList<>();
 
         // we need to use this in the loop
         RulePruner rp = new RulePruner(ts);

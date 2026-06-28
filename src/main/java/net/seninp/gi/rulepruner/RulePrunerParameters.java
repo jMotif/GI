@@ -17,7 +17,7 @@ public class RulePrunerParameters {
   // general setup
   //
   @Parameter
-  public List<String> parameters = new ArrayList<String>();
+  public List<String> parameters = new ArrayList<>();
 
   // dataset
   //

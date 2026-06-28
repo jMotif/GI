@@ -31,7 +31,7 @@ public class RuleOrganizer {
       GrammarRules grammarRules) {
 
     // reset vars
-    ArrayList<SameLengthMotifs> allClassifiedMotifs = new ArrayList<SameLengthMotifs>();
+    ArrayList<SameLengthMotifs> allClassifiedMotifs = new ArrayList<>();
 
     // down to business
     ArrayList<SAXMotif> allMotifs = getAllMotifs(grammarRules);
@@ -54,7 +54,7 @@ public class RuleOrganizer {
       int maxLen = tmpMotifLen;
 
       // TODO: assuming that this motif has not been processed, right?
-      ArrayList<SAXMotif> newMotifClass = new ArrayList<SAXMotif>();
+      ArrayList<SAXMotif> newMotifClass = new ArrayList<>();
       newMotifClass.add(tmpMotif);
       tmpMotif.setClassified(true);
 
@@ -99,7 +99,7 @@ public class RuleOrganizer {
   protected ArrayList<SAXMotif> getAllMotifs(GrammarRules grammarRules) {
 
     // result
-    ArrayList<SAXMotif> allMotifs = new ArrayList<SAXMotif>();
+    ArrayList<SAXMotif> allMotifs = new ArrayList<>();
 
     int ruleNumber = grammarRules.size();
 
@@ -137,7 +137,7 @@ public class RuleOrganizer {
       ArrayList<SameLengthMotifs> allClassifiedMotifs, GrammarRules grammarRules, double[] ts,
       double thresouldCom) {
 
-    ArrayList<SAXMotif> motifsBeDeleted = new ArrayList<SAXMotif>();
+    ArrayList<SAXMotif> motifsBeDeleted = new ArrayList<>();
 
     SAXPointsNumber[] pointsNumberRemoveStrategy = countPointNumber(grammarRules, ts);
     for (SameLengthMotifs sameLenMotifs : allClassifiedMotifs) {
@@ -353,9 +353,9 @@ public class RuleOrganizer {
       double[] ts, ArrayList<SameLengthMotifs> allClassifiedMotifs, double fractionTopDist) {
     DistanceComputation dc = new DistanceComputation();
     double[] origTS = ts;
-    ArrayList<SameLengthMotifs> newAllClassifiedMotifs = new ArrayList<SameLengthMotifs>();
+    ArrayList<SameLengthMotifs> newAllClassifiedMotifs = new ArrayList<>();
     for (SameLengthMotifs sameLenMotifs : allClassifiedMotifs) {
-      ArrayList<RuleInterval> arrPos = new ArrayList<RuleInterval>();
+      ArrayList<RuleInterval> arrPos = new ArrayList<>();
       ArrayList<SAXMotif> subsequences = sameLenMotifs.getSameLenMotifs();
       for (SAXMotif ss : subsequences) {
         arrPos.add(ss.getPos());
@@ -442,7 +442,7 @@ public class RuleOrganizer {
    */
   private ArrayList<String[]> findCluster(Cluster cluster, double cutDist, int minPatternPerCls) {
 
-    ArrayList<String[]> clusterTSIdx = new ArrayList<String[]>();
+    ArrayList<String[]> clusterTSIdx = new ArrayList<>();
 
     if (cluster.getDistance() != null) {
       // if (cluster.getDistance() > cutDist) {
@@ -472,7 +472,7 @@ public class RuleOrganizer {
    * @return pattern names.
    */
   private ArrayList<String> getNameInCluster(Cluster cluster) {
-    ArrayList<String> itemsInCluster = new ArrayList<String>();
+    ArrayList<String> itemsInCluster = new ArrayList<>();
 
     String nodeName;
     if (cluster.isLeaf()) {
@@ -500,12 +500,12 @@ public class RuleOrganizer {
    */
   private ArrayList<SameLengthMotifs> SeparateMotifsByClustering(ArrayList<String[]> clusterTSIdx,
       SameLengthMotifs sameLenMotifs) {
-    ArrayList<SameLengthMotifs> newResult = new ArrayList<SameLengthMotifs>();
+    ArrayList<SameLengthMotifs> newResult = new ArrayList<>();
     if (clusterTSIdx.size() > 1) {
       ArrayList<SAXMotif> subsequences = sameLenMotifs.getSameLenMotifs();
       for (String[] idxesInCluster : clusterTSIdx) {
         SameLengthMotifs newIthSLM = new SameLengthMotifs();
-        ArrayList<SAXMotif> sameLenSS = new ArrayList<SAXMotif>();
+        ArrayList<SAXMotif> sameLenSS = new ArrayList<>();
         int minL = sameLenMotifs.getMinMotifLen();
         int maxL = sameLenMotifs.getMaxMotifLen();
 
