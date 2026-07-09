@@ -25,17 +25,17 @@
     <dependency>
       <groupId>net.seninp</groupId>
       <artifactId>jmotif-sax</artifactId>
-      <version>2.0.0</version>
+      <version>2.0.1</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.32</version>
+      <version>2.0.9</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.10</version>
+      <version>1.3.14</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -63,7 +63,7 @@
 
   <groupId>net.seninp</groupId>
   <artifactId>jmotif-gi</artifactId>
-  <version>2.0.0</version>
+  <version>2.0.1</version>
 
   <name>jmotif-gi</name>
   <description>An implementation of grammar inference algorithms for JMotif libraries.</description>
