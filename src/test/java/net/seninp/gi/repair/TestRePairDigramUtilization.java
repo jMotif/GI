@@ -9,8 +9,9 @@ import org.junit.Test;
 import net.seninp.gi.logic.GrammarRules;
 import net.seninp.jmotif.sax.NumerosityReductionStrategy;
 import net.seninp.jmotif.sax.TSProcessor;
+import net.seninp.jmotif.sax.SAXProcessor;
+import net.seninp.jmotif.sax.alphabet.NormalAlphabet;
 import net.seninp.jmotif.sax.datastructure.SAXRecords;
-import net.seninp.jmotif.sax.parallel.ParallelSAXImplementation;
 
 public class TestRePairDigramUtilization {
 
@@ -36,15 +37,13 @@ public class TestRePairDigramUtilization {
 
     // convert to SAX
     //
-    ParallelSAXImplementation ps = new ParallelSAXImplementation();
-    SAXRecords saxData = ps.process(ts1, 2, WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+    SAXProcessor sp = new SAXProcessor();
+    NormalAlphabet na = new NormalAlphabet();
+    SAXRecords saxData = sp.ts2saxViaWindow(ts1, WINDOW_SIZE, PAA_SIZE, na.getCuts(ALPHABET_SIZE),
         NumerosityReductionStrategy.EXACT, 0.01);
     saxData.buildIndex();
 
-    // build a grammar
-    //
     String inputString = saxData.getSAXString(" ");
-    // System.out.println("Input string:\n" + inputString);
     RePairGrammar grammar = RePairFactory.buildGrammar(saxData);
     grammar.expandRules();
 
@@ -54,13 +53,8 @@ public class TestRePairDigramUtilization {
     assertNotNull(rulesData);
 
     String recoveredInputString = rulesData.get(0).getExpandedRuleString();
-
-    // System.out.println("RePair grammar:\n" + RePairRule.toGrammarRules());
-    // System.out.println("Recovered string:\n" + recoveredString);
     assertTrue(inputString.trim().equalsIgnoreCase(recoveredInputString.trim()));
 
-    // assert the digram use
-    //
     String r0String = rulesData.get(0).getRuleString();
 
     HashSet<String> digrams = new HashSet<String>();

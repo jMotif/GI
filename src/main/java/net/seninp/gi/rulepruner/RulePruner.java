@@ -81,10 +81,6 @@ public class RulePruner {
     // nThreshold);
     SAXRecords saxData = sp.ts2saxViaWindow(ts, windowSize, paaSize, na.getCuts(alphabetSize),
         nrStrategy, nThreshold);
-    if (Thread.currentThread().isInterrupted() && null == saxData) {
-      System.err.println("Sampler being interrupted, returning NULL!");
-      return null;
-    }
     saxData.buildIndex();
 
     // compute SAX approximation distance

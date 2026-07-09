@@ -1,13 +1,15 @@
 ## Sequitur and RePair Grammatical Inference for time series pattern mining
 ![maven build](https://github.com/jMotif/GI/actions/workflows/maven.yml/badge.svg) 
-[![codecov.io](http://codecov.io/github/jMotif/GI/coverage.svg?branch=master)](http://codecov.io/github/jMotif/GI?branch=master)
+[![codecov.io](https://codecov.io/github/jMotif/GI/coverage.svg?branch=master)](https://codecov.io/github/jMotif/GI?branch=master)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi)
-[![License](http://img.shields.io/:license-gpl2-green.svg)](http://www.gnu.org/licenses/gpl-2.0.html)
+[![License](https://img.shields.io/:license-gpl2-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 [![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=jMotif_GI)
 
 
-Implements Sequtur (online) and Re-Pair (off-line) grammar induction algorithms for [Grammarviz 2.0](https://github.com/GrammarViz2/grammarviz2_site) and [SAX-VSM-G](https://github.com/seninp/sax-vsm-g). This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+Implements Sequitur (online) and RePair (off-line) grammar induction algorithms for [Grammarviz 2.0](https://github.com/GrammarViz2/grammarviz2_site) and [SAX-VSM-G](https://github.com/seninp/sax-vsm-g). This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
+
+Cross-language RePair checks (decompression round-trip and the tie-free paper example) live in [jmotif-conformance](https://github.com/jMotif/jmotif-conformance) alongside the SAX stack tests.
 
 ### More about implemented algorithms:
 [1] Nevill-Manning, C.G. and Witten, I.H., [*"Identifying Hierarchical Structure in Sequences: A linear-time algorithm"*](https://doi.org/10.1613/jair.374), Journal of Artificial Intelligence Research, 7, 67-82, (1997).
@@ -15,24 +17,28 @@ Implements Sequtur (online) and Re-Pair (off-line) grammar induction algorithms 
 [2] Larsson, N.J.; Moffat, A., [*"Offline dictionary-based compression"*](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=755679&isnumber=16375), Data Compression Conference, 1999. Proceedings. DCC '99 , vol., no., pp.296,305, 29-31 Mar 1999.
 
 ### Citing this work:
-If you are using this implementation for you academic work, please cite our [Grammarviz 2.0 paper](http://link.springer.com/chapter/10.1007/978-3-662-44845-8_37):
+If you are using this implementation for your academic work, please cite our [Grammarviz 2.0 paper](http://link.springer.com/chapter/10.1007/978-3-662-44845-8_37):
 
 [Citation] Senin, P., Lin, J., Wang, X., Oates, T., Gandhi, S., Boedihardjo, A.P., Chen, C., Frankenstein, S., Lerner, M.,  [*GrammarViz 2.0: a tool for grammar-based pattern discovery in time series*](http://www2.hawaii.edu/~senin/assets/papers/grammarviz2.pdf), ECML/PKDD Conference, 2014.
 
 1.0 Building
 ------------
-The code is written in Java and I use maven to build it:
+Requires **JDK 21+**. The code is written in Java and uses Maven to build it:
 	
 	$ mvn package
 	[INFO] Scanning for projects...
 	[INFO] ------------------------------------------------------------------------
-  	[INFO] Building GI
+  	[INFO] Building jmotif-gi
 	[INFO]    task-segment: [package]
   	...
-	[INFO] Building jar: /media/Stock/git/jmotif-GI.git/target/jmotif-gi-0.3.1-SNAPSHOT.jar
+	[INFO] Building jar: target/jmotif-gi-2.0.0.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 	[INFO] ------------------------------------------------------------------------
+
+For a runnable jar with dependencies:
+
+	$ mvn package -P single
   
 2.0 Sequitur API use
 ------------
@@ -53,7 +59,7 @@ which prints the following output:
 	3	R3	1	3	2	4	R2 d 	a b c d 	[5, 9, 14]
 	4	R4	1	2	2	5	R3 e 	a b c d e 	[9, 14]
  
-My own addition allows to retrieve the Sequitur rules as an iterable collection of [GrammaRuleRecords](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) and to map them back to the discretized time series:
+My own addition allows to retrieve the Sequitur rules as an iterable collection of [GrammarRuleRecords](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) and to map them back to the discretized time series:
 
 	GrammarRules rules = r.toGrammarRulesData();
 	GrammarRuleRecord rec = rules.get(4);
@@ -63,9 +69,9 @@ My own addition allows to retrieve the Sequitur rules as an iterable collection 
 
 3.0 RePair API use
 ------------
-I've implemented RePair from scratch and it uses the same [GrammaRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRules.java) / [GrammaRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) data structures as for Sequitur, so it can be plugged into Grammarviz seamlessly: 
+I've implemented RePair from scratch and it uses the same [GrammarRules](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRules.java) / [GrammarRuleRecord](https://github.com/jMotif/GI/blob/master/src/main/java/net/seninp/gi/logic/GrammarRuleRecord.java) data structures as for Sequitur, so it can be plugged into Grammarviz seamlessly: 
 
-	String TEST_STRING = "abc abc cba XXX abc abc cba";
+	String TEST_STRING = "abc abc cba cba bac xxx abc abc cba cba bac";
 	
 	RePairGrammar rg = RePairFactory.buildGrammar(TEST_STRING);
 	
@@ -73,16 +79,16 @@ I've implemented RePair from scratch and it uses the same [GrammaRules](https://
 	
 which yields: 	
 
-	R0 -> R2 XXX R2 
+	R0 -> R4 xxx R4 
         R1 -> abc cba  : abc cba, [1, 5]
         R2 -> abc R1  : abc abc cba, [0, 4]
 
-Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-tread communications and synchronization was the majot showstopper, so the current *new* implementation (>0.8.5) is single-threaded (but you can still get the parallel one -- it is tagged "old_repair" in the version control).
+Thanks to the algorithm's design, I was able to parallelize RePair. However, the cost of inter-thread communications and synchronization was the major showstopper, so the current *new* implementation (>0.8.5) is single-threaded (but you can still get the parallel one -- it is tagged "old_repair" in the version control).
 
 
 4.0 Performance comparison
 ------------
-The both implemented GI algorithms, Sequitur and RePair, demonstrate a somewhat similar performance with minor differnces. Specifically: 
+The two implemented GI algorithms, Sequitur and RePair, demonstrate somewhat similar performance with minor differences. Specifically: 
  -   Sequitur implementation is slower than RePair
  -   Sequitur tends to produce more rules, but Sequitur rules are less frequent than RePair rules
  -   Sequitur rule-corresponding subsequences vary in length more
@@ -98,6 +104,12 @@ All these may affect the performance of the upstream time series analysis algori
 
 
 #### Versions:
+`2.0.0`
+  * **the build now targets Java 21** (was Java 8); depends on **jmotif-sax 2.0.0**
+  * Maven dependency scopes tightened (JUnit test-only, Logback runtime); JaCoCo upgraded to 0.8.15
+  * CI runs a Java 21/25 matrix; Codecov upload gated to the Java 21 leg
+  * RePair paper golden test aligned with jmotif-R/saxpy (`xxx` token, `R4 xxx R4`)
+
 `1.0.1`
   * Optimized rule pruning algorithm
   * `GrammarRules`, `GrammarRuleRecord`, and `RuleInterval` implement `Serializable`
