@@ -28,6 +28,12 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: maven
 
+    # jmotif-sax 2.0.1 is on master but not always on Central yet; install locally.
+    - name: Install jmotif-sax from source
+      run: |
+        git clone --depth 1 https://github.com/jMotif/SAX.git ../SAX
+        mvn -B install -P single -DskipTests -f ../SAX/pom.xml
+
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
@@ -56,6 +62,16 @@ jobs:
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "21"
+        cache: maven
+    - name: Install jmotif-sax from source
+      run: |
+        git clone --depth 1 https://github.com/jMotif/SAX.git ../SAX
+        mvn -B install -P single -DskipTests -f ../SAX/pom.xml
     - name: SonarCloud Scan
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
