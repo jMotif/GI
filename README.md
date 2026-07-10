@@ -1,10 +1,8 @@
 ## Sequitur and RePair Grammatical Inference for time series pattern mining
-![maven build](https://github.com/jMotif/GI/actions/workflows/maven.yml/badge.svg) 
-[![codecov.io](https://codecov.io/github/jMotif/GI/coverage.svg?branch=master)](https://codecov.io/github/jMotif/GI?branch=master)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.seninp/jmotif-gi)
-[![License](https://img.shields.io/:license-gpl2-green.svg)](https://www.gnu.org/licenses/gpl-2.0.html)
-
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/summary/new_code?id=jMotif_GI)
+[![build](https://github.com/jMotif/GI/actions/workflows/maven.yml/badge.svg)](https://github.com/jMotif/GI/actions/workflows/maven.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/net.seninp/jmotif-gi)](https://central.sonatype.com/artifact/net.seninp/jmotif-gi)
+[![coverage](https://codecov.io/github/jMotif/GI/graph/badge.svg?branch=master)](https://codecov.io/github/jMotif/GI?branch=master)
+[![License](https://img.shields.io/github/license/jMotif/GI)](https://www.gnu.org/licenses/gpl-2.0.html)
 
 
 Implements Sequitur (online) and RePair (off-line) grammar induction algorithms for [Grammarviz 2.0](https://github.com/GrammarViz2/grammarviz2_site) and [SAX-VSM-G](https://github.com/seninp/sax-vsm-g). This code is released under [GPL v.2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html).
