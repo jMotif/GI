@@ -52,13 +52,13 @@ public class EvaluatorClusterRule {
 
     System.out.println("Sampling " + dataset);
 
-    BufferedWriter bw = new BufferedWriter(
-        new FileWriter(new File(dataset + "_repair_grammarsampler_clusterrule.out")));
-    bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
-    bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
-    bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
+    try (BufferedWriter bw = new BufferedWriter(
+        new FileWriter(new File(dataset + "_repair_grammarsampler_clusterrule.out")))) {
+      bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
+      bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
+      bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
-    double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
+      double[] series = tp.readTS("src/resources/test-data/" + dataset + ".txt", 0);
 
     if ("300_signal1".equalsIgnoreCase(dataset) || "318_signal1".equalsIgnoreCase(dataset)) {
       series = Arrays.copyOfRange(series, 0, 30000);
@@ -127,8 +127,7 @@ public class EvaluatorClusterRule {
         }
       }
     }
-
-    bw.close();
+    }
 
   }
 

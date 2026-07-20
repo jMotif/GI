@@ -116,22 +116,12 @@ public class TS2Grammar {
     //
     LOGGER.info("Producing the output ...");
     String fname = TS2GrammarParameters.OUT_FILE;
-
-    boolean fileOpen = false;
-    BufferedWriter bw = null;
-    try {
-      bw = new BufferedWriter(new FileWriter(new File(fname)));
-      fileOpen = true;
-      bw.write("#" + sb.toString().replaceAll("\n", "\n#"));
-    }
-    catch (IOException e) {
-      System.err.print(
-          "Encountered an error while writing stats file: \n" + StackTrace.toString(e) + "\n");
-    }
+    final String outputHeader = sb.toString();
 
     // collect stats object
     //
     GrammarStats grammarStats = new GrammarStats();
+    StringBuilder ruleOutput = new StringBuilder();
 
     // each rule stats
     for (GrammarRuleRecord ruleRecord : rules) {
@@ -165,15 +155,7 @@ public class TS2Grammar {
       sb.append("max length ").append(ruleRecord.minMaxLengthAsString().split(" - ")[1]).append(CR);
       sb.append("mean length ").append(ruleRecord.getMeanLength()).append(CR);
 
-      if (fileOpen) {
-        try {
-          bw.write(sb.toString());
-        }
-        catch (IOException e) {
-          System.err.print(
-              "Encountered an error while writing stats file: \n" + StackTrace.toString(e) + "\n");
-        }
-      }
+      ruleOutput.append(sb);
     }
 
     // get the coverage array
@@ -214,9 +196,9 @@ public class TS2Grammar {
       zerosSize += i.getLength();
     }
 
-    // close the file
-    //
-    if (fileOpen) {
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(fname)))) {
+      bw.write("#" + outputHeader.replaceAll("\n", "\n#"));
+      bw.write(ruleOutput.toString());
       bw.write(grammarStats.toString());
       bw.write("# coverage\t" + minCoverage + "\t" + maxCoverage + "\t" + aveCoverage + "\n");
       bw.write(
@@ -224,18 +206,9 @@ public class TS2Grammar {
       bw.write("#\n# " + grammarStats.toSingleLine() + "\t" + minCoverage + "\t" + maxCoverage
           + "\t" + aveCoverage + "\n");
     }
-
-    try {
-      if (fileOpen) {
-        bw.close();
-      }
-    }
     catch (IOException e) {
       System.err.print(
           "Encountered an error while writing stats file: \n" + StackTrace.toString(e) + "\n");
-    }
-    finally {
-      bw.close();
     }
 
   }

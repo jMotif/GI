@@ -100,43 +100,42 @@ public class RulePrunerPrinter {
         int[] boundaries = toBoundaries(RulePrunerParameters.GRID_BOUNDARIES);
 
         // create the output file
-        BufferedWriter bw = new BufferedWriter(
-            new FileWriter(new File(RulePrunerParameters.OUT_FILE)));
-        bw.write(OUTPUT_HEADER);
+        try (BufferedWriter bw = new BufferedWriter(
+            new FileWriter(new File(RulePrunerParameters.OUT_FILE)))) {
+          bw.write(OUTPUT_HEADER);
 
-        ArrayList<SampledPoint> res = new ArrayList<>();
+          ArrayList<SampledPoint> res = new ArrayList<>();
 
-        // we need to use this in the loop
-        RulePruner rp = new RulePruner(ts);
+          // we need to use this in the loop
+          RulePruner rp = new RulePruner(ts);
 
-        // iterate over the grid evaluating the grammar
-        //
-        for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
-          for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
+          // iterate over the grid evaluating the grammar
+          //
+          for (int WINDOW_SIZE = boundaries[0]; WINDOW_SIZE < boundaries[1]; WINDOW_SIZE += boundaries[2]) {
+            for (int PAA_SIZE = boundaries[3]; PAA_SIZE < boundaries[4]; PAA_SIZE += boundaries[5]) {
 
-            // check for invalid cases
-            if (PAA_SIZE > WINDOW_SIZE) {
-              continue;
-            }
+              // check for invalid cases
+              if (PAA_SIZE > WINDOW_SIZE) {
+                continue;
+              }
 
-            for (int ALPHABET_SIZE = boundaries[6]; ALPHABET_SIZE < boundaries[7]; ALPHABET_SIZE += boundaries[8]) {
+              for (int ALPHABET_SIZE = boundaries[6]; ALPHABET_SIZE < boundaries[7]; ALPHABET_SIZE += boundaries[8]) {
 
-              SampledPoint p = rp.sample(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
-                  RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION,
-                  RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
+                SampledPoint p = rp.sample(WINDOW_SIZE, PAA_SIZE, ALPHABET_SIZE,
+                    RulePrunerParameters.GI_ALGORITHM_IMPLEMENTATION,
+                    RulePrunerParameters.SAX_NR_STRATEGY, RulePrunerParameters.SAX_NORM_THRESHOLD);
 
-              bw.write(p.toLogString() + "\n");
+                bw.write(p.toLogString() + "\n");
 
-              res.add(p);
+                res.add(p);
+              }
             }
           }
+
+          Collections.sort(res, new ReductionSorter());
+
+          System.out.println("\nApparently, the best parameters are " + res.get(0).toString());
         }
-
-        bw.close();
-
-        Collections.sort(res, new ReductionSorter());
-
-        System.out.println("\nApparently, the best parameters are " + res.get(0).toString());
 
       }
     }

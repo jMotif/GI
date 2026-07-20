@@ -51,9 +51,9 @@ public class EvaluatorSequiturRepair {
 
       System.out.println("Sampling " + dataset);
 
-      BufferedWriter bw = new BufferedWriter(new FileWriter(new File(dataset + "evaluator.out")));
+      try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File(dataset + "evaluator.out")))) {
 
-      bw.write("dataset\talgorithm\twindow\tpaa\talphabet\tapproximation\t");
+        bw.write("dataset\talgorithm\twindow\tpaa\talphabet\tapproximation\t");
       bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
       bw.write(
           "pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\tmilliseconds\n");
@@ -153,7 +153,7 @@ public class EvaluatorSequiturRepair {
           }
         }
       }
-      bw.close();
+      }
     }
   }
 

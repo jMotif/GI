@@ -34,12 +34,12 @@ public class EvaluatorVideo {
 
   public static void main(String[] args) throws Exception {
 
-    BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_video.txt")));
-    bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
-    bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
-    bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(new File("grammarsampler_video.txt")))) {
+      bw.write("dataset\twindow\tpaa\talphabet\tapproximation\t");
+      bw.write("rules\tgr_size\tfrequency\tcover\tcoverage\t");
+      bw.write("pruned_rules\tpruned_gr_size\tpruned_frequency\tpruned_cover\tpruned_coverage\n");
 
-    for (String dataset : DATASETS) {
+      for (String dataset : DATASETS) {
       for (int w : WINDOWS) {
         for (int p : PAAS) {
           for (int a : ALPHABETS) {
@@ -90,8 +90,7 @@ public class EvaluatorVideo {
         }
       }
     }
-
-    bw.close();
+    }
 
   }
 
