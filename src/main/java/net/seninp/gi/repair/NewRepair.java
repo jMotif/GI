@@ -32,10 +32,16 @@ public class NewRepair {
    */
   public static RePairGrammar parse(String inputStr) {
 
+    RePairGrammar grammar = new RePairGrammar();
+
+    if (null == inputStr || inputStr.trim().isEmpty()) {
+      grammar.setR0String("");
+      grammar.setR0ExpnadedString(null == inputStr ? "" : inputStr);
+      return grammar;
+    }
+
     Date start0 = new Date();
     LOGGER.debug("input string (" + String.valueOf(countSpaces(inputStr) + 1) + " tokens) ");
-
-    RePairGrammar grammar = new RePairGrammar();
 
     // two data structures
     //

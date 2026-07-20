@@ -56,6 +56,7 @@ public final class SequiturFactory {
     SAXRule.theRules.clear();
     SAXSymbol.theDigrams.clear();
     SAXSymbol.theSubstituteTable.clear();
+    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
 
     // init the top-level rule
     //

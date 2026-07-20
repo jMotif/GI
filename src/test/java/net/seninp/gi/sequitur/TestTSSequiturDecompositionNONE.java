@@ -44,7 +44,7 @@ public class TestTSSequiturDecompositionNONE {
       String sax_str = sax.getSAXString(" ");
 
       SAXRule r = SequiturFactory.runSequitur(sax_str);
-      // GrammarRules ruless = r.toGrammarRulesData();
+      r.toGrammarRulesData();
 
       // System.out.println(SAXRule.printRules() + "\n ---- \n");
       // Number Name Level Occurr. Usage Yield Rule str Expaneded Indexes
