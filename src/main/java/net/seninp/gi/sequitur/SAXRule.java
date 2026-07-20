@@ -356,9 +356,6 @@ public class SAXRule {
     ruleRecord.setExpandedRuleString(resultString.toString().trim());
     // ruleRecord.setRuleYield(countSpaces(resultString));
 
-    // long end = System.currentTimeMillis();
-    // System.out.println("Rules expanded in " + SAXFactory.timeToString(start, end));
-
   }
 
   private static String expandRule(Integer ruleNum) {

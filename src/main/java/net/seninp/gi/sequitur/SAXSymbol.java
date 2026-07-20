@@ -22,6 +22,9 @@ package net.seninp.gi.sequitur;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Template for Sequitur data structures. Adaption of Eibe Frank code for JMotif API.
  * 
@@ -29,6 +32,8 @@ import java.util.Map.Entry;
  * 
  */
 public abstract class SAXSymbol {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(SAXSymbol.class);
 
   /**
    * Apparently, this limits the possible number of terminals, ids of non-terminals start after this
@@ -65,15 +70,10 @@ public abstract class SAXSymbol {
    */
   public static void join(SAXSymbol left, SAXSymbol right) {
 
-    // System.out.println(" performing the join of " + getPayload(left) + " and "
-    // + getPayload(right));
-
     // check for an OLD digram existence - i.e. left must have a next symbol
     // if .n exists then we are joining TERMINAL symbols within the string, and must clean-up the
     // old digram
     if (left.n != null) {
-      // System.out.println(" " + getPayload(left)
-      // + " use to be in the digram table, cleaning up");
       left.deleteDigram();
     }
 
@@ -93,19 +93,6 @@ public abstract class SAXSymbol {
    * @param toInsert the new symbol to be inserted.
    */
   public void insertAfter(SAXSymbol toInsert) {
-
-    // if (this.isGuard()) {
-    // System.out.println(" this is Guard of the rule " + ((SAXGuard) this).r.ruleIndex
-    // + " inserting " + toInsert.value + " after ");
-    // }
-    // else if (this.isNonTerminal()) {
-    // System.out.println(" this is non-terminal representing the rule "
-    // + ((SAXNonTerminal) this).r.ruleIndex + " inserting " + toInsert.value + " after ");
-    // }
-    // else {
-    // System.out.println(" this is symbol " + this.value + " inserting " + toInsert.value
-    // + " after ");
-    // }
 
     // call join on this symbol' NEXT - placing it AFTER the new one
     join(toInsert, n);
@@ -157,11 +144,6 @@ public abstract class SAXSymbol {
    */
   public boolean check() {
 
-    // System.out.println(" performing CHECK on " + getPayload(this));
-
-    // System.out.println("[sequitur debug] *calling check() on* " + this.value + ", n isGuard: "
-    // + n.isGuard());
-
     // ... Each time a link is made between two symbols if the new digram is repeated elsewhere
     // and the repetitions do not overlap, if the other occurrence is a complete rule,
     // replace the new digram with the non-terminal symbol that heads the rule,
@@ -174,40 +156,20 @@ public abstract class SAXSymbol {
     }
 
     if (!theDigrams.containsKey(this)) {
-      // System.out.println("[sequitur debug] *check...* digrams contain this (" + this.value + "~"
-      // + this.n.value + ")? NO. Checking in.");
-      // found = theDigrams.put(this, this);
       theDigrams.put(this, this);
-      // System.out.println(" *** Digrams now: " + makeDigramsTable());
-      // System.out.println("[sequitur debug] *digrams* " + hash2String());
       return false;
     }
-
-    // System.out.println("[sequitur debug] *check...* digrams contain this (" + this.value
-    // + this.n.value + ")? Yes. Oh-Oh...");
 
     // well the same hash is in the store, lemme see...
     SAXSymbol found = theDigrams.get(this);
 
     // if it's not me, then lets call match magic?
     if (found.n != this) {
-      // System.out.println("[sequitur debug] *double check...* IT IS NOT ME!");
       match(this, found);
     }
 
     return true;
   }
-
-  // private String hash2String() {
-  // StringBuffer sb = new StringBuffer();
-  // for (Entry<SAXSymbol, SAXSymbol> e : theDigrams.entrySet()) {
-  // // sb.append("[").append(e.getKey().value).append(e.getKey().n.value).append("->");
-  // sb.append("[").append(e.getKey().value).append("~").append(e.getKey().n.value).append("->");
-  // // sb.append(e.getValue().value).append(e.getKey().n.value).append("],");
-  // sb.append(System.identityHashCode(e.getValue())).append("],");
-  // }
-  // return sb.toString();
-  // }
 
   /**
    * Replace a digram with a non-terminal.
@@ -215,8 +177,6 @@ public abstract class SAXSymbol {
    * @param r a rule to use.
    */
   public void substitute(SAXRule r) {
-    // System.out.println("[sequitur debug] *substitute* " + this.value + " with rule "
-    // + r.asDebugLine());
     // clean up this place and the next
 
     // here we keep the original position in the input string
@@ -265,10 +225,6 @@ public abstract class SAXSymbol {
     SAXRule rule;
     SAXSymbol first, second;
 
-    // System.out.println("[sequitur debug] *match* newDigram [" + newDigram.value + ","
-    // + newDigram.n.value + "], old matching one [" + matchingDigram.value + ","
-    // + matchingDigram.n.value + "]");
-
     // if previous of matching digram is a guard
     if (matchingDigram.p.isGuard() && matchingDigram.n.n.isGuard()) {
       // reuse an existing rule
@@ -292,28 +248,20 @@ public abstract class SAXSymbol {
         second.n = rule.theGuard;
         rule.theGuard.p = second;
 
-        // System.out.println("[sequitur debug] *newRule...* \n" + rule.getRules());
-
         // put this digram into the hash
         // this effectively erases the OLD MATCHING digram with the new DIGRAM (symbol is wrapped
         // into Guard)
         theDigrams.put(first, first);
 
         // substitute the matching (old) digram with this rule in S
-        // System.out.println("[sequitur debug] *newRule...* substitute OLD digram first.");
         matchingDigram.substitute(rule);
 
         // substitute the new digram with this rule in S
-        // System.out.println("[sequitur debug] *newRule...* substitute NEW digram last.");
         theDigram.substitute(rule);
-
-        // rule.assignLevel();
-
-        // System.out.println(" *** Digrams now: " + makeDigramsTable());
 
       }
       catch (CloneNotSupportedException c) {
-        c.printStackTrace();
+        LOGGER.error("unexpected CloneNotSupportedException while forming a new rule", c);
       }
     }
 
@@ -346,37 +294,6 @@ public abstract class SAXSymbol {
     return 31 * value.hashCode() + n.value.hashCode();
   }
 
-  // public int hashCode2() {
-  // long code;
-  //
-  // StringBuilder sb = new StringBuilder(value);
-  // sb.append("");
-  // sb.append(n.value);
-  //
-  // code = sb.toString().hashCode();
-  // code = code % prime;
-  //
-  // System.out.println("str:" + sb.toString() + " - str.hc(): " + sb.toString().hashCode()
-  // + " - Code: " + code + "(int)Code:" + (int) code);
-  //
-  // return (int) code;
-  // }
-  //
-  // public int hashCodeOld() {
-  //
-  // long code;
-  //
-  // // Values in linear combination with two
-  // // prime numbers.
-  // // code = ((21599 * (long) value.hashCode()) + (20507 * (long) n.value.hashCode()));
-  // code = (long) value.hashCode() + (long) n.value.hashCode();
-  // code = code % (long) prime;
-  //
-  // // System.out.println("value.hc():" + value.hashCode() + " - n.value.hc(): " +
-  // // n.value.hashCode()+ " - Code: " + code);
-  // return (int) code;
-  // }
-
   /**
    * Test if two digrams are equal. WARNING: don't use to compare two symbols.
    */
@@ -387,14 +304,11 @@ public abstract class SAXSymbol {
       return false;
     if (!(obj instanceof SAXSymbol))
       return false;
-    // return ((value == ((SAXSymbol)obj).value) &&
-    // (n.value == ((SAXSymbol)obj).n.value));
     return ((value.equals(((SAXSymbol) obj).value)) && (n.value.equals(((SAXSymbol) obj).n.value)));
   }
 
   @Override
   public String toString() {
-    // return getPayload(this);
     return "SAXSymbol [value=" + value + ", p=" + p + ", n=" + n + "]";
   }
 

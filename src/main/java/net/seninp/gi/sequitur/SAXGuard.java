@@ -57,7 +57,6 @@ public class SAXGuard extends SAXSymbol {
    * {@inheritDoc}
    */
   public void cleanUp() {
-    System.err.println("Attempting to cleaning up the Guard");
     join(p, n);
   }
 

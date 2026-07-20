@@ -86,7 +86,6 @@ public class RuleOrganizer {
       allClassifiedMotifs.add(tmpSameLengthMotifs);
     }
     return allClassifiedMotifs;
-    // System.out.println();
   }
 
   /**
@@ -413,7 +412,6 @@ public class RuleOrganizer {
       int minPatternPerCls = 1;
 
       if (cluster.getDistance() == null) {
-        // System.out.print(false);
         continue;
       }
 

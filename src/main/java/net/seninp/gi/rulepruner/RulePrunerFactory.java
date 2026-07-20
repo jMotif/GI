@@ -263,7 +263,6 @@ public class RulePrunerFactory {
     // if (inUncovered) {
     // sb.append("[" + start + ", " + range.length + "], ");
     // }
-    // System.out.println(sb);
     //
     //
     for (boolean p : range) {

@@ -128,7 +128,7 @@ public class RePairGrammar {
    */
   public String toGrammarRules() {
     StringBuffer sb = new StringBuffer();
-    System.out.println("R0 -> " + this.r0String);
+    sb.append("R0 -> ").append(this.r0String).append("\n");
     for (int i = 1; i <= this.theRules.size(); i++) {
       RePairRule r = this.theRules.get(i);
       sb.append(THE_R).append(r.ruleNumber).append(" -> ").append(r.toRuleString()).append(" : ")
@@ -156,7 +156,6 @@ public class RePairGrammar {
     res.addRule(r0);
 
     for (RePairRule rule : theRules.values()) {
-      // System.out.println("processing the rule " + rule.ruleNumber);
       GrammarRuleRecord rec = new GrammarRuleRecord();
 
       rec.setRuleNumber(rule.ruleNumber);
@@ -180,10 +179,8 @@ public class RePairGrammar {
         if (t.startsWith("R")) {
           Integer ruleId = Integer.valueOf(t.substring(1));
           GrammarRuleRecord rr = res.get(ruleId);
-          // System.out.print(rr.getRuleUseFrequency() + " ");
           int newFreq = rr.getRuleUseFrequency() + 1;
           rr.setRuleUseFrequency(newFreq);
-          // System.out.println(rr.getRuleUseFrequency());
         }
       }
     }

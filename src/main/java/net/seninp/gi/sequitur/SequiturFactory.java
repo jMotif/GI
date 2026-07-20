@@ -71,7 +71,6 @@ public final class SequiturFactory {
     while (st.hasMoreTokens()) {
 
       String token = st.nextToken();
-      // System.out.println(" processing the token " + token);
 
       // extract next token
       SAXTerminal symbol = new SAXTerminal(token, currentPosition);
@@ -179,7 +178,6 @@ public final class SequiturFactory {
       //
       for (Integer currentIndex : ruleContainer.getOccurrences()) {
 
-        // System.out.println("Index: " + currentIndex);
         // String extractedStr = "";
 
         // what we do here is to extract the positions of sax words in the real time-series

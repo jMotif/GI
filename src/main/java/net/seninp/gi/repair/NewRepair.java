@@ -132,7 +132,6 @@ public class NewRepair {
 //        + " digrams in the queue");
     // LOGGER.debug(digramsQueue.toString().replace("\n",
     // "\n "));
-    // System.out.println(digramsQueue.toString());
 
     // start the Re-Pair cycle
     //
@@ -156,7 +155,6 @@ public class NewRepair {
       RePairSymbolRecord second = first.getNext();
 
       RePairRule r = new RePairRule(grammar);
-      // System.out.println("polled a priority queue entry: " + entry.str + " : " + entry.freq + " -> created the rule " + r.ruleNumber);
 
       r.setFirst(first.getPayload());
       r.setSecond(second.getPayload());
