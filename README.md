@@ -29,7 +29,7 @@ Requires **JDK 21+**. The code is written in Java and uses Maven to build it:
   	[INFO] Building jmotif-gi
 	[INFO]    task-segment: [package]
   	...
-	[INFO] Building jar: target/jmotif-gi-2.0.1.jar
+	[INFO] Building jar: target/jmotif-gi-2.0.2.jar
 	[INFO] ------------------------------------------------------------------------
 	[INFO] BUILD SUCCESSFUL
 	[INFO] ------------------------------------------------------------------------
@@ -102,7 +102,7 @@ All these may affect the performance of the upstream time series analysis algori
 
 
 #### Versions:
-`2.0.1`
+`2.0.2`
   * depends on **jmotif-sax 2.0.1**; SLF4J 2.0.9 and Logback 1.3.14 (addresses Dependabot serialization advisory on Logback 1.2.x)
 
 `2.0.0`
