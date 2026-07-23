@@ -9,7 +9,7 @@ Implements Sequitur (online) and RePair (off-line) grammar induction algorithms 
 
 Cross-language RePair checks (decompression round-trip and the tie-free paper example) live in [jmotif-conformance](https://github.com/jMotif/jmotif-conformance) alongside the SAX stack tests.
 
-### More about implemented algorithms:
+### References
 [1] Nevill-Manning, C.G. and Witten, I.H., [*"Identifying Hierarchical Structure in Sequences: A linear-time algorithm"*](https://doi.org/10.1613/jair.374), Journal of Artificial Intelligence Research, 7, 67-82, (1997).
 
 [2] Larsson, N.J.; Moffat, A., [*"Offline dictionary-based compression"*](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=755679&isnumber=16375), Data Compression Conference, 1999. Proceedings. DCC '99 , vol., no., pp.296,305, 29-31 Mar 1999.
