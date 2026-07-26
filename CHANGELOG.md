@@ -5,10 +5,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Added
+- **`TestSequiturPinnedBehavior`** — 11 tests pinning current Sequitur output ahead of the
+  planned de-static refactor: degenerate inputs (empty/blank/null/single-token), overlapping
+  digrams (`a a a` vs `a a a a`), rule utility, occurrence retention under rule absorption
+  (the `SAXNonTerminal.cleanUp()` TODO behavior RRA depends on), decompression round-trip on
+  a real SAX string, and repeated-run determinism.
+
 ### Changed
 - **CI:** removed the source-install of jmotif-sax — the pom's pinned version resolves
   from Maven Central, so the source-built jar was never used (CI silently tested against
   different dependency code than local builds).
+- **CI:** dropped the SonarCloud job and pom properties (stale token failed every run).
 
 ## [2.0.2] — 2026-07-22
 
