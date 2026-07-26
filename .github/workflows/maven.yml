@@ -64,28 +64,3 @@ jobs:
     - name: Run quality gate
       run: mvn -B -Pquality verify
 
-  sonarcloud:
-    # https://github.com/sonarsource/sonarcloud-github-action
-    runs-on: ubuntu-latest
-    # non-blocking: a missing or invalid SONAR_TOKEN must not fail the workflow
-    continue-on-error: true
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        # Disabling shallow clone is recommended for improving relevancy of reporting
-        fetch-depth: 0
-    - name: Set up JDK 21
-      uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: "21"
-        cache: maven
-    - name: Install jmotif-sax from source
-      run: |
-        git clone --depth 1 https://github.com/jMotif/SAX.git ../SAX
-        mvn -B install -P single -DskipTests -f ../SAX/pom.xml
-    - name: SonarCloud Scan
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=jMotif_GI
