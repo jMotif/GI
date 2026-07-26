@@ -36,6 +36,7 @@ public class SAXNonTerminal extends SAXSymbol implements Cloneable {
    */
   public SAXNonTerminal(SAXRule theRule) {
     this.r = theRule;
+    this.g = theRule.g;
     this.r.count++;
     this.value = String.valueOf(numTerminals + r.ruleIndex);
     this.p = null;

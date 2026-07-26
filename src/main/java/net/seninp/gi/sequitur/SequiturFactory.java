@@ -3,7 +3,6 @@ package net.seninp.gi.sequitur;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.seninp.gi.logic.GIUtils;
@@ -50,15 +49,8 @@ public final class SequiturFactory {
 
     LOGGER.trace("digesting the string " + inputString);
 
-    // clear global collections
-    //
-    SAXRule.numRules = new AtomicInteger(0);
-    SAXRule.theRules.clear();
-    SAXSymbol.theDigrams.clear();
-    SAXSymbol.theSubstituteTable.clear();
-    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
-
-    // init the top-level rule
+    // init the top-level rule; this allocates a fresh, fully isolated SequiturGrammar context
+    // (formerly: JVM-global statics that had to be manually reset here)
     //
     SAXRule resRule = new SAXRule();
 
@@ -124,14 +116,8 @@ public final class SequiturFactory {
     //
     String saxDisplayString = saxFrequencyData.getSAXString(" ");
 
-    // reset the Sequitur data structures
-    SAXRule.numRules = new AtomicInteger(0);
-    SAXRule.theRules.clear();
-    SAXSymbol.theDigrams.clear();
-
-    // bootstrap the grammar
+    // bootstrap the grammar; a fresh SAXRule brings its own isolated SequiturGrammar context
     SAXRule grammar = new SAXRule();
-    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
 
     // digest the string via the tokenizer and build the grammar
     StringTokenizer st = new StringTokenizer(saxDisplayString, " ");

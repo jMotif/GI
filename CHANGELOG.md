@@ -5,12 +5,28 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed (breaking for Sequitur API consumers — next release is a MINOR bump)
+- **Sequitur de-staticised.** All formerly JVM-global state (`SAXSymbol.theDigrams`,
+  `SAXSymbol.theSubstituteTable`, `SAXRule.numRules`, `SAXRule.theRules`,
+  `SAXRule.arrRuleRecords`) now lives in a per-inference **`SequiturGrammar`** context,
+  allocated by `new SAXRule()` and threaded to every symbol/rule of that grammar — the same
+  design `RePairGrammar` uses. One inference per grammar object; concurrent inferences are
+  fully isolated (verified by `TestSequiturConcurrency`: 48 parallel runs byte-identical to
+  sequential). Grammar output is **byte-identical** to 2.0.2 — pinned by
+  `TestSequiturPinnedBehavior` and the jmotif-conformance `sequitur_*` cases.
+  - API deltas: `SAXRule.printRules()` is now an **instance** method; the public field
+    `SAXSymbol.theSubstituteTable` is **removed** (was only ever cleared, never read);
+    `SAXRule.reset()` is a deprecated no-op (state is born-fresh per grammar).
+  - `MovieMaker`-style incremental use (`new SAXRule()` + `insertAfter`/`check` per token)
+    now works correctly without any reset call, and multiple streams can run at once.
+
 ### Added
 - **`TestSequiturPinnedBehavior`** — 11 tests pinning current Sequitur output ahead of the
   planned de-static refactor: degenerate inputs (empty/blank/null/single-token), overlapping
   digrams (`a a a` vs `a a a a`), rule utility, occurrence retention under rule absorption
   (the `SAXNonTerminal.cleanUp()` TODO behavior RRA depends on), decompression round-trip on
   a real SAX string, and repeated-run determinism.
+- **`TestSequiturConcurrency`** — parallel-inference isolation proof (the refactor's goal).
 
 ### Changed
 - **CI:** removed the source-install of jmotif-sax — the pom's pinned version resolves

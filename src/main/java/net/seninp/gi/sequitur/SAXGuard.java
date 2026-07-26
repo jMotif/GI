@@ -43,11 +43,12 @@ public class SAXGuard extends SAXSymbol {
 
   /**
    * Constructor.
-   * 
+   *
    * @param theRule The guard holds.
    */
   public SAXGuard(SAXRule theRule) {
     r = theRule;
+    g = theRule.g;
     value = null;
     p = this;
     n = this;

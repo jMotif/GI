@@ -19,7 +19,7 @@ public class TestRoseGrammars {
       SAXRule r = SequiturFactory.runSequitur(TEST_STRING);
       GrammarRules rules = r.toGrammarRulesData();
       System.out.println("testing SEQUITUR with the string \"" + TEST_STRING + "\":\n\n"
-          + SAXRule.printRules() + "\n --end-- \n");
+          + r.printRules() + "\n --end-- \n");
 
       assertEquals("test hierarchy", 3, rules.size());
 

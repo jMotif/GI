@@ -19,17 +19,14 @@ package net.seninp.gi.sequitur;
  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-import java.util.Hashtable;
-import java.util.Map.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Template for Sequitur data structures. Adaption of Eibe Frank code for JMotif API.
- * 
+ *
  * @author Manfred Lerner, seninp
- * 
+ *
  */
 public abstract class SAXSymbol {
 
@@ -41,15 +38,12 @@ public abstract class SAXSymbol {
    */
   protected static final int numTerminals = 100000;
 
-  /** Seed the size of hash table? */
-  private static final int prime = 2265539;
-
-  /** Hashtable to keep track of all digrams. This is static - single instance for all. */
-  protected static final Hashtable<SAXSymbol, SAXSymbol> theDigrams = new Hashtable<SAXSymbol, SAXSymbol>(
-      SAXSymbol.prime);
-
-  public static Hashtable<String, Hashtable<String, Integer>> theSubstituteTable = new Hashtable<String, Hashtable<String, Integer>>(
-      SAXSymbol.prime);
+  /**
+   * The grammar this symbol belongs to — owns the digram index this symbol checks against.
+   * Guards and non-terminals receive it from their rule at construction; terminals receive it
+   * when first linked into the grammar (see {@link #insertAfter(SAXSymbol)}).
+   */
+  protected SequiturGrammar g;
 
   /** The symbol value. */
   protected String value;
@@ -89,10 +83,16 @@ public abstract class SAXSymbol {
 
   /**
    * Inserts a symbol after this one.
-   * 
+   *
    * @param toInsert the new symbol to be inserted.
    */
   public void insertAfter(SAXSymbol toInsert) {
+
+    // adopt the freshly created symbol into this grammar (terminals are constructed
+    // grammar-less; guards and non-terminals already carry their rule's grammar)
+    if (null == toInsert.g) {
+      toInsert.g = this.g;
+    }
 
     // call join on this symbol' NEXT - placing it AFTER the new one
     join(toInsert, n);
@@ -112,8 +112,8 @@ public abstract class SAXSymbol {
     }
 
     // delete digram if it is exactly this one
-    if (this == theDigrams.get(this)) {
-      theDigrams.remove(this);
+    if (this == g.digrams.get(this)) {
+      g.digrams.remove(this);
     }
   }
 
@@ -155,13 +155,13 @@ public abstract class SAXSymbol {
       return false;
     }
 
-    if (!theDigrams.containsKey(this)) {
-      theDigrams.put(this, this);
+    if (!g.digrams.containsKey(this)) {
+      g.digrams.put(this, this);
       return false;
     }
 
     // well the same hash is in the store, lemme see...
-    SAXSymbol found = theDigrams.get(this);
+    SAXSymbol found = g.digrams.get(this);
 
     // if it's not me, then lets call match magic?
     if (found.n != this) {
@@ -233,7 +233,7 @@ public abstract class SAXSymbol {
     }
     else {
       // well, here we create a new rule because there are two matching digrams
-      rule = new SAXRule();
+      rule = new SAXRule(g);
 
       try {
         // tie the digram's links together within the new rule
@@ -251,7 +251,7 @@ public abstract class SAXSymbol {
         // put this digram into the hash
         // this effectively erases the OLD MATCHING digram with the new DIGRAM (symbol is wrapped
         // into Guard)
-        theDigrams.put(first, first);
+        g.digrams.put(first, first);
 
         // substitute the matching (old) digram with this rule in S
         matchingDigram.substitute(rule);
@@ -326,16 +326,6 @@ public abstract class SAXSymbol {
       return "nonterminal " + ((SAXNonTerminal) symbol).value;
     }
     return "symbol " + symbol.value;
-  }
-
-  @SuppressWarnings("unused")
-  private static String makeDigramsTable() {
-    StringBuffer sb = new StringBuffer("\n");
-    for (Entry<SAXSymbol, SAXSymbol> e : theDigrams.entrySet()) {
-      sb.append("           ").append(getPayload(e.getKey())).append(", ")
-          .append(getPayload(e.getValue())).append("\n");
-    }
-    return sb.toString();
   }
 
 }

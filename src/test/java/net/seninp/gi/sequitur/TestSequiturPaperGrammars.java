@@ -32,7 +32,7 @@ public class TestSequiturPaperGrammars {
     try {
       SAXRule r = SequiturFactory.runSequitur(TEST3_STRING);
       GrammarRules rules = r.toGrammarRulesData();
-      System.out.println(SAXRule.printRules() + "\n ---- \n");
+      System.out.println(r.printRules() + "\n ---- \n");
 
       RePairGrammar rr = RePairFactory.buildGrammar(TEST3_STRING);
       System.out.println(rr.toGrammarRules());

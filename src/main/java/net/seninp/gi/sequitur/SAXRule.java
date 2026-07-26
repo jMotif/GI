@@ -42,20 +42,14 @@ public class SAXRule {
   // references the rule is created, and decremented when the non-terminal symbol is deleted. When
   // the reference count falls to one, the rule is deleted.
 
-  /** This is static - the global rule enumerator counter. */
-  protected static AtomicInteger numRules = new AtomicInteger(0);
-
-  /** Yet another, global static structure allowing fast rule access. */
-  protected static final ArrayList<SAXRule> theRules = new ArrayList<SAXRule>();
-
   private static final String SPACE = " ";
 
   private static final String TAB = "\t";
 
   private static final String CR = "\n";
 
-  /** Keeper for rules references. */
-  protected static ArrayList<GrammarRuleRecord> arrRuleRecords = new ArrayList<GrammarRuleRecord>();
+  /** The grammar this rule belongs to — owns the rule registry, counter, and record cache. */
+  protected final SequiturGrammar g;
 
   /** Guard symbol to mark beginning and end of rule. */
   protected SAXGuard theGuard;
@@ -79,13 +73,24 @@ public class SAXRule {
   protected Set<Integer> indexes = new TreeSet<Integer>();
 
   /**
-   * Constructor.
+   * Constructor. Creates the ROOT rule of a brand-new grammar — a fresh {@link SequiturGrammar}
+   * context is allocated, so every {@code new SAXRule()} starts a fully isolated inference.
    */
   public SAXRule() {
+    this(new SequiturGrammar());
+  }
 
-    // assign a next number to this rule and increment the global counter
-    this.ruleIndex = numRules.intValue();
-    numRules.incrementAndGet();
+  /**
+   * Constructor for a rule within an existing grammar (used when the algorithm forms new rules).
+   *
+   * @param grammar the owning grammar context.
+   */
+  protected SAXRule(SequiturGrammar grammar) {
+
+    this.g = grammar;
+
+    // assign a next number to this rule and increment the grammar's counter
+    this.ruleIndex = g.numRules.getAndIncrement();
 
     // create a Guard handler for the rule
     this.theGuard = new SAXGuard(this);
@@ -96,20 +101,20 @@ public class SAXRule {
     this.level = 0;
 
     // save the instance
-    theRules.add(this);
+    g.rules.add(this);
   }
 
   /**
-   * Original getRules() method. Prints out rules. Killing it will brake tests.
+   * Original getRules() method. Prints out this grammar's rules.
    *
    * @return the formatted rules string.
    */
-  public static String printRules() {
+  public String printRules() {
 
-    theRules.get(0).getSAXRules();
+    g.rules.get(0).getSAXRules();
     expandRules();
 
-    Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
+    Vector<SAXRule> rules = new Vector<SAXRule>(g.numRules.intValue());
     SAXRule currentRule;
     SAXRule referedTo;
     SAXSymbol sym;
@@ -118,7 +123,7 @@ public class SAXRule {
     StringBuilder text = new StringBuilder();
 
     text.append("Number\tName\tLevel\tOccurr.\tUsage\tYield\tRule str\tExpaneded\tIndexes\n");
-    rules.addElement(theRules.get(0));
+    rules.addElement(g.rules.get(0));
 
     // add-on - keeping the rule string, will be used in order to expand rules
     StringBuilder currentRuleString = new StringBuilder();
@@ -130,12 +135,12 @@ public class SAXRule {
       // seninp: adding to original output rule occurrence indexes
       //
       text.append(SPACE);
-      text.append(arrRuleRecords.get(processedRules).getRuleNumber()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleName()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleLevel()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getOccurrences().size()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleUseFrequency()).append(TAB);
-      text.append(arrRuleRecords.get(processedRules).getRuleYield()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getRuleNumber()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getRuleName()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getRuleLevel()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getOccurrences().size()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getRuleUseFrequency()).append(TAB);
+      text.append(g.ruleRecords.get(processedRules).getRuleYield()).append(TAB);
 
       for (sym = currentRule.first(); (!sym.isGuard()); sym = sym.n) {
         if (sym.isNonTerminal()) {
@@ -173,7 +178,7 @@ public class SAXRule {
         text.append(' ');
         currentRuleString.append(' ');
       }
-      text.append(TAB).append(arrRuleRecords.get(processedRules).getExpandedRuleString())
+      text.append(TAB).append(g.ruleRecords.get(processedRules).getExpandedRuleString())
           .append(TAB);
       text.append(Arrays.toString(currentRule.getIndexes())).append(CR);
 
@@ -185,13 +190,16 @@ public class SAXRule {
   }
 
   /**
-   * Cleans up data structures.
+   * Historically cleared the JVM-global Sequitur state between inferences. All state is now
+   * per-grammar ({@link SequiturGrammar}, allocated by {@code new SAXRule()}), so there is
+   * nothing left to reset — every inference is born isolated.
+   *
+   * @deprecated no-op; simply construct a new root rule (or call
+   *             {@link SequiturFactory#runSequitur(String)}) instead.
    */
+  @Deprecated
   public static void reset() {
-    SAXRule.numRules = new AtomicInteger(0);
-    SAXSymbol.theDigrams.clear();
-    SAXSymbol.theSubstituteTable.clear();
-    SAXRule.arrRuleRecords = new ArrayList<GrammarRuleRecord>();
+    // no-op: state is per-SequiturGrammar since the de-static refactor
   }
 
   /**
@@ -292,7 +300,7 @@ public class SAXRule {
    * Manfred's cool trick to get out all expanded rules. Expands the rule of each SAX container into
    * SAX words string. Can be rewritten recursively though.
    */
-  private static void expandRules() {
+  private void expandRules() {
 
     // long start = System.currentTimeMillis();
 
@@ -313,7 +321,7 @@ public class SAXRule {
     // });
 
     // for (SAXMapEntry<Integer, Integer> entry : recs) {
-    for (GrammarRuleRecord ruleRecord : arrRuleRecords) {
+    for (GrammarRuleRecord ruleRecord : g.ruleRecords) {
 
       if (ruleRecord.getRuleNumber() == 0) {
         continue;
@@ -341,7 +349,7 @@ public class SAXRule {
 
     StringBuilder resultString = new StringBuilder(8192);
 
-    GrammarRuleRecord ruleRecord = arrRuleRecords.get(0);
+    GrammarRuleRecord ruleRecord = g.ruleRecords.get(0);
     resultString.append(ruleRecord.getRuleString());
 
     int currentSearchStart = resultString.indexOf("R");
@@ -350,7 +358,7 @@ public class SAXRule {
       String ruleName = resultString.substring(currentSearchStart, spaceIdx + 1);
       Integer ruleId = Integer.valueOf(ruleName.substring(1, ruleName.length() - 1));
       resultString.replace(spaceIdx - ruleName.length() + 1, spaceIdx + 1,
-          arrRuleRecords.get(ruleId).getExpandedRuleString());
+          g.ruleRecords.get(ruleId).getExpandedRuleString());
       currentSearchStart = resultString.indexOf("R");
     }
     ruleRecord.setExpandedRuleString(resultString.toString().trim());
@@ -358,8 +366,8 @@ public class SAXRule {
 
   }
 
-  private static String expandRule(Integer ruleNum) {
-    GrammarRuleRecord rr = arrRuleRecords.get(ruleNum);
+  private String expandRule(Integer ruleNum) {
+    GrammarRuleRecord rr = g.ruleRecords.get(ruleNum);
 
     String curString = rr.getRuleString();
     StringBuilder resultString = new StringBuilder();
@@ -396,7 +404,7 @@ public class SAXRule {
   }
 
   public ArrayList<GrammarRuleRecord> getRuleRecords() {
-    return arrRuleRecords;
+    return g.ruleRecords;
   }
 
   /**
@@ -431,9 +439,9 @@ public class SAXRule {
    */
   protected void getSAXRules() {
 
-    arrRuleRecords.clear();
+    g.ruleRecords.clear();
 
-    Vector<SAXRule> rules = new Vector<SAXRule>(numRules.intValue());
+    Vector<SAXRule> rules = new Vector<SAXRule>(g.numRules.intValue());
     rules.addElement(this);
 
     SAXRule currentRule;
@@ -476,7 +484,7 @@ public class SAXRule {
       ruleConteiner.setRuleUseFrequency(currentRule.count);
       ruleConteiner.setOccurrences(currentRule.getIndexes());
 
-      arrRuleRecords.add(ruleConteiner);
+      g.ruleRecords.add(ruleConteiner);
 
       sbCurrentRule = new StringBuilder();
       processedRules++;
@@ -488,7 +496,7 @@ public class SAXRule {
     getSAXRules();
     expandRules();
     GrammarRules res = new GrammarRules();
-    for (GrammarRuleRecord arrRule : arrRuleRecords) {
+    for (GrammarRuleRecord arrRule : g.ruleRecords) {
       res.addRule(arrRule);
     }
     return res;
