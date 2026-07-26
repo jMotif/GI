@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### Changed
+- **CI:** removed the source-install of jmotif-sax — the pom's pinned version resolves
+  from Maven Central, so the source-built jar was never used (CI silently tested against
+  different dependency code than local builds).
+
 ## [2.0.2] — 2026-07-22
 
 Maintenance and quality release on top of **2.0.1**. No public API changes.
@@ -13,7 +18,9 @@ Maintenance and quality release on top of **2.0.1**. No public API changes.
 - **Build:** added a **PMD + SpotBugs** quality gate (`-Pquality`); fixed resource leaks
   and a null-close bug surfaced by the gate.
 - **Logging:** route swallowed `CloneNotSupportedException` to SLF4J; remove stray/dead
-  debug prints.
+  debug prints. Note: `RePairGrammar.toGrammarRules()` now includes the `R0 -> ...` line
+  in its return value instead of printing it to stdout — callers parsing that string see
+  an extra first line (`toGrammarRulesData()` consumers are unaffected).
 
 ### Fixed
 - **RePair** no longer crashes on empty, blank, or null input; **Sequitur** state is

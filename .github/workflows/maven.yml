@@ -28,12 +28,6 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: maven
 
-    # jmotif-sax 2.0.1 is on master but not always on Central yet; install locally.
-    - name: Install jmotif-sax from source
-      run: |
-        git clone --depth 1 https://github.com/jMotif/SAX.git ../SAX
-        mvn -B install -P single -DskipTests -f ../SAX/pom.xml
-
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
